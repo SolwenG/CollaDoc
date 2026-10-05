@@ -1,0 +1,19 @@
+{
+  "name": "colladoc",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "concurrently \"npm run --prefix backend start\" \"npm run --prefix frontend dev\"",
+    "format": "prettier --write ."
+  },
+  "dependencies": {
+    "prettier": "^3.9.9",
+    "zod": "^4.6.5"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.4",
+    "concurrently": "^10.0.5",
+    "typescript": "^7.0.2"
+  }
+}
