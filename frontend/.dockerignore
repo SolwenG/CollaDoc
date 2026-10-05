@@ -1,0 +1,7 @@
+node_modules
+dist
+.quasar
+pnpm-lock.yaml
+.env
+Dockerfile
+.dockerignore
