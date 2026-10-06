@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node src/app.ts",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "contract:emit": "prisma contract emit"
+    "contract:emit": "prisma contract emit",
+    "typecheck": "tsc --noEmit && tsc --noEmit -p migrations"
   },
   "keywords": [],
   "author": "",
