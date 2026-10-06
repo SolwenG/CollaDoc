@@ -47,7 +47,7 @@
                 :rules="[required, samePassword]"
               />
 
-              <q-btn type="submit" color="primary" label="S'inscrire" />
+              <q-btn type="submit" color="primary" label="S'inscrire" :loading="loading" />
             </q-form>
           </q-card-section>
         </q-card>
@@ -96,13 +96,35 @@ const strength = computed(() => zxcvbn.check(password.value));
 const strongEnough = () =>
   strength.value.score >= MIN_SCORE || 'Mot de passe trop facile à deviner';
 
-function onSubmit() {
-  console.log('Form submitted:', {
-    username: username.value,
-    displayName: displayName.value,
-    password: password.value,
-  });
+const loading = ref(false);
+
+async function onSubmit() {
+  loading.value = true;
+  try {
+    const response = await fetch('/api/auth/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        username: username.value,
+        displayName: displayName.value,
+        password: password.value,
+      }),
+    });
+    console.log('Réponse du serveur :', response.status);
+  } catch (error) {
+    console.error('Serveur injoignable', error);
+  } finally {
+    loading.value = false;
+  }
 }
+
+// function onSubmit() {
+//   console.log('Form submitted:', {
+//     username: username.value,
+//     displayName: displayName.value,
+//     password: password.value,
+//   });
+// }
 </script>
 
 <style scoped>
