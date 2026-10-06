@@ -52,6 +52,10 @@
 
               <q-btn type="submit" color="primary" label="S'inscrire" :loading="loading" />
             </q-form>
+            <div class="q-mt-md">
+              Déjà un compte ?
+              <router-link to="/login">Se connecter</router-link>
+            </div>
           </q-card-section>
         </q-card>
       </q-page>
@@ -65,6 +69,9 @@ import { ZxcvbnFactory } from '@zxcvbn-ts/core';
 import * as zxcvbnCommon from '@zxcvbn-ts/language-common';
 import * as zxcvbnFr from '@zxcvbn-ts/language-fr';
 import { useQuasar } from 'quasar';
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
 
 const zxcvbn = new ZxcvbnFactory({
   translations: zxcvbnFr.translations,
@@ -116,9 +123,9 @@ async function onSubmit() {
         password: password.value,
       }),
     });
-
     if (response.status === 201) {
       n.notify({ type: 'positive', message: 'Compte créé, vous pouvez vous connecter.' });
+      await router.push('/login');
       return;
     }
     if (response.status === 409) {
