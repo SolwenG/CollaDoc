@@ -29,15 +29,7 @@ DATABASE_URL="postgresql://colladoc:colladoc@localhost:5433/colladoc"
 > Depuis la machine hôte, Postgres est exposé sur le port **5433** (`DB_PORT`), pas 5432.
 > Dans le réseau Docker, le conteneur `backend` utilise `db:5432` (déjà configuré dans `docker-compose.yml`).
 
-### 2. Dépendances
-
-```bash
-npm ci
-npm ci --prefix backend
-npm ci --prefix frontend
-```
-
-### 3. Base de données
+### 2. Base de données
 
 ```bash
 docker compose up -d db               # démarre Postgres seul
@@ -48,7 +40,7 @@ npx prisma db verify                  # vérifie que la base correspond au contr
 
 `db verify` doit afficher `Database marker and schema match contract`.
 
-### 4. Lancer l'application
+### 3. Lancer l'application
 
 Tout dans Docker :
 
