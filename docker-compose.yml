@@ -21,6 +21,7 @@ services:
     restart: unless-stopped
     environment:
       DATABASE_URL: postgresql://${POSTGRES_USER:-colladoc}:${POSTGRES_PASSWORD:-colladoc}@db:5432/${POSTGRES_DB:-colladoc}
+      PORT: "3000"
     ports:
       - "${BACKEND_PORT:-3000}:3000"
     depends_on:
