@@ -6,8 +6,6 @@
 - **frontend** : Vue 3 + Quasar
 - **db** : PostgreSQL 18 (Docker)
 
-La conception de la base (décisions, modèle de données, fonctionnement de l'OT) est décrite dans [`doc/doc.md`](doc/doc.md).
-
 ## Prérequis
 
 - Docker et Docker Compose
