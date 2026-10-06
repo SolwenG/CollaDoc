@@ -5,8 +5,9 @@
   "main": "index.js",
   "scripts": {
     "start": "node src/app.ts",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "contract:emit": "prisma contract emit"
+    "test": "vitest run --configLoader runner",
+    "contract:emit": "prisma contract emit",
+    "test:watch": "vitest --configLoader runner"
   },
   "keywords": [],
   "author": "",
@@ -14,19 +15,23 @@
   "type": "module",
   "dependencies": {
     "@prisma/orm-postgres": "^8.0.0-rc.14",
+    "argon2": "^0.45.1",
     "cors": "^2.8.6",
     "dotenv": "^18.0.5",
     "express": "^5.2.1",
+    "express-rate-limit": "^8.7.1",
     "multer": "^2.4.0",
     "otplib": "^13.5.0",
     "pg": "^8.23.1",
-    "socket.io": "^4.8.4"
+    "socket.io": "^4.8.4",
+    "zod": "^4.6.5"
   },
   "devDependencies": {
     "@prisma/cli-engine": "^0.6.2",
     "@types/express": "^5.0.6",
     "@types/node": "^26.6.4",
-    "prisma": "^8.0.0-rc.19"
+    "prisma": "^8.0.0-rc.19",
+    "vitest": "^5.0.3"
   },
   "overrides": {
     "@prisma/orm-toolchain": "8.0.0-rc.14",
