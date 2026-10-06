@@ -2,8 +2,14 @@ import {defineStore} from 'pinia';
 
 export interface User {
   id: number;
+  username: string;
   displayName: string;
   passwordHash: string;
+  role: 'USER' | 'ADMIN';
+  mustChangePassword: boolean;
+  blockedAt: string | null;
+  blockedById: number | null;
+  blockedBy: User | null;
 }
 
 export const useUserStore = defineStore('user', {

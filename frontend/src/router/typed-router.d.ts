@@ -37,11 +37,27 @@ declare module 'vue-router/auto-routes' {
       Record<never, never>,
       Record<never, never>,
       | '//(index)'
+      | '//admin/list-users'
+      | '//admin/new-user'
       | '//profil'
     >,
     '//(index)': RouteRecordInfo<
       '//(index)',
       '/',
+      Record<never, never>,
+      Record<never, never>,
+      | never
+    >,
+    '//admin/list-users': RouteRecordInfo<
+      '//admin/list-users',
+      '/admin/list-users',
+      Record<never, never>,
+      Record<never, never>,
+      | never
+    >,
+    '//admin/new-user': RouteRecordInfo<
+      '//admin/new-user',
+      '/admin/new-user',
       Record<never, never>,
       Record<never, never>,
       | never
@@ -77,6 +93,8 @@ declare module 'vue-router/auto-routes' {
       routes:
         | '/'
         | '//(index)'
+        | '//admin/list-users'
+        | '//admin/new-user'
         | '//profil'
       views:
         | 'default'
@@ -86,6 +104,22 @@ declare module 'vue-router/auto-routes' {
     'src/pages/index/(index).vue': {
       routes:
         | '//(index)'
+      views:
+        | never
+      pathParamNames:
+        | never
+    }
+    'src/pages/index/admin/list-users.vue': {
+      routes:
+        | '//admin/list-users'
+      views:
+        | never
+      pathParamNames:
+        | never
+    }
+    'src/pages/index/admin/new-user.vue': {
+      routes:
+        | '//admin/new-user'
       views:
         | never
       pathParamNames:

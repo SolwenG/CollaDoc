@@ -10,7 +10,22 @@
     </q-header>
 
     <q-drawer v-model="leftDrawerOpen" show-if-above bordered>
-      <q-item to="/profil">Mon Profil</q-item>
+      <q-item to="/profil">
+        <q-item-section avatar>
+          <q-icon name="person" />
+        </q-item-section>
+        <q-item-section>
+          <q-item-label>Mon Profil</q-item-label>
+        </q-item-section>
+      </q-item>
+      <q-item to="/admin/list-users">
+        <q-item-section avatar>
+          <q-icon name="admin_panel_settings" />
+        </q-item-section>
+        <q-item-section>
+          <q-item-label>Admin</q-item-label>
+        </q-item-section>
+      </q-item>
     </q-drawer>
 
     <q-page-container>
