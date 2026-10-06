@@ -15,6 +15,9 @@
                 outlined
                 lazy-rules
                 :rules="[required, usernameFormat]"
+                :error="!!usernameError"
+                :error-message="usernameError"
+                @update:model-value="usernameError = ''"
               />
               <q-input
                 v-model="displayName"
@@ -61,6 +64,7 @@ import { computed, ref } from 'vue';
 import { ZxcvbnFactory } from '@zxcvbn-ts/core';
 import * as zxcvbnCommon from '@zxcvbn-ts/language-common';
 import * as zxcvbnFr from '@zxcvbn-ts/language-fr';
+import { useQuasar } from 'quasar';
 
 const zxcvbn = new ZxcvbnFactory({
   translations: zxcvbnFr.translations,
@@ -90,6 +94,8 @@ const confirmPassword = ref('');
 const MIN_SCORE = 3;
 const strengthLabels = ['Très faible', 'Faible', 'Moyen', 'Bon', 'Excellent'];
 const strengthColors = ['negative', 'negative', 'warning', 'positive', 'positive'];
+const n = useQuasar();
+const usernameError = ref('');
 
 const strength = computed(() => zxcvbn.check(password.value));
 
@@ -110,21 +116,23 @@ async function onSubmit() {
         password: password.value,
       }),
     });
-    console.log('Réponse du serveur :', response.status);
-  } catch (error) {
-    console.error('Serveur injoignable', error);
+
+    if (response.status === 201) {
+      n.notify({ type: 'positive', message: 'Compte créé, vous pouvez vous connecter.' });
+      return;
+    }
+    if (response.status === 409) {
+      usernameError.value = 'Cet identifiant est déjà utilisé.';
+      return;
+    }
+
+    n.notify({ type: 'negative', message: 'Une erreur est survenue. Réessayez plus tard.' });
+  } catch {
+    n.notify({ type: 'negative', message: 'Impossible de joindre le serveur.' });
   } finally {
     loading.value = false;
   }
 }
-
-// function onSubmit() {
-//   console.log('Form submitted:', {
-//     username: username.value,
-//     displayName: displayName.value,
-//     password: password.value,
-//   });
-// }
 </script>
 
 <style scoped>
