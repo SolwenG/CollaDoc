@@ -149,3 +149,6 @@ vite.config.ts.timestamp-*
 
 # Turbo Repo
 .turbo
+
+# Prisma CLAUDE agents skills and docs
+/backend/.claude/skills/prisma-*
