@@ -1,0 +1,140 @@
+// use prisma-8
+
+// Modèle de données CollaDoc — voir doc/doc.md (section 5).
+
+enum Role {
+  @@type("pg/text@1")
+  USER  = "USER"
+  ADMIN = "ADMIN"
+}
+
+enum DocumentKind {
+  @@type("pg/text@1")
+  TEXT = "TEXT"
+  FILE = "FILE"
+}
+
+enum MemberRole {
+  @@type("pg/text@1")
+  EDITOR = "EDITOR"
+  VIEWER = "VIEWER"
+}
+
+enum OperationType {
+  @@type("pg/text@1")
+  INSERT = "INSERT"
+  DELETE = "DELETE"
+}
+
+model User {
+  id                 Int                @id @default(autoincrement())
+  username           String             @unique // identifiant de connexion, non modifiable
+  displayName        String // nom affiché dans l'app et les docs partagés
+  passwordHash       String // argon2
+  role               Role               @default(USER)
+  mustChangePassword Boolean            @default(false) // true pour un compte créé par un admin
+  totpSecret         String? // chiffré en AES-GCM (clé dans .env)
+  totpEnabledAt      TimestamptzString? // null = MFA désactivé
+  blockedAt          TimestamptzString? // non null = connexion impossible
+  blockedById        Int?
+  blockedBy          User?              @relation("UserBlockedBy", fields: [blockedById], references: [id])
+  createdById        Int? // null = inscription libre
+  createdBy          User?              @relation("UserCreatedBy", fields: [createdById], references: [id])
+  createdAt          TimestamptzString  @default(now())
+  updatedAt          temporal.updatedAtString()
+}
+
+model Session {
+  id          Int               @id @default(autoincrement())
+  tokenHash   String            @unique // SHA-256 du token du cookie
+  userId      Int
+  user        User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  mfaVerified Boolean
+  expiresAt   TimestamptzString // 5 min si non vérifiée, 7 jours glissants sinon
+  createdAt   TimestamptzString @default(now())
+  lastUsedAt  TimestamptzString @default(now())
+
+  @@index([userId])
+}
+
+model Folder {
+  id        Int               @id @default(autoincrement())
+  name      String
+  parentId  Int? // null = racine
+  parent    Folder?           @relation(fields: [parentId], references: [id], onDelete: Cascade)
+  ownerId   Int
+  owner     User              @relation(fields: [ownerId], references: [id])
+  createdAt TimestamptzString @default(now())
+  updatedAt temporal.updatedAtString()
+
+  @@unique([ownerId, parentId, name])
+  @@index([ownerId, name], where: "\"parentId\" IS NULL", unique: true, name: "Folder_root_name_unique")
+}
+
+model Document {
+  id               Int               @id @default(autoincrement())
+  name             String
+  kind             DocumentKind
+  ownerId          Int
+  owner            User              @relation("DocumentOwner", fields: [ownerId], references: [id])
+  folderId         Int? // null = racine du propriétaire
+  folder           Folder?           @relation(fields: [folderId], references: [id], onDelete: Cascade)
+  // TEXT
+  content          String? // instantané du texte brut
+  revision         Int               @default(0)
+  displayedVersion Int               @default(0)
+  // FILE
+  originalName     String?
+  storagePath      String? // nom snapshotRevisionUUID sur le disque
+  mimeType         String?
+  size             Int?
+  // commun
+  lastModifiedById Int?
+  lastModifiedBy   User?             @relation("DocumentLastModifiedBy", fields: [lastModifiedById], references: [id])
+  createdAt        TimestamptzString @default(now())
+  updatedAt        temporal.updatedAtString()
+
+  @@index([ownerId, folderId])
+}
+
+model DocumentMember {
+  documentId  Int
+  document    Document          @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  userId      Int
+  user        User              @relation("DocumentMemberUser", fields: [userId], references: [id])
+  role        MemberRole
+  invitedById Int
+  invitedBy   User              @relation("DocumentMemberInvitedBy", fields: [invitedById], references: [id])
+  createdAt   TimestamptzString @default(now())
+
+  @@id([documentId, userId])
+  @@index([userId])
+}
+
+model DocumentOperation {
+  id         Int               @id @default(autoincrement())
+  documentId Int
+  document   Document          @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  revision   Int
+  type       OperationType
+  position   Int
+  text       String? // INSERT
+  length     Int? // DELETE
+  authorId   Int
+  author     User              @relation(fields: [authorId], references: [id])
+  createdAt  TimestamptzString @default(now())
+
+  @@unique([documentId, revision])
+}
+
+model Message {
+  id         Int               @id @default(autoincrement())
+  documentId Int
+  document   Document          @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  authorId   Int
+  author     User              @relation(fields: [authorId], references: [id])
+  content    String
+  createdAt  TimestamptzString @default(now())
+
+  @@index([documentId, createdAt])
+}
