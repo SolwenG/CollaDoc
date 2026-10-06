@@ -37,7 +37,7 @@ declare module 'vue-router/auto-routes' {
       Record<never, never>,
       Record<never, never>,
       | '//(index)'
-      | '//second'
+      | '//profil'
     >,
     '//(index)': RouteRecordInfo<
       '//(index)',
@@ -46,9 +46,9 @@ declare module 'vue-router/auto-routes' {
       Record<never, never>,
       | never
     >,
-    '//second': RouteRecordInfo<
-      '//second',
-      '/second',
+    '//profil': RouteRecordInfo<
+      '//profil',
+      '/profil',
       Record<never, never>,
       Record<never, never>,
       | never
@@ -77,7 +77,7 @@ declare module 'vue-router/auto-routes' {
       routes:
         | '/'
         | '//(index)'
-        | '//second'
+        | '//profil'
       views:
         | 'default'
       pathParamNames:
@@ -91,9 +91,9 @@ declare module 'vue-router/auto-routes' {
       pathParamNames:
         | never
     }
-    'src/pages/index/second.vue': {
+    'src/pages/index/profil.vue': {
       routes:
-        | '//second'
+        | '//profil'
       views:
         | never
       pathParamNames:
