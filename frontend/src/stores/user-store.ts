@@ -1,4 +1,4 @@
-import {defineStore} from 'pinia';
+import { defineStore } from 'pinia';
 
 export interface User {
   id: number;
@@ -23,12 +23,12 @@ export const useUserStore = defineStore('user', {
       try {
         if (this.currentUser) {
           this.currentUser.displayName = newDisplayName;
-          return {success: true};
+          return { success: true };
         }
-        return {success: false, error: "Pas d'utilisateur connecté"};
+        return { success: false, error: "Pas d'utilisateur connecté" };
       } catch (error) {
         console.error('Failed to update display name:', error);
-        return {success: false, error: "Erreur lors de la mise à jour du nom d'affichage"};
+        return { success: false, error: "Erreur lors de la mise à jour du nom d'affichage" };
       }
     },
 
@@ -37,12 +37,12 @@ export const useUserStore = defineStore('user', {
       try {
         if (this.currentUser) {
           this.currentUser.passwordHash = newPassword;
-          return {success: true};
+          return { success: true };
         }
-        return {success: false, error: "Pas d'utilisateur connecté"};
+        return { success: false, error: "Pas d'utilisateur connecté" };
       } catch (error) {
         console.error('Failed to update password:', error);
-        return {success: false, error: "Erreur lors de la mise à jour du mot de passe"};
+        return { success: false, error: 'Erreur lors de la mise à jour du mot de passe' };
       }
     },
   },

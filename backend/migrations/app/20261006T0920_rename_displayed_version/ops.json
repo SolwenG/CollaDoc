@@ -16,11 +16,7 @@
       {
         "description": "ensure column \"snapshotRevision\" exists",
         "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
-        "params": [
-          "public",
-          "Document",
-          "snapshotRevision"
-        ]
+        "params": ["public", "Document", "snapshotRevision"]
       }
     ],
     "execute": [
@@ -33,11 +29,7 @@
       {
         "description": "verify column \"snapshotRevision\" does not exist",
         "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
-        "params": [
-          "public",
-          "Document",
-          "snapshotRevision"
-        ]
+        "params": ["public", "Document", "snapshotRevision"]
       }
     ]
   },
@@ -58,11 +50,7 @@
       {
         "description": "ensure column \"displayedVersion\" is missing",
         "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
-        "params": [
-          "public",
-          "Document",
-          "displayedVersion"
-        ]
+        "params": ["public", "Document", "displayedVersion"]
       }
     ],
     "execute": [
@@ -75,11 +63,7 @@
       {
         "description": "verify column \"displayedVersion\" exists",
         "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
-        "params": [
-          "public",
-          "Document",
-          "displayedVersion"
-        ]
+        "params": ["public", "Document", "displayedVersion"]
       }
     ]
   }

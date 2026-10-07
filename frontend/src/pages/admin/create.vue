@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import {ref, reactive} from 'vue';
-import {useRouter} from 'vue-router';
+import { ref, reactive } from 'vue';
+import { useRouter } from 'vue-router';
 
 const router = useRouter();
 
@@ -21,7 +21,7 @@ function handleCreateUser() {
 
   try {
     if (!formData.username.trim()) {
-      errorMessage.value = 'Le nom d\'utilisateur est requis';
+      errorMessage.value = "Le nom d'utilisateur est requis";
       return;
     }
     if (!formData.passwordHash.trim()) {
@@ -40,7 +40,7 @@ function handleCreateUser() {
       void router.push('/admin');
     }, 1500);
   } catch (error) {
-    errorMessage.value = 'Erreur lors de la création de l\'utilisateur';
+    errorMessage.value = "Erreur lors de la création de l'utilisateur";
     console.error('Create user error:', error);
   } finally {
     loading.value = false;
@@ -65,7 +65,7 @@ function goBack() {
               label="Nom d'utilisateur"
               outlined
               dense
-              :rules="[val => !!val || 'Le nom d\'utilisateur est requis']"
+              :rules="[(val) => !!val || 'Le nom d\'utilisateur est requis']"
             />
 
             <q-input
@@ -74,7 +74,7 @@ function goBack() {
               type="password"
               outlined
               dense
-              :rules="[val => !!val || 'Le mot de passe est requis']"
+              :rules="[(val) => !!val || 'Le mot de passe est requis']"
             />
 
             <q-banner v-if="errorMessage" class="bg-negative text-white rounded-borders">
@@ -94,13 +94,7 @@ function goBack() {
                 class="col"
                 @click="goBack"
               />
-              <q-btn
-                type="submit"
-                label="Créer"
-                color="primary"
-                class="col"
-                :loading="loading"
-              />
+              <q-btn type="submit" label="Créer" color="primary" class="col" :loading="loading" />
             </div>
           </q-form>
         </q-card-section>
@@ -109,5 +103,4 @@ function goBack() {
   </q-page>
 </template>
 
-<style scoped>
-</style>
+<style scoped></style>

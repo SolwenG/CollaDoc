@@ -74,11 +74,7 @@ function goToNewUser() {
     <div class="q-pa-md" style="max-width: 800px; margin: 0 auto">
       <div class="row items-center justify-between q-mb-md">
         <h1 class="text-h5 q-ma-none">Liste des utilisateurs</h1>
-        <q-btn
-          label="Créer un nouvel utilisateur"
-          color="primary"
-          @click="goToNewUser"
-        />
+        <q-btn label="Créer un nouvel utilisateur" color="primary" @click="goToNewUser" />
       </div>
 
       <q-card>
@@ -102,7 +98,7 @@ function goToNewUser() {
                 @click="toggleBlockUser(user)"
               >
                 <q-tooltip>
-                  {{ isUserBlocked(user) ? 'Débloquer l\'utilisateur' : 'Bloquer l\'utilisateur' }}
+                  {{ isUserBlocked(user) ? "Débloquer l'utilisateur" : "Bloquer l'utilisateur" }}
                 </q-tooltip>
               </q-btn>
             </q-item-section>
@@ -113,5 +109,4 @@ function goToNewUser() {
   </q-page>
 </template>
 
-<style scoped>
-</style>
+<style scoped></style>

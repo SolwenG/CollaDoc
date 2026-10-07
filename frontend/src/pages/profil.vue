@@ -80,9 +80,9 @@
 </template>
 
 <script setup lang="ts">
-import {ref, reactive, onMounted} from 'vue';
-import {useRouter} from 'vue-router';
-import {useUserStore} from "@/stores/user-store";
+import { ref, reactive, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
+import { useUserStore } from '@/stores/user-store';
 
 const router = useRouter();
 const userStore = useUserStore();
@@ -125,12 +125,12 @@ function saveField(field: 'displayName' | 'password') {
 
   if (field === 'displayName') {
     if (!formData.displayName.trim()) {
-      errorMessage.value = 'Le nom d\'affichage ne peut pas être vide';
+      errorMessage.value = "Le nom d'affichage ne peut pas être vide";
       return;
     }
     const result = userStore.updateDisplayName(formData.displayName);
     if (result.success) {
-      successMessage.value = 'Nom d\'affichage mis à jour avec succès';
+      successMessage.value = "Nom d'affichage mis à jour avec succès";
       editing.displayName = false;
     } else {
       errorMessage.value = result.error || 'Erreur lors de la mise à jour';

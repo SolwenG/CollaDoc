@@ -1,5 +1,5 @@
-import express from 'express'
+import express from "express";
 
 const jsonMiddleware = express.json();
 
-export const globalMiddlewares = [jsonMiddleware,]
+export const globalMiddlewares = [jsonMiddleware];
