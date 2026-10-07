@@ -1,6 +1,6 @@
 import { computed, ref } from 'vue';
 import { defineStore } from 'pinia';
-import { postJson } from '../../utils/api';
+import { apiFetch, postJson } from '../../utils/api';
 
 export interface User {
   id: number;
@@ -8,6 +8,8 @@ export interface User {
   displayName: string;
   role: 'USER' | 'ADMIN';
 }
+
+const initialized = ref(false);
 
 export type LoginResult = 'success' | 'invalid' | 'blocked' | 'error';
 
@@ -38,5 +40,15 @@ export const useAuthStore = defineStore('auth', () => {
     user.value = null;
   }
 
-  return { user, isLoggedIn, isAdmin, login, logout };
+  async function fetchCurrentUser() {
+    try {
+      const response = await apiFetch('/auth/session');
+      user.value = response.status === 200 ? ((await response.json()) as User) : null;
+    } catch {
+      user.value = null;
+    }
+    initialized.value = true;
+  }
+
+  return { user, initialized, isLoggedIn, isAdmin, login, logout, fetchCurrentUser };
 });
