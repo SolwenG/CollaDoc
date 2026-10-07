@@ -107,7 +107,7 @@ const samePassword = (val: string) =>
 async function onSubmit() {
   loading.value = true;
   try {
-    const response = await postJson('/auth/register', {
+    const response = await postJson('/users/register', {
       username: username.value.trim(),
       displayName: displayName.value.trim(),
       password: password.value,
