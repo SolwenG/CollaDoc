@@ -7,6 +7,7 @@
         hint="3 à 32 caractères, en minuscules"
         outlined
         lazy-rules
+        autocomplete="username"
         :rules="[
           required,
           minLength(USERNAME_MIN_LENGTH),
@@ -18,18 +19,12 @@
         @update:model-value="usernameError = ''"
       />
       <q-input
-        v-model="displayName"
-        label="Nom d'affichage"
-        outlined
-        lazy-rules
-        :rules="[required, maxLength(DISPLAY_NAME_MAX_LENGTH)]"
-      />
-      <q-input
         v-model="password"
         label="Mot de passe"
         outlined
         type="password"
         lazy-rules
+        autocomplete="new-password"
         :rules="[
           required,
           minLength(PASSWORD_MIN_LENGTH),
@@ -47,6 +42,7 @@
         outlined
         type="password"
         lazy-rules
+        autocomplete="new-password"
         :rules="[required, samePassword]"
       />
 
@@ -65,8 +61,8 @@ import { useQuasar } from 'quasar';
 import { useRouter } from 'vue-router';
 import AuthCard from '@/components/AuthCard.vue';
 import { usePasswordStrength } from '@/composables/usePasswordStrength';
+import { postJson } from '@/utils/api';
 import {
-  DISPLAY_NAME_MAX_LENGTH,
   PASSWORD_MAX_LENGTH,
   PASSWORD_MIN_LENGTH,
   USERNAME_MAX_LENGTH,
@@ -81,7 +77,6 @@ const $q = useQuasar();
 const router = useRouter();
 
 const username = ref('');
-const displayName = ref('');
 const password = ref('');
 const confirmPassword = ref('');
 const usernameError = ref('');
@@ -95,14 +90,13 @@ const samePassword = (val: string) =>
 async function onSubmit() {
   loading.value = true;
   try {
-    const response = await fetch('/api/auth/register', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        username: username.value.trim(),
-        displayName: displayName.value.trim(),
-        password: password.value,
-      }),
+    const cleanUsername = username.value.trim();
+
+    // Le nom d'affichage reprend l'identifiant, il sera modifiable depuis le profil
+    const response = await postJson('/auth/register', {
+      username: cleanUsername,
+      displayName: cleanUsername,
+      password: password.value,
     });
 
     if (response.status === 201) {
