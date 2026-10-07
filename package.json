@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "dev": "concurrently \"npm run --prefix backend start\" \"npm run --prefix frontend dev\"",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "backend:typecheck": "npm run --prefix backend typecheck"
   },
   "devDependencies": {
     "concurrently": "^9.2.1",
