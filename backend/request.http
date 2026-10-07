@@ -164,3 +164,13 @@ Content-Type: application/json
   "username": "newuser_01",
   "password": ""
 }
+
+### Rate limit -> run this 6 times: 401 x5, then 429 TOO_MANY_ATTEMPTS with Retry-After: 900
+# The counter lives in memory: restart the backend to reset it
+POST {{baseUrl}}/auth/login HTTP/1.1
+Content-Type: application/json
+
+{
+  "username": "newuser_01",
+  "password": "wrong-password-for-rate-limit"
+}
