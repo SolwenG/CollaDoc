@@ -16,3 +16,5 @@ export const maxLength = (max: number) => (val: string) =>
 
 export const safeCharacters = (val: string) =>
   /^[a-z0-9_.-]+$/.test(val) || 'Minuscules, chiffres, point, tiret et underscore uniquement';
+
+export const sixDigits = (val: string) => /^\d{6}$/.test(val) || 'Le code contient 6 chiffres';

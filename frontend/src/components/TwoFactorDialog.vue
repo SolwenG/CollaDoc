@@ -33,15 +33,13 @@
 
 <script setup lang="ts">
 import { ref, watch } from 'vue';
-import { required } from '@/utils/validation';
+import { required, sixDigits } from '@/utils/validation';
 
 const open = defineModel<boolean>({ required: true });
 
 const code = ref('');
 const codeError = ref('');
 const loading = ref(false);
-
-const sixDigits = (val: string) => /^\d{6}$/.test(val) || 'Le code contient 6 chiffres';
 
 // On repart d'un champ vide à chaque ouverture
 watch(open, (isOpen) => {
