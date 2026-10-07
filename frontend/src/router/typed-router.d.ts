@@ -37,34 +37,10 @@ declare module 'vue-router/auto-routes' {
       Record<never, never>,
       Record<never, never>,
       | '//(index)'
-      | '//admin/list-users'
-      | '//admin/new-user'
-      | '//profil'
     >,
     '//(index)': RouteRecordInfo<
       '//(index)',
       '/',
-      Record<never, never>,
-      Record<never, never>,
-      | never
-    >,
-    '//admin/list-users': RouteRecordInfo<
-      '//admin/list-users',
-      '/admin/list-users',
-      Record<never, never>,
-      Record<never, never>,
-      | never
-    >,
-    '//admin/new-user': RouteRecordInfo<
-      '//admin/new-user',
-      '/admin/new-user',
-      Record<never, never>,
-      Record<never, never>,
-      | never
-    >,
-    '//profil': RouteRecordInfo<
-      '//profil',
-      '/profil',
       Record<never, never>,
       Record<never, never>,
       | never
@@ -74,6 +50,27 @@ declare module 'vue-router/auto-routes' {
       '/:path(.*)',
       { path: ParamValue<true> },
       { path: ParamValue<false> },
+      | never
+    >,
+    '/admin/': RouteRecordInfo<
+      '/admin/',
+      '/admin',
+      Record<never, never>,
+      Record<never, never>,
+      | never
+    >,
+    '/admin/create': RouteRecordInfo<
+      '/admin/create',
+      '/admin/create',
+      Record<never, never>,
+      Record<never, never>,
+      | never
+    >,
+    '/profil': RouteRecordInfo<
+      '/profil',
+      '/profil',
+      Record<never, never>,
+      Record<never, never>,
       | never
     >,
   }
@@ -93,9 +90,6 @@ declare module 'vue-router/auto-routes' {
       routes:
         | '/'
         | '//(index)'
-        | '//admin/list-users'
-        | '//admin/new-user'
-        | '//profil'
       views:
         | 'default'
       pathParamNames:
@@ -109,30 +103,6 @@ declare module 'vue-router/auto-routes' {
       pathParamNames:
         | never
     }
-    'src/pages/index/admin/list-users.vue': {
-      routes:
-        | '//admin/list-users'
-      views:
-        | never
-      pathParamNames:
-        | never
-    }
-    'src/pages/index/admin/new-user.vue': {
-      routes:
-        | '//admin/new-user'
-      views:
-        | never
-      pathParamNames:
-        | never
-    }
-    'src/pages/index/profil.vue': {
-      routes:
-        | '//profil'
-      views:
-        | never
-      pathParamNames:
-        | never
-    }
     'src/pages/[...path].vue': {
       routes:
         | '/[...path]'
@@ -140,6 +110,30 @@ declare module 'vue-router/auto-routes' {
         | never
       pathParamNames:
         | 'path'
+    }
+    'src/pages/admin/index.vue': {
+      routes:
+        | '/admin/'
+      views:
+        | never
+      pathParamNames:
+        | never
+    }
+    'src/pages/admin/create.vue': {
+      routes:
+        | '/admin/create'
+      views:
+        | never
+      pathParamNames:
+        | never
+    }
+    'src/pages/profil.vue': {
+      routes:
+        | '/profil'
+      views:
+        | never
+      pathParamNames:
+        | never
     }
   }
 

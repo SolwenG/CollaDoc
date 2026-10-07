@@ -65,7 +65,7 @@ function toggleBlockUser(user: User) {
 }
 
 function goToNewUser() {
-  router.push('/admin/new-user');
+  void router.push('/admin/create');
 }
 </script>
 

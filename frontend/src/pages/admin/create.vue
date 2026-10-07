@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref, reactive } from 'vue';
-import { useRouter } from 'vue-router';
+import {ref, reactive} from 'vue';
+import {useRouter} from 'vue-router';
 
 const router = useRouter();
 
@@ -14,7 +14,7 @@ const errorMessage = ref('');
 const successMessage = ref('');
 const loading = ref(false);
 
-async function handleCreateUser() {
+function handleCreateUser() {
   errorMessage.value = '';
   successMessage.value = '';
   loading.value = true;
@@ -37,7 +37,7 @@ async function handleCreateUser() {
 
     // Redirect after a short delay
     setTimeout(() => {
-      router.push('/admin/list-users');
+      void router.push('/admin');
     }, 1500);
   } catch (error) {
     errorMessage.value = 'Erreur lors de la création de l\'utilisateur';
@@ -48,7 +48,7 @@ async function handleCreateUser() {
 }
 
 function goBack() {
-  router.push('/admin/list-users');
+  void router.push('/admin');
 }
 </script>
 
