@@ -54,6 +54,9 @@ export default defineRouter((/* { store, ssrContext } */) => {
     if (auth.isLoggedIn && isPublic) {
       return '/';
     }
+    if (to.path.startsWith('/admin') && !auth.isAdmin) {
+      return '/';
+    }
   });
 
   // enable HMR for it
