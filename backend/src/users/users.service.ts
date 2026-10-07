@@ -4,6 +4,9 @@ type Register = {
 	username: string;
 	displayName: string;
 	passwordHash: string;
+	role?: "USER" | "ADMIN";
+	mustChangePassword?: boolean;
+	createdById?: number;
 };
 
 export async function findByUsername(username: string) {
@@ -14,6 +17,9 @@ export async function createAccount({
 	username,
 	displayName,
 	passwordHash,
+	role,
+	mustChangePassword,
+	createdById,
 }: Register) {
 	return db.orm.public.User.select(
 		"id",
@@ -21,5 +27,12 @@ export async function createAccount({
 		"displayName",
 		"role",
 		"createdAt",
-	).create({ username, displayName, passwordHash });
+	).create({
+		username,
+		displayName,
+		passwordHash,
+		role,
+		mustChangePassword,
+		createdById,
+	});
 }
