@@ -23,3 +23,17 @@ export async function createAccount({
 		"createdAt",
 	).create({ username, displayName, passwordHash });
 }
+
+export async function findUserForLogin(username: string) {
+	return db.orm.public.User.select(
+		"id",
+		"username",
+		"displayName",
+		"role",
+		"passwordHash",
+		"blockedAt",
+		"totpEnabledAt",
+	)
+		.where({ username })
+		.first();
+}

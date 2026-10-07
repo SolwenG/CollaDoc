@@ -1,3 +1,4 @@
+import type { CookieOptions, Response } from "express";
 import { createHash, randomBytes } from "node:crypto";
 import { db } from "../prisma/db.ts";
 
@@ -5,6 +6,13 @@ export const SESSION_COOKIE_NAME = "colladoc_session";
 export const SESSION_TTL_MS = 7 * 24 * 60 * 60 * 1000;
 export const PENDING_MFA_SESSION_TTL_MS = 5 * 60 * 1000;
 export const SESSION_REFRESH_THRESHOLD_MS = 1 * 60 * 1000;
+
+const SESSION_COOKIE_OPTIONS: CookieOptions = {
+	httpOnly: true,
+	sameSite: "lax",
+	secure: process.env.NODE_ENV === "production",
+	path: "/",
+};
 
 type CreateSession = {
 	userId: number;
@@ -78,4 +86,19 @@ function computeExpirationTime({
 export async function deleteSessionByToken(token: string): Promise<void> {
 	const tokenHash = hashSessionToken(token);
 	await db.orm.public.Session.where({ tokenHash }).delete();
+}
+
+export function setSessionCookie(
+	res: Response,
+	token: string,
+	expiresAt: string,
+) {
+	res.cookie(SESSION_COOKIE_NAME, token, {
+		...SESSION_COOKIE_OPTIONS,
+		expires: new Date(expiresAt),
+	});
+}
+
+export function clearSessionCookie(res: Response) {
+	res.clearCookie(SESSION_COOKIE_NAME, SESSION_COOKIE_OPTIONS);
 }
