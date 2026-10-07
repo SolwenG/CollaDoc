@@ -28,6 +28,8 @@
     <!-- TODO : bouton temporaire pour voir la fenêtre, à retirer quand le back existera -->
     <q-btn flat dense label="Aperçu 2FA" @click="showTwoFactor = true" />
     <TwoFactorDialog v-model="showTwoFactor" />
+    <q-btn flat dense label="Aperçu configuration" @click="showSetup = true" />
+    <TwoFactorSetupDialog v-model="showSetup" />
   </AuthCard>
 </template>
 
@@ -39,11 +41,13 @@ import AuthCard from '@/components/AuthCard.vue';
 import { useAuthStore } from '@/stores/auth';
 import { required } from '@/utils/validation';
 import TwoFactorDialog from '@/components/TwoFactorDialog.vue';
+import TwoFactorSetupDialog from '@/components/TwoFactorSetupDialog.vue';
 
 const $q = useQuasar();
 const router = useRouter();
 const auth = useAuthStore();
 const showTwoFactor = ref(false);
+const showSetup = ref(false);
 
 const username = ref('');
 const password = ref('');
