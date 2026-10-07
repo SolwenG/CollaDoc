@@ -20,7 +20,7 @@ export const useUserStore = defineStore('user', () => {
 
   async function fetchUserProfile(userId: number): Promise<User | null> {
     try {
-      const response = await apiFetch(`/profil/${userId}`);
+      const response = await apiFetch(`/profile/${userId}`);
       if (response.status === 200) {
         const userData = (await response.json()) as User;
         currentUser.value = userData;
@@ -35,7 +35,7 @@ export const useUserStore = defineStore('user', () => {
 
   async function fetchAllUsers(): Promise<User[]> {
     try {
-      const response = await apiFetch('/admin');
+      const response = await apiFetch('/admin/users');
       if (response.status === 200) {
         return (await response.json()) as User[];
       }
@@ -48,17 +48,8 @@ export const useUserStore = defineStore('user', () => {
 
   async function toggleBlockUser(userId: number, blocked: boolean): Promise<User | null> {
     try {
-      const authStore = useAuthStore();
-      const body = blocked
-        ? {
-            blockedAt: new Date().toISOString(),
-            blockedById: authStore.user?.id || null,
-          }
-        : {
-            blockedAt: null,
-            blockedById: null,
-          };
-      const response = await postJson(`/users/${userId}/block`, body);
+      const endpoint = blocked ? `/admin/users/${userId}/block` : `/admin/users/${userId}/unblock`;
+      const response = await postJson(endpoint, {});
       if (response.status === 200) {
         return (await response.json()) as User;
       }
@@ -77,7 +68,7 @@ export const useUserStore = defineStore('user', () => {
     role: 'USER' | 'ADMIN';
   }): Promise<{ success: boolean; error?: string }> {
     try {
-      const response = await postJson('/admin/create', data);
+      const response = await postJson('/admin/users/create', data);
       if (response.status === 201) {
         return { success: true };
       }
@@ -97,7 +88,7 @@ export const useUserStore = defineStore('user', () => {
       if (!authStore.user) {
         return { success: false, error: "Pas d'utilisateur connecté" };
       }
-      const response = await apiFetch(`/profil/${authStore.user.id}`, {
+      const response = await apiFetch('/profile', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ displayName: newDisplayName }),
@@ -123,7 +114,7 @@ export const useUserStore = defineStore('user', () => {
       if (!authStore.user) {
         return { success: false, error: "Pas d'utilisateur connecté" };
       }
-      const response = await apiFetch(`/profil/${authStore.user.id}`, {
+      const response = await apiFetch('/profile/password', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ password: newPassword }),
