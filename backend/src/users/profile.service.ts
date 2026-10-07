@@ -3,7 +3,7 @@ import {
 	hashPassword,
 	verifyPassword,
 } from "../auth/password.ts";
-import { AppError } from "../http/errors.ts";
+import { AppError } from "../errors/app-error.ts";
 import * as profileRepository from "./profile.repository.ts";
 import type { ProfileRow } from "./profile.repository.ts";
 import type { ChangePasswordInput } from "./profile.schemas.ts";

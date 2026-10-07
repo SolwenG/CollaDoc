@@ -4,10 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node src/app.ts",
+    "start": "node --env-file-if-exists=.env src/app.ts",
     "test": "vitest run --configLoader runner",
+    "test:watch": "vitest --configLoader runner",
     "contract:emit": "prisma contract emit",
-    "test:watch": "vitest --configLoader runner"
+    "typecheck": "tsc --noEmit && tsc --noEmit -p migrations"
   },
   "keywords": [],
   "author": "",
@@ -31,6 +32,7 @@
     "@types/express": "^5.0.6",
     "@types/node": "^26.6.4",
     "prisma": "^8.0.0-rc.19",
+    "typescript": "^7.0.2",
     "vitest": "^5.0.3"
   },
   "overrides": {

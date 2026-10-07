@@ -1,5 +1,5 @@
 import type { Request, RequestHandler } from "express";
-import { AppError } from "../http/errors.ts";
+import { AppError } from "../errors/app-error.ts";
 
 // Contract shared with the login middleware: what an authenticated request carries.
 export type AuthUser = {
