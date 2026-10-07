@@ -12,18 +12,46 @@
                 <q-input
                   v-model="formData.displayName"
                   label="Nom d'affichage"
+                  hint="Le nom que les autres voient, 2 à 50 caractères"
                   :disable="!editing.displayName"
                   outlined
                   dense
+                  lazy-rules
+                  autocomplete="off"
+                  :rules="[
+                    required,
+                    minLength(DISPLAY_NAME_MIN_LENGTH),
+                    maxLength(DISPLAY_NAME_MAX_LENGTH),
+                  ]"
+                  :error="!!displayNameError"
+                  :error-message="displayNameError"
+                  @update:model-value="displayNameError = ''"
                 />
               </div>
               <q-btn
-                :icon="editing.displayName ? 'check' : 'edit'"
+                v-if="!editing.displayName"
+                icon="edit"
                 flat
                 round
-                :color="editing.displayName ? 'positive' : 'grey'"
+                color="grey"
                 @click="toggleEdit('displayName')"
               />
+              <template v-else>
+                <q-btn
+                  icon="close"
+                  flat
+                  round
+                  color="negative"
+                  @click="cancelEdit('displayName')"
+                />
+                <q-btn
+                  icon="check"
+                  flat
+                  round
+                  color="positive"
+                  @click="toggleEdit('displayName')"
+                />
+              </template>
             </div>
 
             <!-- Password Field -->
@@ -31,11 +59,21 @@
               <div class="col">
                 <q-input
                   v-model="formData.password"
-                  label="Mot de passe"
+                  label="Nouveau mot de passe"
                   :type="showPassword ? 'text' : 'password'"
                   :disable="!editing.password"
                   outlined
                   dense
+                  autocomplete="new-password"
+                  :rules="[
+                    required,
+                    minLength(PASSWORD_MIN_LENGTH),
+                    maxLength(PASSWORD_MAX_LENGTH),
+                    strongEnough,
+                  ]"
+                  :error="!!passwordError"
+                  :error-message="passwordError"
+                  @update:model-value="passwordError = ''"
                 >
                   <template #append>
                     <q-icon
@@ -45,14 +83,35 @@
                     />
                   </template>
                 </q-input>
+                <div v-if="formData.password && editing.password">
+                  <q-linear-progress :value="(score + 1) / 5" :color="color" />
+                  <div class="text-caption">{{ label }}</div>
+                </div>
               </div>
               <q-btn
-                :icon="editing.password ? 'check' : 'edit'"
+                v-if="!editing.password"
+                icon="edit"
                 flat
                 round
-                :color="editing.password ? 'positive' : 'grey'"
+                color="grey"
                 @click="toggleEdit('password')"
               />
+              <template v-else>
+                <q-btn
+                  icon="close"
+                  flat
+                  round
+                  color="negative"
+                  @click="cancelEdit('password')"
+                />
+                <q-btn
+                  icon="check"
+                  flat
+                  round
+                  color="positive"
+                  @click="toggleEdit('password')"
+                />
+              </template>
             </div>
 
             <!-- Error Message -->
@@ -80,12 +139,24 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, onMounted } from 'vue';
+import { ref, reactive, onMounted, computed } from 'vue';
 import { useRouter } from 'vue-router';
-import { useUserStore } from '@/stores/user-store';
+import { useUserStore } from '@/stores/user';
+import { useAuthStore } from '@/stores/auth';
+import { usePasswordStrength } from '@/hooks/usePasswordStrength';
+import {
+  DISPLAY_NAME_MAX_LENGTH,
+  DISPLAY_NAME_MIN_LENGTH,
+  PASSWORD_MAX_LENGTH,
+  PASSWORD_MIN_LENGTH,
+  maxLength,
+  minLength,
+  required,
+} from '@/utils/validation';
 
 const router = useRouter();
 const userStore = useUserStore();
+const authStore = useAuthStore();
 
 const editing = reactive({
   displayName: false,
@@ -97,56 +168,87 @@ const formData = reactive({
   password: '',
 });
 
+const originalFormData = reactive({
+  displayName: '',
+  password: '',
+});
+
 const showPassword = ref(false);
+const displayNameError = ref('');
+const passwordError = ref('');
 const errorMessage = ref('');
 const successMessage = ref('');
 
-onMounted(() => {
-  if (userStore.currentUser) {
-    formData.displayName = userStore.currentUser.displayName;
+const password = computed(() => formData.password);
+const { score, label, color, strongEnough } = usePasswordStrength(password);
+
+onMounted(async () => {
+  if (authStore.user) {
+    const userData = await userStore.fetchUserProfile(authStore.user.id);
+    if (userData) {
+      formData.displayName = userData.displayName;
+      originalFormData.displayName = userData.displayName;
+    }
   }
 });
 
-function toggleEdit(field: 'displayName' | 'password') {
+async function toggleEdit(field: 'displayName' | 'password') {
   if (editing[field]) {
     // Save changes
-    saveField(field);
+    await saveField(field);
   } else {
     // Enable editing
     editing[field] = true;
     errorMessage.value = '';
     successMessage.value = '';
+    displayNameError.value = '';
+    passwordError.value = '';
+    formData.password = '';
+    originalFormData[field] = formData[field];
   }
 }
 
-function saveField(field: 'displayName' | 'password') {
+function cancelEdit(field: 'displayName' | 'password') {
+  editing[field] = false;
   errorMessage.value = '';
   successMessage.value = '';
+  displayNameError.value = '';
+  passwordError.value = '';
+  formData[field] = originalFormData[field];
+  formData.password = '';
+}
+
+async function saveField(field: 'displayName' | 'password') {
+  errorMessage.value = '';
+  successMessage.value = '';
+  displayNameError.value = '';
+  passwordError.value = '';
 
   if (field === 'displayName') {
     if (!formData.displayName.trim()) {
-      errorMessage.value = "Le nom d'affichage ne peut pas être vide";
+      displayNameError.value = "Le nom d'affichage ne peut pas être vide";
       return;
     }
-    const result = userStore.updateDisplayName(formData.displayName);
+    const result = await userStore.updateDisplayName(formData.displayName);
     if (result.success) {
       successMessage.value = "Nom d'affichage mis à jour avec succès";
       editing.displayName = false;
+      originalFormData.displayName = formData.displayName;
     } else {
-      errorMessage.value = result.error || 'Erreur lors de la mise à jour';
+      displayNameError.value = result.error || 'Erreur lors de la mise à jour';
     }
   } else if (field === 'password') {
     if (!formData.password.trim()) {
-      errorMessage.value = 'Le mot de passe ne peut pas être vide';
+      passwordError.value = 'Le mot de passe ne peut pas être vide';
       return;
     }
-    const result = userStore.updatePassword(formData.password);
+    const result = await userStore.updatePassword(formData.password);
     if (result.success) {
       successMessage.value = 'Mot de passe mis à jour avec succès';
       formData.password = '';
       editing.password = false;
     } else {
-      errorMessage.value = result.error || 'Erreur lors de la mise à jour';
+      passwordError.value = result.error || 'Erreur lors de la mise à jour';
     }
   }
 }

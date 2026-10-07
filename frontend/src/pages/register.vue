@@ -21,16 +21,11 @@
       <q-input
         v-model="displayName"
         label="Nom d'affichage"
-        hint="Le nom que les autres verront, 2 à 50 caractères, en minuscules"
+        hint="Le nom que les autres verront, 2 à 50 caractères"
         outlined
         lazy-rules
         autocomplete="off"
-        :rules="[
-          required,
-          minLength(DISPLAY_NAME_MIN_LENGTH),
-          maxLength(DISPLAY_NAME_MAX_LENGTH),
-          safeCharacters,
-        ]"
+        :rules="[required, minLength(DISPLAY_NAME_MIN_LENGTH), maxLength(DISPLAY_NAME_MAX_LENGTH)]"
       />
       <q-input
         v-model="password"
@@ -60,11 +55,17 @@
         :rules="[required, samePassword]"
       />
 
-      <q-btn type="submit" color="primary" label="S'inscrire" class="full-width" :loading="loading" />
+      <q-btn
+        type="submit"
+        color="primary"
+        label="S'inscrire"
+        class="full-width"
+        :loading="loading"
+      />
     </q-form>
     <div class="q-mt-md">
       Déjà un compte ?
-      <router-link to="/login"  class="text-primary text-bold">Se connecter</router-link>
+      <router-link to="/login" class="text-primary text-bold">Se connecter</router-link>
     </div>
   </AuthCard>
 </template>

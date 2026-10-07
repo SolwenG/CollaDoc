@@ -1,74 +1,3 @@
-<script setup lang="ts">
-import { ref } from 'vue';
-import { useRouter } from 'vue-router';
-import { useUserStore, type User } from '@/stores/user-store';
-
-const router = useRouter();
-const userStore = useUserStore();
-
-// Mock data - TODO: Replace with actual API call to fetch users
-const users = ref<User[]>([
-  {
-    id: 1,
-    username: 'alice',
-    displayName: 'Alice Dupont',
-    passwordHash: 'hash1',
-    role: 'USER',
-    mustChangePassword: false,
-    blockedAt: null,
-    blockedById: null,
-    blockedBy: null,
-  },
-  {
-    id: 2,
-    username: 'bob',
-    displayName: 'Bob Martin',
-    passwordHash: 'hash2',
-    role: 'USER',
-    mustChangePassword: true,
-    blockedAt: null,
-    blockedById: null,
-    blockedBy: null,
-  },
-  {
-    id: 3,
-    username: 'charlie',
-    displayName: 'Charlie Durand',
-    passwordHash: 'hash3',
-    role: 'USER',
-    mustChangePassword: false,
-    blockedAt: '2024-01-15T10:30:00Z',
-    blockedById: 1,
-    blockedBy: null,
-  },
-]);
-
-function isUserBlocked(user: User): boolean {
-  return user.blockedAt !== null;
-}
-
-function toggleBlockUser(user: User) {
-  if (isUserBlocked(user)) {
-    // Unblock user
-    user.blockedAt = null;
-    user.blockedById = null;
-    user.blockedBy = null;
-  } else {
-    // Block user
-    user.blockedAt = new Date().toISOString();
-    if (userStore.currentUser) {
-      user.blockedById = userStore.currentUser.id;
-      user.blockedBy = userStore.currentUser;
-    }
-  }
-  // TODO: Call API to persist the change
-}
-
-function goToNewUser() {
-  void router.push('/admin/create');
-}
-</script>
-
 <template>
   <q-page padding>
     <div class="q-pa-md" style="max-width: 800px; margin: 0 auto">
@@ -95,7 +24,7 @@ function goToNewUser() {
                 :color="isUserBlocked(user) ? 'negative' : 'grey'"
                 flat
                 round
-                @click="toggleBlockUser(user)"
+                @click="openBlockModal(user)"
               >
                 <q-tooltip>
                   {{ isUserBlocked(user) ? "Débloquer l'utilisateur" : "Bloquer l'utilisateur" }}
@@ -106,7 +35,94 @@ function goToNewUser() {
         </q-list>
       </q-card>
     </div>
+
+    <q-dialog v-model="blockDialog.show">
+      <q-card>
+        <q-card-section>
+          <div class="text-h6">
+            {{
+              blockDialog.user && isUserBlocked(blockDialog.user) ? 'Débloquer' : 'Bloquer'
+            }}
+            l'utilisateur
+          </div>
+        </q-card-section>
+
+        <q-card-section>
+          {{
+            blockDialog.user
+              ? `Êtes-vous sûr de vouloir ${isUserBlocked(blockDialog.user) ? 'débloquer' : 'bloquer'} ${blockDialog.user.displayName} (@${blockDialog.user.username}) ?`
+              : ''
+          }}
+        </q-card-section>
+
+        <q-card-actions align="right">
+          <q-btn flat label="Annuler" color="grey" @click="blockDialog.show = false" />
+          <q-btn
+            flat
+            label="Confirmer"
+            :color="blockDialog.user && isUserBlocked(blockDialog.user) ? 'positive' : 'negative'"
+            @click="confirmBlock"
+          />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
   </q-page>
 </template>
 
-<style scoped></style>
+<script setup lang="ts">
+import { ref, onMounted, reactive } from 'vue';
+import { useRouter } from 'vue-router';
+import { useUserStore, type User } from '@/stores/user';
+
+const router = useRouter();
+const userStore = useUserStore();
+
+const users = ref<User[]>([]);
+const loading = ref(false);
+const errorMessage = ref('');
+
+const blockDialog = reactive({
+  show: false,
+  user: null as User | null,
+});
+
+onMounted(async () => {
+  loading.value = true;
+  errorMessage.value = '';
+  users.value = await userStore.fetchAllUsers();
+  if (users.value.length === 0) {
+    errorMessage.value = 'Erreur lors du chargement des utilisateurs';
+  }
+  loading.value = false;
+});
+
+function isUserBlocked(user: User): boolean {
+  return user.blockedAt !== null;
+}
+
+function openBlockModal(user: User) {
+  blockDialog.user = user;
+  blockDialog.show = true;
+}
+
+async function confirmBlock() {
+  if (!blockDialog.user) return;
+
+  const updatedUser = await userStore.toggleBlockUser(
+    blockDialog.user.id,
+    !isUserBlocked(blockDialog.user),
+  );
+  if (updatedUser) {
+    const index = users.value.findIndex((u) => u.id === blockDialog.user!.id);
+    if (index !== -1) {
+      users.value[index] = updatedUser;
+    }
+  }
+  blockDialog.show = false;
+  blockDialog.user = null;
+}
+
+function goToNewUser() {
+  void router.push('/admin/create');
+}
+</script>

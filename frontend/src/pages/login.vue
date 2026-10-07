@@ -19,7 +19,13 @@
         :rules="[required]"
       />
 
-      <q-btn type="submit" color="primary" label="Se connecter" class="full-width" :loading="loading" />
+      <q-btn
+        type="submit"
+        color="primary"
+        label="Se connecter"
+        class="full-width"
+        :loading="loading"
+      />
     </q-form>
     <div class="q-mt-md">
       Pas encore de compte ?
