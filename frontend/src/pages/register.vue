@@ -12,7 +12,7 @@
           required,
           minLength(USERNAME_MIN_LENGTH),
           maxLength(USERNAME_MAX_LENGTH),
-          usernameFormat,
+          safeCharacters,
         ]"
         :error="!!usernameError"
         :error-message="usernameError"
@@ -21,11 +21,16 @@
       <q-input
         v-model="displayName"
         label="Nom d'affichage"
-        hint="Le nom que les autres verront, 64 caractères maximum"
+        hint="Le nom que les autres verront, 2 à 50 caractères, en minuscules"
         outlined
         lazy-rules
-        autocomplete="name"
-        :rules="[required, maxLength(DISPLAY_NAME_MAX_LENGTH)]"
+        autocomplete="off"
+        :rules="[
+          required,
+          minLength(DISPLAY_NAME_MIN_LENGTH),
+          maxLength(DISPLAY_NAME_MAX_LENGTH),
+          safeCharacters,
+        ]"
       />
       <q-input
         v-model="password"
@@ -72,6 +77,7 @@ import AuthCard from '@/components/AuthCard.vue';
 import { usePasswordStrength } from '@/composables/usePasswordStrength';
 import { postJson } from '@/utils/api';
 import {
+  DISPLAY_NAME_MIN_LENGTH,
   DISPLAY_NAME_MAX_LENGTH,
   PASSWORD_MAX_LENGTH,
   PASSWORD_MIN_LENGTH,
@@ -80,7 +86,7 @@ import {
   maxLength,
   minLength,
   required,
-  usernameFormat,
+  safeCharacters,
 } from '@/utils/validation';
 
 const $q = useQuasar();
