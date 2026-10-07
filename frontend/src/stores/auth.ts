@@ -1,6 +1,6 @@
 import { computed, ref } from 'vue';
 import { defineStore } from 'pinia';
-import { postJson } from '@/utils/api';
+import { postJson } from '../../utils/api';
 
 export interface User {
   id: number;
@@ -29,5 +29,14 @@ export const useAuthStore = defineStore('auth', () => {
     return 'error';
   }
 
-  return { user, isLoggedIn, isAdmin, login };
+  async function logout() {
+    try {
+      await postJson('/auth/logout', {});
+    } catch {
+      // Serveur injoignable : on déconnecte quand même côté front
+    }
+    user.value = null;
+  }
+
+  return { user, isLoggedIn, isAdmin, login, logout };
 });

@@ -34,7 +34,7 @@ import { useQuasar } from 'quasar';
 import { useRouter } from 'vue-router';
 import AuthCard from '@/components/AuthCard.vue';
 import { useAuthStore } from '@/stores/auth';
-import { required } from '@/utils/validation';
+import { required } from '../../utils/validation';
 
 const $q = useQuasar();
 const router = useRouter();

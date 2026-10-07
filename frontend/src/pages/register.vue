@@ -75,7 +75,7 @@ import { useQuasar } from 'quasar';
 import { useRouter } from 'vue-router';
 import AuthCard from '@/components/AuthCard.vue';
 import { usePasswordStrength } from '@/composables/usePasswordStrength';
-import { postJson } from '@/utils/api';
+import { postJson } from '../../utils/api';
 import {
   DISPLAY_NAME_MIN_LENGTH,
   DISPLAY_NAME_MAX_LENGTH,
@@ -87,7 +87,7 @@ import {
   minLength,
   required,
   safeCharacters,
-} from '@/utils/validation';
+} from '../../utils/validation';
 
 const $q = useQuasar();
 const router = useRouter();
