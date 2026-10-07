@@ -34,20 +34,18 @@ import { ref } from 'vue';
 import { useQuasar } from 'quasar';
 import { useRouter } from 'vue-router';
 import AuthCard from '@/components/AuthCard.vue';
+import TwoFactorDialog from '@/components/TwoFactorDialog.vue';
 import { useAuthStore } from '@/stores/auth';
 import { required } from '@/utils/validation';
-import TwoFactorDialog from '@/components/TwoFactorDialog.vue';
-import TwoFactorSetupDialog from '@/components/TwoFactorSetupDialog.vue';
 
 const $q = useQuasar();
 const router = useRouter();
 const auth = useAuthStore();
-const showTwoFactor = ref(false);
-const showSetup = ref(false);
 
 const username = ref('');
 const password = ref('');
 const loading = ref(false);
+const showTwoFactor = ref(false);
 
 async function onSubmit() {
   loading.value = true;
@@ -56,6 +54,11 @@ async function onSubmit() {
 
     if (result === 'success') {
       await router.push('/');
+      return;
+    }
+
+    if (result === 'mfa-required') {
+      showTwoFactor.value = true;
       return;
     }
 
@@ -77,12 +80,6 @@ async function onSubmit() {
         type: 'negative',
         message: 'Trop de tentatives. Réessayez dans quelques minutes.',
       });
-      return;
-    }
-
-    if (result === 'mfa-required') {
-      // TODO : ouvrir la fenêtre de saisie du code (branche 2FA)
-      $q.notify({ type: 'info', message: 'Vérification en deux étapes requise.' });
       return;
     }
 
