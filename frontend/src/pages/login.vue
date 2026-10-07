@@ -30,14 +30,48 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
+import { useQuasar } from 'quasar';
+import { useRouter } from 'vue-router';
 import AuthCard from '@/components/AuthCard.vue';
+import { useAuthStore } from '@/stores/auth';
 import { required } from '@/utils/validation';
+
+const $q = useQuasar();
+const router = useRouter();
+const auth = useAuthStore();
 
 const username = ref('');
 const password = ref('');
 const loading = ref(false);
 
-function onSubmit() {
-  console.log('Connexion demandée pour', username.value);
+async function onSubmit() {
+  loading.value = true;
+  try {
+    const result = await auth.login(username.value.trim().toLowerCase(), password.value);
+
+    if (result === 'success') {
+      await router.push('/');
+      return;
+    }
+
+    if (result === 'invalid') {
+      $q.notify({ type: 'negative', message: 'Identifiant ou mot de passe incorrect.' });
+      return;
+    }
+
+    if (result === 'blocked') {
+      $q.notify({
+        type: 'negative',
+        message: 'Ce compte est bloqué. Contactez un administrateur.',
+      });
+      return;
+    }
+
+    $q.notify({ type: 'negative', message: 'Une erreur est survenue. Réessayez plus tard.' });
+  } catch {
+    $q.notify({ type: 'negative', message: 'Impossible de joindre le serveur.' });
+  } finally {
+    loading.value = false;
+  }
 }
 </script>

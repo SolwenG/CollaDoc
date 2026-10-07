@@ -19,6 +19,15 @@
         @update:model-value="usernameError = ''"
       />
       <q-input
+        v-model="displayName"
+        label="Nom d'affichage"
+        hint="Le nom que les autres verront, 64 caractères maximum"
+        outlined
+        lazy-rules
+        autocomplete="name"
+        :rules="[required, maxLength(DISPLAY_NAME_MAX_LENGTH)]"
+      />
+      <q-input
         v-model="password"
         label="Mot de passe"
         outlined
@@ -63,6 +72,7 @@ import AuthCard from '@/components/AuthCard.vue';
 import { usePasswordStrength } from '@/composables/usePasswordStrength';
 import { postJson } from '@/utils/api';
 import {
+  DISPLAY_NAME_MAX_LENGTH,
   PASSWORD_MAX_LENGTH,
   PASSWORD_MIN_LENGTH,
   USERNAME_MAX_LENGTH,
@@ -77,6 +87,7 @@ const $q = useQuasar();
 const router = useRouter();
 
 const username = ref('');
+const displayName = ref('');
 const password = ref('');
 const confirmPassword = ref('');
 const usernameError = ref('');
@@ -90,12 +101,9 @@ const samePassword = (val: string) =>
 async function onSubmit() {
   loading.value = true;
   try {
-    const cleanUsername = username.value.trim();
-
-    // Le nom d'affichage reprend l'identifiant, il sera modifiable depuis le profil
     const response = await postJson('/auth/register', {
-      username: cleanUsername,
-      displayName: cleanUsername,
+      username: username.value.trim(),
+      displayName: displayName.value.trim(),
       password: password.value,
     });
 
