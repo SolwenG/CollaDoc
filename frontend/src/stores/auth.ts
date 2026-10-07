@@ -11,7 +11,8 @@ export interface User {
 
 const initialized = ref(false);
 
-export type LoginResult = 'success' | 'invalid' | 'blocked' | 'error';
+export type LoginResult =
+  'success' | 'mfa-required' | 'invalid' | 'blocked' | 'rate-limited' | 'error';
 
 export const useAuthStore = defineStore('auth', () => {
   const user = ref<User | null>(null);
@@ -23,11 +24,20 @@ export const useAuthStore = defineStore('auth', () => {
     const response = await postJson('/auth/login', { username, password });
 
     if (response.status === 200) {
-      user.value = (await response.json()) as User;
-      return 'success';
+      const body = (await response.json()) as { user?: User; mfaRequired?: boolean };
+
+      if (body.mfaRequired) return 'mfa-required';
+
+      if (body.user) {
+        user.value = body.user;
+        return 'success';
+      }
+      return 'error';
     }
+
     if (response.status === 401) return 'invalid';
     if (response.status === 403) return 'blocked';
+    if (response.status === 429) return 'rate-limited';
     return 'error';
   }
 

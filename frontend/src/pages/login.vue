@@ -67,6 +67,20 @@ async function onSubmit() {
       return;
     }
 
+    if (result === 'rate-limited') {
+      $q.notify({
+        type: 'negative',
+        message: 'Trop de tentatives. Réessayez dans quelques minutes.',
+      });
+      return;
+    }
+
+    if (result === 'mfa-required') {
+      // TODO : ouvrir la fenêtre de saisie du code (branche 2FA)
+      $q.notify({ type: 'info', message: 'Vérification en deux étapes requise.' });
+      return;
+    }
+
     $q.notify({ type: 'negative', message: 'Une erreur est survenue. Réessayez plus tard.' });
   } catch {
     $q.notify({ type: 'negative', message: 'Impossible de joindre le serveur.' });
