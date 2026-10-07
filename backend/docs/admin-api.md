@@ -28,11 +28,11 @@ L'admin connecté est lu via `getCurrentUser(res)` (`src/auth/current-user.ts`),
 
 Liste paginée (offset), triée par `createdAt` croissant.
 
-| Query | Défaut | Règle |
-|---|---|---|
-| `page` | `1` | entier ≥ 1 |
-| `pageSize` | `20` | entier entre 1 et 100 |
-| `search` | – | sous-chaîne insensible à la casse sur `username` et `displayName` |
+| Query      | Défaut | Règle                                                             |
+| ---------- | ------ | ----------------------------------------------------------------- |
+| `page`     | `1`    | entier ≥ 1                                                        |
+| `pageSize` | `20`   | entier entre 1 et 100                                             |
+| `search`   | –      | sous-chaîne insensible à la casse sur `username` et `displayName` |
 
 Réponse `200` : `{ users: AdminUserView[], page, pageSize, total }`.
 

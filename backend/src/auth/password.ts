@@ -17,13 +17,16 @@ export function verifyPassword(
 
 // No look-alike characters (0/O, 1/l/I) so the password can be read out or copied by hand
 const TEMPORARY_PASSWORD_ALPHABET =
-	"abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789!@#$%&*?";
+  "abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789!@#$%&*?";
 const TEMPORARY_PASSWORD_LENGTH = 16;
 
 export function generateTemporaryPassword(): string {
-	let password = "";
-	for (let i = 0; i < TEMPORARY_PASSWORD_LENGTH; i++) {
-		password += TEMPORARY_PASSWORD_ALPHABET[randomInt(TEMPORARY_PASSWORD_ALPHABET.length)];
-	}
-	return password;
+  let password = "";
+  for (let i = 0; i < TEMPORARY_PASSWORD_LENGTH; i++) {
+    password +=
+      TEMPORARY_PASSWORD_ALPHABET[
+        randomInt(TEMPORARY_PASSWORD_ALPHABET.length)
+      ];
+  }
+  return password;
 }

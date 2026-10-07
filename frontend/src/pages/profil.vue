@@ -97,20 +97,8 @@
                 @click="toggleEdit('password')"
               />
               <template v-else>
-                <q-btn
-                  icon="close"
-                  flat
-                  round
-                  color="negative"
-                  @click="cancelEdit('password')"
-                />
-                <q-btn
-                  icon="check"
-                  flat
-                  round
-                  color="positive"
-                  @click="toggleEdit('password')"
-                />
+                <q-btn icon="close" flat round color="negative" @click="cancelEdit('password')" />
+                <q-btn icon="check" flat round color="positive" @click="toggleEdit('password')" />
               </template>
             </div>
 

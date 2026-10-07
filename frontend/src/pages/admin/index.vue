@@ -40,9 +40,7 @@
       <q-card>
         <q-card-section>
           <div class="text-h6">
-            {{
-              blockDialog.user && isUserBlocked(blockDialog.user) ? 'Débloquer' : 'Bloquer'
-            }}
+            {{ blockDialog.user && isUserBlocked(blockDialog.user) ? 'Débloquer' : 'Bloquer' }}
             l'utilisateur
           </div>
         </q-card-section>

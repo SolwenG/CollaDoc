@@ -7,34 +7,34 @@ export const DISPLAY_NAME_MAX_LENGTH = 50;
 const DISPLAY_NAME_PATTERN = /^[\p{L}\p{Nd} '’._-]+$/u;
 
 const displayNameSchema = z
-	.string()
-	.trim()
-	// NFC merges a decomposed "e" + accent into a single "é" letter.
-	.normalize("NFC")
-	.min(
-		DISPLAY_NAME_MIN_LENGTH,
-		`Le nom affiché doit contenir au moins ${DISPLAY_NAME_MIN_LENGTH} caractères`,
-	)
-	.max(
-		DISPLAY_NAME_MAX_LENGTH,
-		`Le nom affiché ne doit pas contenir plus de ${DISPLAY_NAME_MAX_LENGTH} caractères`,
-	)
-	.refine((value) => DISPLAY_NAME_PATTERN.test(value), {
-		message:
-			"Le nom affiché ne peut contenir que des lettres, des chiffres, des espaces et les caractères - ' . _",
-	});
+  .string()
+  .trim()
+  // NFC merges a decomposed "e" + accent into a single "é" letter.
+  .normalize("NFC")
+  .min(
+    DISPLAY_NAME_MIN_LENGTH,
+    `Le nom affiché doit contenir au moins ${DISPLAY_NAME_MIN_LENGTH} caractères`,
+  )
+  .max(
+    DISPLAY_NAME_MAX_LENGTH,
+    `Le nom affiché ne doit pas contenir plus de ${DISPLAY_NAME_MAX_LENGTH} caractères`,
+  )
+  .refine((value) => DISPLAY_NAME_PATTERN.test(value), {
+    message:
+      "Le nom affiché ne peut contenir que des lettres, des chiffres, des espaces et les caractères - ' . _",
+  });
 
 export const profileParamsSchema = z.strictObject({
-	id: z.coerce.number().int().positive(),
+  id: z.coerce.number().int().positive(),
 });
 
 export const updateProfileSchema = z.strictObject({
-	displayName: displayNameSchema,
+  displayName: displayNameSchema,
 });
 
 export const changePasswordSchema = z.strictObject({
-	currentPassword: z.string().min(1, "Le mot de passe actuel est requis"),
-	newPassword: z.string().min(1, "Le nouveau mot de passe est requis"),
+  currentPassword: z.string().min(1, "Le mot de passe actuel est requis"),
+  newPassword: z.string().min(1, "Le nouveau mot de passe est requis"),
 });
 
 export type UpdateProfileInput = z.infer<typeof updateProfileSchema>;

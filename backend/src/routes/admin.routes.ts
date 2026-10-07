@@ -1,9 +1,9 @@
 import { Router } from "express";
 import {
-	blockUserAccount,
-	createUser,
-	getUsers,
-	unblockUserAccount,
+  blockUserAccount,
+  createUser,
+  getUsers,
+  unblockUserAccount,
 } from "../admin/admin.controller.ts";
 
 const router = Router();
