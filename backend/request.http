@@ -155,3 +155,59 @@ X-Dev-User-Id: 1
   "currentPassword": "correct-horse-battery",
   "newPassword": "correct-horse-battery"
 }
+
+### ===== Admin =====
+# Requires an authenticated admin session (res.locals.user set by the auth middleware)
+
+### List users -> 200 { users, page, pageSize, total }
+GET http://localhost:3000/admin/users?page=1&pageSize=20 HTTP/1.1
+
+### Search users -> 200, case-insensitive match on username and displayName
+GET http://localhost:3000/admin/users?search=alice HTTP/1.1
+
+### Page size above max -> 400 VALIDATION_ERROR (max 100)
+GET http://localhost:3000/admin/users?pageSize=500 HTTP/1.1
+
+### Create a user -> 201 { user, temporaryPassword }, displayName = "new_member", mustChangePassword = true
+POST http://localhost:3000/admin/users HTTP/1.1
+Content-Type: application/json
+
+{
+  "username": "  New_Member ",
+  "role": "USER"
+}
+
+### Create an admin -> 201
+POST http://localhost:3000/admin/users HTTP/1.1
+Content-Type: application/json
+
+{
+  "username": "new_admin",
+  "role": "ADMIN"
+}
+
+### Create with displayName or password -> 400, unrecognized key (both are set by the server)
+POST http://localhost:3000/admin/users HTTP/1.1
+Content-Type: application/json
+
+{
+  "username": "someone",
+  "displayName": "Someone",
+  "password": "correct-horse-battery"
+}
+
+### Block a user -> 200, blockedAt and blockedBy set, sessions deleted
+# Replay -> 200, unchanged (original blockedAt kept)
+POST http://localhost:3000/admin/users/2/block HTTP/1.1
+
+### Unblock a user -> 200, blockedAt and blockedBy back to null
+POST http://localhost:3000/admin/users/2/unblock HTTP/1.1
+
+### Block own account -> 403 CANNOT_BLOCK_SELF (replace 1 with the current admin id)
+POST http://localhost:3000/admin/users/1/block HTTP/1.1
+
+### Unknown user -> 404 USER_NOT_FOUND
+POST http://localhost:3000/admin/users/999999/block HTTP/1.1
+
+### Non-numeric id -> 400 VALIDATION_ERROR
+POST http://localhost:3000/admin/users/abc/block HTTP/1.1
