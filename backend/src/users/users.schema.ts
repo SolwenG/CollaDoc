@@ -1,12 +1,11 @@
 import * as z from "zod";
 import { displayNameSchema } from "./profiles/profile.schemas.ts";
 
+export const normalizedUsernameSchema = z.string().trim().toLowerCase();
+
 export const registerSchema = z
 	.strictObject({
-		username: z
-			.string()
-			.trim()
-			.toLowerCase()
+		username: normalizedUsernameSchema
 			.min(3, { error: "Username must be at least 3 characters long" })
 			.max(32, { error: "Username must be at most 32 characters long" })
 			.regex(/^[a-z0-9_.-]+$/, {

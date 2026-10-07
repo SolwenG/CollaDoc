@@ -6,6 +6,9 @@ import { errorHandler } from './middlewares/errors.middleware.ts'
 
 const app: Express = express();
 
+// Behind exactly one reverse proxy (nginx): req.ip is read from X-Forwarded-For
+app.set('trust proxy', 1);
+
 app.use(globalMiddlewares);
 
 app.use(routes);
