@@ -25,11 +25,7 @@
       Pas encore de compte ?
       <router-link to="/register">Créer un compte</router-link>
     </div>
-    <!-- TODO : bouton temporaire pour voir la fenêtre, à retirer quand le back existera -->
-    <q-btn flat dense label="Aperçu 2FA" @click="showTwoFactor = true" />
     <TwoFactorDialog v-model="showTwoFactor" />
-    <q-btn flat dense label="Aperçu configuration" @click="showSetup = true" />
-    <TwoFactorSetupDialog v-model="showSetup" />
   </AuthCard>
 </template>
 
