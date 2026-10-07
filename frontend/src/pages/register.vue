@@ -75,12 +75,12 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue';
-import { useQuasar } from 'quasar';
-import { useRouter } from 'vue-router';
 import { ZxcvbnFactory } from '@zxcvbn-ts/core';
 import * as zxcvbnCommon from '@zxcvbn-ts/language-common';
 import * as zxcvbnFr from '@zxcvbn-ts/language-fr';
+import { useQuasar } from 'quasar';
+import { computed, ref } from 'vue';
+import { useRouter } from 'vue-router';
 
 const $q = useQuasar();
 const router = useRouter();
@@ -134,7 +134,7 @@ const samePassword = (val: string) =>
 async function onSubmit() {
   loading.value = true;
   try {
-    const response = await fetch('/api/auth/register', {
+    const response = await fetch('/api/users/register', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
