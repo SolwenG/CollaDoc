@@ -91,3 +91,67 @@ Content-Type: application/json
   "username": "bob",
   "displayName":
 }
+
+### Get a profile -> 200 (dev auth stub: user taken from X-Dev-User-Id)
+GET http://localhost:3000/profile/1 HTTP/1.1
+X-Dev-User-Id: 1
+
+### Unknown profile id -> 404 USER_NOT_FOUND
+GET http://localhost:3000/profile/999999 HTTP/1.1
+X-Dev-User-Id: 1
+
+### Non-numeric profile id -> 400 VALIDATION_ERROR
+GET http://localhost:3000/profile/abc HTTP/1.1
+X-Dev-User-Id: 1
+
+### Missing auth header -> 401 UNAUTHENTICATED
+GET http://localhost:3000/profile/1 HTTP/1.1
+
+### Update own display name -> 200
+PATCH http://localhost:3000/profile HTTP/1.1
+Content-Type: application/json
+X-Dev-User-Id: 1
+
+{
+  "displayName": "Renamed User"
+}
+
+### Invalid display name -> 400 VALIDATION_ERROR on displayName
+PATCH http://localhost:3000/profile HTTP/1.1
+Content-Type: application/json
+X-Dev-User-Id: 1
+
+{
+  "displayName": "<script>"
+}
+
+### Change password -> 204, other sessions are revoked
+PATCH http://localhost:3000/profile/password HTTP/1.1
+Content-Type: application/json
+X-Dev-User-Id: 1
+X-Dev-Session-Id: 1
+
+{
+  "currentPassword": "correct-horse-battery",
+  "newPassword": "another-horse-battery"
+}
+
+### Wrong current password -> 400 INVALID_CURRENT_PASSWORD
+PATCH http://localhost:3000/profile/password HTTP/1.1
+Content-Type: application/json
+X-Dev-User-Id: 1
+
+{
+  "currentPassword": "not-my-password",
+  "newPassword": "another-horse-battery"
+}
+
+### Unchanged password -> 400 PASSWORD_UNCHANGED
+PATCH http://localhost:3000/profile/password HTTP/1.1
+Content-Type: application/json
+X-Dev-User-Id: 1
+
+{
+  "currentPassword": "correct-horse-battery",
+  "newPassword": "correct-horse-battery"
+}
