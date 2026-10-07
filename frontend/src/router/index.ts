@@ -9,7 +9,7 @@ import {
 import { useAuthStore } from '@/stores/auth';
 
 // Pages accessibles sans être connecté
-const PUBLIC_PATHS = ['/login', '/register', '/two-factor'];
+const PUBLIC_PATHS = ['/login', '/register'];
 
 /*
  * If not building with SSR mode, you can

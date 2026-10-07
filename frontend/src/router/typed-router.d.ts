@@ -74,13 +74,6 @@ declare module 'vue-router/auto-routes' {
       Record<never, never>,
       | never
     >,
-    '/two-factor': RouteRecordInfo<
-      '/two-factor',
-      '/two-factor',
-      Record<never, never>,
-      Record<never, never>,
-      | never
-    >,
   }
 
   /**
@@ -139,14 +132,6 @@ declare module 'vue-router/auto-routes' {
     'src/pages/register.vue': {
       routes:
         | '/register'
-      views:
-        | never
-      pathParamNames:
-        | never
-    }
-    'src/pages/two-factor.vue': {
-      routes:
-        | '/two-factor'
       views:
         | never
       pathParamNames:

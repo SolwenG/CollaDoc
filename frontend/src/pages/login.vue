@@ -25,6 +25,9 @@
       Pas encore de compte ?
       <router-link to="/register">Créer un compte</router-link>
     </div>
+    <!-- TODO : bouton temporaire pour voir la fenêtre, à retirer quand le back existera -->
+    <q-btn flat dense label="Aperçu 2FA" @click="showTwoFactor = true" />
+    <TwoFactorDialog v-model="showTwoFactor" />
   </AuthCard>
 </template>
 
@@ -35,10 +38,12 @@ import { useRouter } from 'vue-router';
 import AuthCard from '@/components/AuthCard.vue';
 import { useAuthStore } from '@/stores/auth';
 import { required } from '@/utils/validation';
+import TwoFactorDialog from '@/components/TwoFactorDialog.vue';
 
 const $q = useQuasar();
 const router = useRouter();
 const auth = useAuthStore();
+const showTwoFactor = ref(false);
 
 const username = ref('');
 const password = ref('');
