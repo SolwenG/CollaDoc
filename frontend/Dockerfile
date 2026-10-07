@@ -12,4 +12,5 @@ RUN npx quasar prepare && npx quasar build
 FROM nginx:alpine
 
 COPY --from=build /app/dist/spa /usr/share/nginx/html
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 EXPOSE 80

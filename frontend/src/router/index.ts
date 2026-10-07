@@ -6,6 +6,10 @@ import {
   createWebHashHistory,
   createWebHistory,
 } from 'vue-router';
+import { useAuthStore } from '@/stores/auth';
+
+// Pages accessibles sans être connecté
+const PUBLIC_PATHS = ['/login', '/register'];
 
 /*
  * If not building with SSR mode, you can
@@ -31,6 +35,28 @@ export default defineRouter((/* { store, ssrContext } */) => {
     // quasar.conf.js -> build -> vueRouterMode
     // quasar.conf.js -> build -> publicPath
     history: createHistory(import.meta.env.QUASAR_VUE_ROUTER_BASE),
+  });
+
+  Router.beforeEach(async (to) => {
+    const auth = useAuthStore();
+
+    // Au premier chargement, on demande au back qui est connecté
+    if (!auth.initialized) {
+      await auth.fetchCurrentUser();
+    }
+
+    const isPublic = PUBLIC_PATHS.includes(to.path);
+
+    if (!auth.isLoggedIn && !isPublic) {
+      return '/login';
+    }
+
+    if (auth.isLoggedIn && isPublic) {
+      return '/';
+    }
+    if (to.path.startsWith('/admin') && !auth.isAdmin) {
+      return '/';
+    }
   });
 
   // enable HMR for it
