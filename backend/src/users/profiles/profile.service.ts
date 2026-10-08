@@ -1,4 +1,4 @@
-import { hashPassword, verifyPassword } from "../auth/password.ts";
+import { hashPassword, verifyPassword } from "../../auth/password.ts";
 import type { ProfileRow } from "./profile.repository.ts";
 import * as profileRepository from "./profile.repository.ts";
 
