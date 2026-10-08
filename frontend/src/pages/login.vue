@@ -53,7 +53,7 @@ const loading = ref(false);
 async function onSubmit() {
   loading.value = true;
   try {
-    const result = await auth.login(username.value.trim().toLowerCase(), password.value);
+    const result = await auth.login(username.value, password.value);
 
     if (result === 'success') {
       await router.push('/');
@@ -70,6 +70,20 @@ async function onSubmit() {
         type: 'negative',
         message: 'Ce compte est bloqué. Contactez un administrateur.',
       });
+      return;
+    }
+
+    if (result === 'rate-limited') {
+      $q.notify({
+        type: 'negative',
+        message: 'Trop de tentatives. Réessayez dans quelques minutes.',
+      });
+      return;
+    }
+
+    if (result === 'mfa-required') {
+      // TODO: open the code dialog (branch 10-front-ecrans-2fa)
+      $q.notify({ type: 'info', message: 'Vérification en deux étapes requise.' });
       return;
     }
 

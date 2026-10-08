@@ -7,9 +7,14 @@ import {
   createWebHistory,
 } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
+import { onUnauthorized } from '@/utils/api';
 
-// Pages accessibles sans être connecté
+// Pages reachable without being logged in
 const PUBLIC_PATHS = ['/login', '/register'];
+
+function isAdminPath(path: string) {
+  return path === '/admin' || path.startsWith('/admin/');
+}
 
 /*
  * If not building with SSR mode, you can
@@ -40,7 +45,7 @@ export default defineRouter((/* { store, ssrContext } */) => {
   Router.beforeEach(async (to) => {
     const auth = useAuthStore();
 
-    // Au premier chargement, on demande au back qui est connecté
+    // On first load, ask the back who is logged in
     if (!auth.initialized) {
       await auth.fetchCurrentUser();
     }
@@ -54,9 +59,15 @@ export default defineRouter((/* { store, ssrContext } */) => {
     if (auth.isLoggedIn && isPublic) {
       return '/';
     }
-    if (to.path.startsWith('/admin') && !auth.isAdmin) {
+
+    if (isAdminPath(to.path) && !auth.isAdmin) {
       return '/';
     }
+  });
+
+  onUnauthorized(() => {
+    useAuthStore().forgetUser();
+    void Router.push('/login');
   });
 
   // enable HMR for it

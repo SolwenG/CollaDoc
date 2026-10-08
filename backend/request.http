@@ -175,6 +175,20 @@ Content-Type: application/json
   "password": "wrong-password-for-rate-limit"
 }
 
+# ============================== /auth/session ==============================
+
+### Current user -> 200 { user } after a successful login (the client keeps the cookie), 401 otherwise
+GET {{baseUrl}}/auth/session HTTP/1.1
+
+### Unknown session token -> 401 UNAUTHENTICATED, cookie cleared
+GET {{baseUrl}}/auth/session HTTP/1.1
+Cookie: colladoc_session=unknown-token
+
+# ============================== /auth/logout ==============================
+
+### Logout -> 204, session deleted and cookie cleared; /auth/session then returns 401
+POST {{baseUrl}}/auth/logout HTTP/1.1
+
 ### Get a profile -> 200 (dev auth stub: user taken from X-Dev-User-Id)
 GET http://localhost:3000/profile/1 HTTP/1.1
 X-Dev-User-Id: 1
