@@ -20,25 +20,6 @@
         @update:model-value="usernameError = ''"
       />
 
-      <q-input
-        v-model="formData.passwordHash"
-        label="Mot de passe"
-        type="password"
-        outlined
-        dense
-        autocomplete="new-password"
-        :rules="[
-          required,
-          minLength(PASSWORD_MIN_LENGTH),
-          maxLength(PASSWORD_MAX_LENGTH),
-          strongEnough,
-        ]"
-      />
-      <div v-if="formData.passwordHash">
-        <q-linear-progress :value="(score + 1) / 5" :color="color" />
-        <div class="text-caption">{{ label }}</div>
-      </div>
-
       <q-select
         v-model="formData.role"
         label="Rôle"
@@ -66,13 +47,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, computed } from 'vue';
+import { ref, reactive } from 'vue';
 import { useRouter } from 'vue-router';
 import { useUserStore } from '@/stores/user';
-import { usePasswordStrength } from '@/hooks/usePasswordStrength';
 import {
-  PASSWORD_MAX_LENGTH,
-  PASSWORD_MIN_LENGTH,
   USERNAME_MAX_LENGTH,
   USERNAME_MIN_LENGTH,
   maxLength,
@@ -87,7 +65,6 @@ const userStore = useUserStore();
 
 const formData = reactive({
   username: '',
-  passwordHash: '',
   role: '' as 'USER' | 'ADMIN',
 });
 
@@ -95,9 +72,6 @@ const roleOptions = [
   { label: 'Utilisateur', value: 'USER' },
   { label: 'Administrateur', value: 'ADMIN' },
 ];
-
-const password = computed(() => formData.passwordHash);
-const { score, label, color, strongEnough } = usePasswordStrength(password);
 
 const usernameError = ref('');
 const errorMessage = ref('');
@@ -115,29 +89,25 @@ async function handleCreateUser() {
     loading.value = false;
     return;
   }
-  if (!formData.passwordHash.trim()) {
-    errorMessage.value = 'Le mot de passe est requis';
+  if (!formData.role) {
+    errorMessage.value = 'Le rôle est requis';
     loading.value = false;
     return;
   }
 
   const result = await userStore.createUser({
     username: formData.username,
-    passwordHash: formData.passwordHash,
-    displayName: formData.username,
-    mustChangePassword: true,
     role: formData.role,
   });
 
   if (result.success) {
-    successMessage.value = 'Utilisateur créé avec succès';
+    successMessage.value = `Utilisateur créé avec succès. Mot de passe temporaire: ${result.temporaryPassword}`;
     formData.username = '';
-    formData.passwordHash = '';
     formData.role = 'USER';
 
     setTimeout(() => {
       void router.push('/admin');
-    }, 1500);
+    }, 3000);
   } else {
     if (result.error?.includes('déjà utilisé') || result.error?.includes('already exists')) {
       usernameError.value = result.error || 'Cet identifiant est déjà utilisé.';

@@ -6,6 +6,8 @@
       <q-card class="q-mb-md">
         <q-card-section>
           <q-form class="q-gutter-md">
+            <!-- Display Name Section -->
+            <h2 class="text-h6 q-mt-md q-mb-sm">Modifier mon nom d'affichage</h2>
             <!-- Display Name Field -->
             <div class="row items-center q-gutter-sm">
               <div class="col">
@@ -54,9 +56,32 @@
               </template>
             </div>
 
+            <!-- Password Section -->
+            <h2 class="text-h6 q-mt-md q-mb-sm">Modifier mon mot de passe</h2>
             <!-- Password Field -->
             <div class="row items-center q-gutter-sm">
               <div class="col">
+                <q-input
+                  v-if="editing.password"
+                  v-model="formData.currentPassword"
+                  label="Mot de passe actuel"
+                  :type="showCurrentPassword ? 'text' : 'password'"
+                  outlined
+                  dense
+                  autocomplete="current-password"
+                  :rules="[required]"
+                  :error="!!currentPasswordError"
+                  :error-message="currentPasswordError"
+                  @update:model-value="currentPasswordError = ''"
+                >
+                  <template #append>
+                    <q-icon
+                      :name="showCurrentPassword ? 'visibility_off' : 'visibility'"
+                      class="cursor-pointer"
+                      @click="showCurrentPassword = !showCurrentPassword"
+                    />
+                  </template>
+                </q-input>
                 <q-input
                   v-model="formData.password"
                   label="Nouveau mot de passe"
@@ -80,6 +105,28 @@
                       :name="showPassword ? 'visibility_off' : 'visibility'"
                       class="cursor-pointer"
                       @click="showPassword = !showPassword"
+                    />
+                  </template>
+                </q-input>
+                <q-input
+                  v-if="editing.password"
+                  v-model="formData.confirmPassword"
+                  label="Confirmer le nouveau mot de passe"
+                  :type="showConfirmPassword ? 'text' : 'password'"
+                  :disable="!editing.password"
+                  outlined
+                  dense
+                  autocomplete="new-password"
+                  :rules="[required, passwordsMatch]"
+                  :error="!!confirmPasswordError"
+                  :error-message="confirmPasswordError"
+                  @update:model-value="confirmPasswordError = ''"
+                >
+                  <template #append>
+                    <q-icon
+                      :name="showConfirmPassword ? 'visibility_off' : 'visibility'"
+                      class="cursor-pointer"
+                      @click="showConfirmPassword = !showConfirmPassword"
                     />
                   </template>
                 </q-input>
@@ -154,21 +201,33 @@ const editing = reactive({
 const formData = reactive({
   displayName: '',
   password: '',
+  confirmPassword: '',
+  currentPassword: '',
 });
 
 const originalFormData = reactive({
   displayName: '',
   password: '',
+  confirmPassword: '',
+  currentPassword: '',
 });
 
 const showPassword = ref(false);
+const showConfirmPassword = ref(false);
+const showCurrentPassword = ref(false);
 const displayNameError = ref('');
 const passwordError = ref('');
+const confirmPasswordError = ref('');
+const currentPasswordError = ref('');
 const errorMessage = ref('');
 const successMessage = ref('');
 
 const password = computed(() => formData.password);
 const { score, label, color, strongEnough } = usePasswordStrength(password);
+
+const passwordsMatch = () => {
+  return formData.password === formData.confirmPassword || 'Les mots de passe ne correspondent pas';
+};
 
 onMounted(async () => {
   if (authStore.user) {
@@ -191,7 +250,11 @@ async function toggleEdit(field: 'displayName' | 'password') {
     successMessage.value = '';
     displayNameError.value = '';
     passwordError.value = '';
+    confirmPasswordError.value = '';
+    currentPasswordError.value = '';
     formData.password = '';
+    formData.confirmPassword = '';
+    formData.currentPassword = '';
     originalFormData[field] = formData[field];
   }
 }
@@ -202,8 +265,12 @@ function cancelEdit(field: 'displayName' | 'password') {
   successMessage.value = '';
   displayNameError.value = '';
   passwordError.value = '';
+  confirmPasswordError.value = '';
+  currentPasswordError.value = '';
   formData[field] = originalFormData[field];
   formData.password = '';
+  formData.confirmPassword = '';
+  formData.currentPassword = '';
 }
 
 async function saveField(field: 'displayName' | 'password') {
@@ -211,6 +278,8 @@ async function saveField(field: 'displayName' | 'password') {
   successMessage.value = '';
   displayNameError.value = '';
   passwordError.value = '';
+  confirmPasswordError.value = '';
+  currentPasswordError.value = '';
 
   if (field === 'displayName') {
     if (!formData.displayName.trim()) {
@@ -226,17 +295,31 @@ async function saveField(field: 'displayName' | 'password') {
       displayNameError.value = result.error || 'Erreur lors de la mise à jour';
     }
   } else if (field === 'password') {
-    if (!formData.password.trim()) {
-      passwordError.value = 'Le mot de passe ne peut pas être vide';
+    if (!formData.currentPassword.trim()) {
+      currentPasswordError.value = 'Le mot de passe actuel est requis';
       return;
     }
-    const result = await userStore.updatePassword(formData.password);
+    if (!formData.password.trim()) {
+      passwordError.value = 'Le nouveau mot de passe ne peut pas être vide';
+      return;
+    }
+    if (formData.password !== formData.confirmPassword) {
+      confirmPasswordError.value = 'Les mots de passe ne correspondent pas';
+      return;
+    }
+    const result = await userStore.updatePassword(formData.currentPassword, formData.password);
     if (result.success) {
       successMessage.value = 'Mot de passe mis à jour avec succès';
       formData.password = '';
+      formData.confirmPassword = '';
+      formData.currentPassword = '';
       editing.password = false;
     } else {
-      passwordError.value = result.error || 'Erreur lors de la mise à jour';
+      if (result.error?.includes('actuel')) {
+        currentPasswordError.value = result.error || 'Erreur lors de la mise à jour';
+      } else {
+        passwordError.value = result.error || 'Erreur lors de la mise à jour';
+      }
     }
   }
 }

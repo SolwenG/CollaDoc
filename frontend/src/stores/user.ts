@@ -62,15 +62,13 @@ export const useUserStore = defineStore('user', () => {
 
   async function createUser(data: {
     username: string;
-    passwordHash: string;
-    displayName: string;
-    mustChangePassword: boolean;
     role: 'USER' | 'ADMIN';
-  }): Promise<{ success: boolean; error?: string }> {
+  }): Promise<{ success: boolean; error?: string; temporaryPassword?: string }> {
     try {
-      const response = await postJson('/admin/users/create', data);
+      const response = await postJson('/admin/users', data);
       if (response.status === 201) {
-        return { success: true };
+        const result = (await response.json()) as { user: User; temporaryPassword: string };
+        return { success: true, temporaryPassword: result.temporaryPassword };
       }
       const errorData = (await response.json()) as { message?: string };
       return { success: false, error: errorData.message || 'Erreur lors de la création' };
@@ -107,6 +105,7 @@ export const useUserStore = defineStore('user', () => {
   }
 
   async function updatePassword(
+    currentPassword: string,
     newPassword: string,
   ): Promise<{ success: boolean; error?: string }> {
     try {
@@ -117,15 +116,13 @@ export const useUserStore = defineStore('user', () => {
       const response = await apiFetch('/profile/password', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ password: newPassword }),
+        body: JSON.stringify({ currentPassword, newPassword }),
       });
-      if (response.status === 200) {
-        if (currentUser.value) {
-          currentUser.value.passwordHash = newPassword;
-        }
+      if (response.status === 204) {
         return { success: true };
       }
-      return { success: false, error: 'Erreur lors de la mise à jour' };
+      const errorData = (await response.json()) as { message?: string };
+      return { success: false, error: errorData.message || 'Erreur lors de la mise à jour' };
     } catch (error) {
       console.error('Failed to update password:', error);
       return { success: false, error: 'Erreur lors de la mise à jour du mot de passe' };
