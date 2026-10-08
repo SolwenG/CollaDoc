@@ -2,7 +2,15 @@
   <q-layout view="lHh Lpr lFf">
     <q-header elevated>
       <q-toolbar>
-        <q-btn v-if="auth.isLoggedIn" flat dense round icon="menu" aria-label="Menu" @click="toggleLeftDrawer" />
+        <q-btn
+          v-if="auth.isLoggedIn"
+          flat
+          dense
+          round
+          icon="menu"
+          aria-label="Menu"
+          @click="toggleLeftDrawer"
+        />
         <q-toolbar-title>
           <router-link to="/">CollaDoc</router-link>
         </q-toolbar-title>
@@ -15,7 +23,7 @@
     </q-header>
 
     <q-drawer v-if="auth.isLoggedIn" v-model="leftDrawerOpen" bordered>
-      <q-item to="/profil">
+      <q-item to="/profile">
         <q-item-section avatar>
           <q-icon name="person" />
         </q-item-section>

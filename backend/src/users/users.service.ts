@@ -27,7 +27,14 @@ export async function createAccount({
     "displayName",
     "role",
     "createdAt",
-  ).create({ username, displayName, passwordHash, role, mustChangePassword, createdById });
+  ).create({
+    username,
+    displayName,
+    passwordHash,
+    role,
+    mustChangePassword,
+    createdById,
+  });
 }
 
 export async function findUserForLogin(username: string) {
