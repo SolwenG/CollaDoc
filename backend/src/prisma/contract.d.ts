@@ -34,7 +34,7 @@ import type {
 } from "@prisma/orm-postgres/contract/types";
 
 export type StorageHash =
-  StorageHashBase<"98d98839e88b0f388d1f161e27e4b79abbfa4e0ed6b55759ad5ec950d68cd7df">;
+  StorageHashBase<"c9b8642a1f68e6bd61803df5ce9bef027963adf1d830ccca7dc970704bf05882">;
 export type ExecutionHash =
   ExecutionHashBase<"0b055b82a690d3f162aef43711a9fd620a4600d4c62ae34dac7dedd27bd43c38">;
 export type ProfileHash =
@@ -593,7 +593,7 @@ export type FieldOutputTypes = {
       readonly expiresAt: CodecTypes["pg/timestamptz-string@1"]["output"];
       readonly id: CodecTypes["pg/int4@1"]["output"];
       readonly lastUsedAt: CodecTypes["pg/timestamptz-string@1"]["output"];
-      readonly mfaVerified: CodecTypes["pg/bool@1"]["output"];
+      readonly mfaSatisfied: CodecTypes["pg/bool@1"]["output"];
       readonly tokenHash: CodecTypes["pg/text@1"]["output"];
       readonly userId: CodecTypes["pg/int4@1"]["output"];
     };
@@ -673,7 +673,7 @@ export type FieldInputTypes = {
       readonly expiresAt: CodecTypes["pg/timestamptz-string@1"]["input"];
       readonly id: CodecTypes["pg/int4@1"]["input"];
       readonly lastUsedAt: CodecTypes["pg/timestamptz-string@1"]["input"];
-      readonly mfaVerified: CodecTypes["pg/bool@1"]["input"];
+      readonly mfaSatisfied: CodecTypes["pg/bool@1"]["input"];
       readonly tokenHash: CodecTypes["pg/text@1"]["input"];
       readonly userId: CodecTypes["pg/int4@1"]["input"];
     };
@@ -752,7 +752,7 @@ export type StorageColumnTypes = {
       readonly expiresAt: CodecTypes["pg/timestamptz-string@1"]["output"];
       readonly id: CodecTypes["pg/int4@1"]["output"];
       readonly lastUsedAt: CodecTypes["pg/timestamptz-string@1"]["output"];
-      readonly mfaVerified: CodecTypes["pg/bool@1"]["output"];
+      readonly mfaSatisfied: CodecTypes["pg/bool@1"]["output"];
       readonly tokenHash: CodecTypes["pg/text@1"]["output"];
       readonly userId: CodecTypes["pg/int4@1"]["output"];
     };
@@ -832,7 +832,7 @@ export type StorageColumnInputTypes = {
       readonly expiresAt: CodecTypes["pg/timestamptz-string@1"]["input"];
       readonly id: CodecTypes["pg/int4@1"]["input"];
       readonly lastUsedAt: CodecTypes["pg/timestamptz-string@1"]["input"];
-      readonly mfaVerified: CodecTypes["pg/bool@1"]["input"];
+      readonly mfaSatisfied: CodecTypes["pg/bool@1"]["input"];
       readonly tokenHash: CodecTypes["pg/text@1"]["input"];
       readonly userId: CodecTypes["pg/int4@1"]["input"];
     };
@@ -928,7 +928,7 @@ export namespace Models {
     expiresAt: CodecTypes["pg/timestamptz-string@1"]["output"];
     id: CodecTypes["pg/int4@1"]["output"];
     lastUsedAt: CodecTypes["pg/timestamptz-string@1"]["output"];
-    mfaVerified: CodecTypes["pg/bool@1"]["output"];
+    mfaSatisfied: CodecTypes["pg/bool@1"]["output"];
     tokenHash: CodecTypes["pg/text@1"]["output"];
     userId: CodecTypes["pg/int4@1"]["output"];
     user: public_User;
@@ -1553,7 +1553,7 @@ type ContractBase = Omit<
                     readonly expression: "now()";
                   };
                 };
-                readonly mfaVerified: {
+                readonly mfaSatisfied: {
                   readonly nativeType: "bool";
                   readonly codecId: "pg/bool@1";
                   readonly nullable: false;
@@ -2341,7 +2341,7 @@ type ContractBase = Omit<
                   readonly codecId: "pg/timestamptz-string@1";
                 };
               };
-              readonly mfaVerified: {
+              readonly mfaSatisfied: {
                 readonly nullable: false;
                 readonly type: {
                   readonly kind: "scalar";
@@ -2385,7 +2385,7 @@ type ContractBase = Omit<
                 readonly expiresAt: { readonly column: "expiresAt" };
                 readonly id: { readonly column: "id" };
                 readonly lastUsedAt: { readonly column: "lastUsedAt" };
-                readonly mfaVerified: { readonly column: "mfaVerified" };
+                readonly mfaSatisfied: { readonly column: "mfaSatisfied" };
                 readonly tokenHash: { readonly column: "tokenHash" };
                 readonly userId: { readonly column: "userId" };
               };

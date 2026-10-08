@@ -31,6 +31,7 @@
       Pas encore de compte ?
       <router-link to="/register" class="text-primary text-bold">Créer un compte</router-link>
     </div>
+    <TwoFactorDialog v-model="showTwoFactor" />
   </AuthCard>
 </template>
 
@@ -39,6 +40,7 @@ import { ref } from 'vue';
 import { useQuasar } from 'quasar';
 import { useRouter } from 'vue-router';
 import AuthCard from '@/components/AuthCard.vue';
+import TwoFactorDialog from '@/components/TwoFactorDialog.vue';
 import { useAuthStore } from '@/stores/auth';
 import { required } from '@/utils/validation';
 
@@ -49,6 +51,7 @@ const auth = useAuthStore();
 const username = ref('');
 const password = ref('');
 const loading = ref(false);
+const showTwoFactor = ref(false);
 
 async function onSubmit() {
   loading.value = true;
@@ -57,6 +60,11 @@ async function onSubmit() {
 
     if (result === 'success') {
       await router.push('/');
+      return;
+    }
+
+    if (result === 'mfa-required') {
+      showTwoFactor.value = true;
       return;
     }
 
@@ -69,6 +77,14 @@ async function onSubmit() {
       $q.notify({
         type: 'negative',
         message: 'Ce compte est bloqué. Contactez un administrateur.',
+      });
+      return;
+    }
+
+    if (result === 'rate-limited') {
+      $q.notify({
+        type: 'negative',
+        message: 'Trop de tentatives. Réessayez dans quelques minutes.',
       });
       return;
     }

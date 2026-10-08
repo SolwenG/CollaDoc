@@ -2,15 +2,20 @@
   <q-layout view="lHh Lpr lFf">
     <q-header elevated>
       <q-toolbar>
-        <q-btn flat dense round icon="menu" aria-label="Menu" @click="toggleLeftDrawer" />
+        <q-btn v-if="auth.isLoggedIn" flat dense round icon="menu" aria-label="Menu" @click="toggleLeftDrawer" />
         <q-toolbar-title>
           <router-link to="/">CollaDoc</router-link>
         </q-toolbar-title>
+
+        <div v-if="auth.user" class="row items-center q-gutter-sm">
+          <span>{{ auth.user.displayName }}</span>
+          <q-btn flat dense round icon="logout" aria-label="Se déconnecter" @click="onLogout" />
+        </div>
       </q-toolbar>
     </q-header>
 
-    <q-drawer v-model="leftDrawerOpen" bordered>
-      <q-item v-if="auth.isLoggedIn" to="/profil">
+    <q-drawer v-if="auth.isLoggedIn" v-model="leftDrawerOpen" bordered>
+      <q-item to="/profil">
         <q-item-section avatar>
           <q-icon name="person" />
         </q-item-section>
@@ -36,6 +41,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
+import { useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
 
 const leftDrawerOpen = ref(false);
@@ -45,4 +51,10 @@ function toggleLeftDrawer() {
 }
 
 const auth = useAuthStore();
+const router = useRouter();
+
+async function onLogout() {
+  await auth.logout();
+  await router.push('/login');
+}
 </script>

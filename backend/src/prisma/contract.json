@@ -743,7 +743,7 @@
                   "kind": "scalar"
                 }
               },
-              "mfaVerified": {
+              "mfaSatisfied": {
                 "nullable": false,
                 "type": {
                   "codecId": "pg/bool@1",
@@ -793,8 +793,8 @@
                 "lastUsedAt": {
                   "column": "lastUsedAt"
                 },
-                "mfaVerified": {
-                  "column": "mfaVerified"
+                "mfaSatisfied": {
+                  "column": "mfaSatisfied"
                 },
                 "tokenHash": {
                   "column": "tokenHash"
@@ -1613,7 +1613,7 @@
                   "nativeType": "timestamptz",
                   "nullable": false
                 },
-                "mfaVerified": {
+                "mfaSatisfied": {
                   "codecId": "pg/bool@1",
                   "nativeType": "bool",
                   "nullable": false
@@ -1831,7 +1831,7 @@
         "kind": "postgres-schema"
       }
     },
-    "storageHash": "98d98839e88b0f388d1f161e27e4b79abbfa4e0ed6b55759ad5ec950d68cd7df"
+    "storageHash": "c9b8642a1f68e6bd61803df5ce9bef027963adf1d830ccca7dc970704bf05882"
   },
   "execution": {
     "executionHash": "0b055b82a690d3f162aef43711a9fd620a4600d4c62ae34dac7dedd27bd43c38",

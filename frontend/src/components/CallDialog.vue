@@ -5,7 +5,7 @@
     icon="call"
     round
     color="positive"
-    @click="startCall(docId, targetUserId)"
+    @click="startCall(props.docId, props.targetUserId)"
   >
     <q-tooltip>Appeler</q-tooltip>
   </q-btn>
@@ -38,12 +38,36 @@
 </template>
 
 <script setup lang="ts">
-import {watch} from 'vue';
+import {watch, computed} from 'vue';
 import {useQuasar} from 'quasar';
 import {useCall} from "@/hooks/useCall";
 
+interface Props {
+  docId: number;
+  targetUserId: number;
+}
+
+const props = defineProps<Props>();
+
 const $q = useQuasar();
-const {status, incoming, muted, error, lastEnd, acceptCall, declineCall, hangup, toggleMute} = useCall();
+const {status, incoming, muted, error, lastEnd, startCall, acceptCall, declineCall, hangup, toggleMute} = useCall();
+
+const inCall = computed(() => status.value !== 'idle');
+
+const statusLabel = computed(() => {
+  switch (status.value) {
+    case 'calling':
+      return 'Appel en cours...';
+    case 'ringing':
+      return 'Appel entrant...';
+    case 'connecting':
+      return 'Connexion...';
+    case 'connected':
+      return 'Connecté';
+    default:
+      return '';
+  }
+});
 
 const errorMessages: Record<string, string> = {
   busy: "L'utilisateur est déjà en appel",
@@ -64,6 +88,7 @@ const endMessages: Record<string, string> = {
   cancelled: 'Appel annulé',
 };
 watch(lastEnd, (e) => {
+  if (!e) return;
   const msg = endMessages[e.reason];
   if (msg) $q.notify({type: 'negative', message: msg});
 });
