@@ -8,8 +8,8 @@
 #   NODE_ENV=production, so the cookie is Secure and REST Client never sends it over http.
 # - Login failures also count per IP (50 per 15 minutes, in memory): after a few runs in a row,
 #   restart the backend if every login answers 429.
-# - Test users pile up in the dev database; clean them up in psql when needed
-#   (docker compose exec db psql -U colladoc colladoc):
+# - Test users pile up in the dev database; clean them up with any SQL client when needed
+#   (psql: docker compose exec db psql -U colladoc colladoc, or DBeaver and the like):
 #   DELETE FROM "User" WHERE "username" ~ '^(auth|blocked)_[0-9]+$';
 
 @baseUrl = http://localhost:3000
@@ -107,7 +107,7 @@ GET {{baseUrl}}/auth/session HTTP/1.1
 Cookie: colladoc_session=unknown-token
 
 # ============================= Blocked account ==============================
-# Block the user created above first, in psql:
+# Block the user created above first, with any SQL client (psql, DBeaver...):
 #   UPDATE "User" SET "blockedAt" = now()
 #   WHERE "id" = (SELECT max("id") FROM "User" WHERE "username" LIKE 'blocked\_%');
 

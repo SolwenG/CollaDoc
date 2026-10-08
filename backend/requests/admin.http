@@ -6,7 +6,7 @@
 # - REST Client keeps cookies in one jar shared by every .http file: this file logs in on its own.
 # - Run against the LOCAL backend (cd backend && npm start): the Docker image sets
 #   NODE_ENV=production, so the cookie is Secure and REST Client never sends it over http.
-# - Test users pile up in the dev database; clean them up in psql when needed (one statement,
+# - Test users pile up in the dev database; clean them up with any SQL client when needed (one statement,
 #   so the members created by an admin go with it):
 #   DELETE FROM "User" WHERE "username" ~ '^(admin|member|new_admin)_[0-9]+$';
 
@@ -14,8 +14,8 @@
 @password = correct-horse-battery
 
 # =========================== Prerequisite: admin ============================
-# Registration only creates USER accounts. Send "Create the future admin", promote it in psql
-# (docker compose exec db psql -U colladoc colladoc):
+# Registration only creates USER accounts. Send "Create the future admin", promote it with any SQL client
+# (psql: docker compose exec db psql -U colladoc colladoc, or DBeaver and the like):
 #   UPDATE "User" SET "role" = 'ADMIN'
 #   WHERE "id" = (SELECT max("id") FROM "User" WHERE "username" LIKE 'admin\_%');
 # then send "Login as the admin".
@@ -34,7 +34,7 @@ Content-Type: application/json
   "password": "{{password}}"
 }
 
-### Login as the admin (⚠️ promote it in psql first) -> 200 { user } with role "ADMIN"
+### Login as the admin (⚠️ promote it in the database first) -> 200 { user } with role "ADMIN"
 # @name adminLogin
 POST {{baseUrl}}/auth/login HTTP/1.1
 Content-Type: application/json

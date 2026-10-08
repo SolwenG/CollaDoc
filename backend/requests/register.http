@@ -3,8 +3,8 @@
 # and later requests read it back from the named response.
 # - Send the requests in order, from the top: "{{register.response...}}" only resolves once
 #   the "register" request was sent in this VS Code session.
-# - Test users pile up in the dev database; clean them up in psql when needed
-#   (docker compose exec db psql -U colladoc colladoc):
+# - Test users pile up in the dev database; clean them up with any SQL client when needed
+#   (psql: docker compose exec db psql -U colladoc colladoc, or DBeaver and the like):
 #   DELETE FROM "User" WHERE "username" ~ '^reg_[0-9]+$';
 
 @baseUrl = http://localhost:3000
