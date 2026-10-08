@@ -30,7 +30,7 @@ model User {
   id                 Int                @id @default(autoincrement())
   username           String             @unique // identifiant de connexion, non modifiable
   displayName        String // nom affiché dans l'app et les docs partagés
-  passwordHash       String // argon2
+  passwordHash       Strig // argon2
   role               Role               @default(USER)
   mustChangePassword Boolean            @default(false) // true pour un compte créé par un admin
   totpSecret         String? // chiffré en AES-GCM (clé dans .env)

@@ -1,5 +1,7 @@
 @baseUrl = http://localhost:3000
 
+# ============================== /users/register ==============================
+
 ### Valid registration -> 201, username normalized to "newuser_01"
 # Change the username suffix to replay it: once created, it returns 409
 POST {{baseUrl}}/users/register HTTP/1.1
@@ -92,6 +94,85 @@ Content-Type: application/json
 {
   "username": "bob",
   "displayName":
+}
+
+# ================================ /auth/login ================================
+
+### Login -> 200 { user } + Set-Cookie colladoc_session (HttpOnly, SameSite=Lax, Path=/)
+# Username is normalized like at registration: "  NewUser_01 " logs into "newuser_01"
+POST {{baseUrl}}/auth/login HTTP/1.1
+Content-Type: application/json
+
+{
+  "username": "  NewUser_01 ",
+  "password": "correct-horse-battery"
+}
+
+### Wrong password -> 401 INVALID_CREDENTIALS
+POST {{baseUrl}}/auth/login HTTP/1.1
+Content-Type: application/json
+
+{
+  "username": "newuser_01",
+  "password": "wrong-password-123"
+}
+
+### Unknown username -> 401 INVALID_CREDENTIALS, same body as a wrong password
+POST {{baseUrl}}/auth/login HTTP/1.1
+Content-Type: application/json
+
+{
+  "username": "nobody_here",
+  "password": "wrong-password-123"
+}
+
+### Blocked account + right password -> 403 ACCOUNT_BLOCKED
+# Block it first: update "User" set "blockedAt" = now() where username = 'newuser_02';
+# Unblock afterwards: update "User" set "blockedAt" = null where username = 'newuser_02';
+POST {{baseUrl}}/auth/login HTTP/1.1
+Content-Type: application/json
+
+{
+  "username": "newuser_02",
+  "password": "correct-horse-battery"
+}
+
+### Blocked account + wrong password -> 401 INVALID_CREDENTIALS, the block is not revealed
+POST {{baseUrl}}/auth/login HTTP/1.1
+Content-Type: application/json
+
+{
+  "username": "newuser_02",
+  "password": "wrong-password-123"
+}
+
+### Unknown key -> 400 VALIDATION_ERROR
+POST {{baseUrl}}/auth/login HTTP/1.1
+Content-Type: application/json
+
+{
+  "username": "newuser_01",
+  "password": "correct-horse-battery",
+  "role": "ADMIN"
+}
+
+### Empty password -> 400 VALIDATION_ERROR on password
+POST {{baseUrl}}/auth/login HTTP/1.1
+Content-Type: application/json
+
+{
+  "username": "newuser_01",
+  "password": ""
+}
+
+### Rate limit -> run this 6 times: 401 x5, then 429 TOO_MANY_ATTEMPTS with Retry-After: 900
+# The counter lives in memory: restart the backend to reset it
+POST {{baseUrl}}/auth/login HTTP/1.1
+Content-Type: application/json
+
+{
+  "username": "newuser_01",
+  "password": "wrong-password-for-rate-limit"
 }
 
 ### Get a profile -> 200 (dev auth stub: user taken from X-Dev-User-Id)
