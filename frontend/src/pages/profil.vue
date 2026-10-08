@@ -7,7 +7,7 @@
         <q-card-section>
           <q-form class="q-gutter-md">
             <!-- Display Name Section -->
-            <h2 class="text-h6 q-mt-md q-mb-sm">Modifier mon nom d'affichage</h2>
+            <p class="text-h6 q-mt-md">Modifier mon nom d'affichage</p>
             <!-- Display Name Field -->
             <div class="row items-center q-gutter-sm">
               <div class="col">
@@ -57,7 +57,7 @@
             </div>
 
             <!-- Password Section -->
-            <h2 class="text-h6 q-mt-md q-mb-sm">Modifier mon mot de passe</h2>
+            <p class="text-h6 q-mt-lg">Modifier mon mot de passe</p>
             <!-- Password Field -->
             <div class="row items-center q-gutter-sm">
               <div class="col">
@@ -167,18 +167,20 @@
         label="Configuration MFA"
         color="primary"
         class="full-width q-mt-lg"
-        @click="goToMfaSetup"
+        @click="showMfaDialog = true"
       />
     </div>
+
+    <TwoFactorSetupDialog v-model="showMfaDialog" />
   </q-page>
 </template>
 
 <script setup lang="ts">
 import { ref, reactive, onMounted, computed } from 'vue';
-import { useRouter } from 'vue-router';
 import { useUserStore } from '@/stores/user';
 import { useAuthStore } from '@/stores/auth';
 import { usePasswordStrength } from '@/hooks/usePasswordStrength';
+import TwoFactorSetupDialog from '@/components/TwoFactorSetupDialog.vue';
 import {
   DISPLAY_NAME_MAX_LENGTH,
   DISPLAY_NAME_MIN_LENGTH,
@@ -189,9 +191,10 @@ import {
   required,
 } from '@/utils/validation';
 
-const router = useRouter();
 const userStore = useUserStore();
 const authStore = useAuthStore();
+
+const showMfaDialog = ref(false);
 
 const editing = reactive({
   displayName: false,
@@ -324,7 +327,4 @@ async function saveField(field: 'displayName' | 'password') {
   }
 }
 
-async function goToMfaSetup() {
-  await router.push('/mfa-setup');
-}
 </script>

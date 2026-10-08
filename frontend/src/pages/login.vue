@@ -31,6 +31,7 @@
       Pas encore de compte ?
       <router-link to="/register" class="text-primary text-bold">Créer un compte</router-link>
     </div>
+    <TwoFactorDialog v-model="showTwoFactor" />
   </AuthCard>
 </template>
 
@@ -39,6 +40,7 @@ import { ref } from 'vue';
 import { useQuasar } from 'quasar';
 import { useRouter } from 'vue-router';
 import AuthCard from '@/components/AuthCard.vue';
+import TwoFactorDialog from '@/components/TwoFactorDialog.vue';
 import { useAuthStore } from '@/stores/auth';
 import { required } from '@/utils/validation';
 
@@ -49,14 +51,20 @@ const auth = useAuthStore();
 const username = ref('');
 const password = ref('');
 const loading = ref(false);
+const showTwoFactor = ref(false);
 
 async function onSubmit() {
   loading.value = true;
   try {
-    const result = await auth.login(username.value, password.value);
+    const result = await auth.login(username.value.trim().toLowerCase(), password.value);
 
     if (result === 'success') {
       await router.push('/');
+      return;
+    }
+
+    if (result === 'mfa-required') {
+      showTwoFactor.value = true;
       return;
     }
 
@@ -78,12 +86,6 @@ async function onSubmit() {
         type: 'negative',
         message: 'Trop de tentatives. Réessayez dans quelques minutes.',
       });
-      return;
-    }
-
-    if (result === 'mfa-required') {
-      // TODO: open the code dialog (branch 10-front-ecrans-2fa)
-      $q.notify({ type: 'info', message: 'Vérification en deux étapes requise.' });
       return;
     }
 
