@@ -1,0 +1,9 @@
+**/node_modules
+**/pnpm-lock.yaml
+**/.env
+**/*.test.ts
+.git
+frontend
+docs
+*.pdf
+backend/vitest.config.ts

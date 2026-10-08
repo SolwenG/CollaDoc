@@ -61,14 +61,20 @@ export const useUserStore = defineStore('user', () => {
     }
   }
 
-  async function fetchAllUsers(params?: { page?: number; pageSize?: number; search?: string }): Promise<UsersListResponse | null> {
+  async function fetchAllUsers(params?: {
+    page?: number;
+    pageSize?: number;
+    search?: string;
+  }): Promise<UsersListResponse | null> {
     try {
       const queryParams = new URLSearchParams();
       if (params?.page) queryParams.append('page', params.page.toString());
       if (params?.pageSize) queryParams.append('pageSize', params.pageSize.toString());
       if (params?.search) queryParams.append('search', params.search);
-      
-      const url = queryParams.toString() ? `/admin/users?${queryParams.toString()}` : '/admin/users';
+
+      const url = queryParams.toString()
+        ? `/admin/users?${queryParams.toString()}`
+        : '/admin/users';
       const response = await apiFetch(url);
       if (response.status === 200) {
         return await readJson<UsersListResponse>(response);

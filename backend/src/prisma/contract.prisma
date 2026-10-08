@@ -20,12 +20,6 @@ enum MemberRole {
   VIEWER = "VIEWER"
 }
 
-enum OperationType {
-  @@type("pg/text@1")
-  INSERT = "INSERT"
-  DELETE = "DELETE"
-}
-
 model User {
   id                 Int                @id @default(autoincrement())
   username           String             @unique // identifiant de connexion, non modifiable
@@ -83,9 +77,8 @@ model Document {
   folderId         Int? // null = racine du propriétaire
   folder           Folder?           @relation(fields: [folderId], references: [id], onDelete: Cascade)
   // TEXT
-  content          String? // instantané du texte brut
-  revision         Int               @default(0)
-  displayedVersion Int               @default(0)
+  content          String? // Instantané du texte brut
+  contentRevision  Int               @default(0) // Révision à laquelle correspond content
   // FILE
   originalName     String?
   storagePath      String? // nom snapshotRevisionUUID sur le disque
@@ -119,10 +112,8 @@ model DocumentOperation {
   documentId Int
   document   Document          @relation(fields: [documentId], references: [id], onDelete: Cascade)
   revision   Int
-  type       OperationType
-  position   Int
-  text       String? // INSERT
-  length     Int? // DELETE
+  opId       String            @unique // UUID généré par le client, détecte les renvois après coupure
+  operation  Json // Step[] : voir shared/ot/operation.ts
   authorId   Int
   author     User              @relation(fields: [authorId], references: [id])
   createdAt  TimestamptzString @default(now())

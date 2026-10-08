@@ -63,19 +63,6 @@
               }
             ]
           },
-          "OperationType": {
-            "codecId": "pg/text@1",
-            "members": [
-              {
-                "name": "INSERT",
-                "value": "INSERT"
-              },
-              {
-                "name": "DELETE",
-                "value": "DELETE"
-              }
-            ]
-          },
           "Role": {
             "codecId": "pg/text@1",
             "members": [
@@ -100,17 +87,17 @@
                   "kind": "scalar"
                 }
               },
+              "contentRevision": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/int4@1",
+                  "kind": "scalar"
+                }
+              },
               "createdAt": {
                 "nullable": false,
                 "type": {
                   "codecId": "pg/timestamptz-string@1",
-                  "kind": "scalar"
-                }
-              },
-              "displayedVersion": {
-                "nullable": false,
-                "type": {
-                  "codecId": "pg/int4@1",
                   "kind": "scalar"
                 }
               },
@@ -176,13 +163,6 @@
                   "kind": "scalar"
                 }
               },
-              "revision": {
-                "nullable": false,
-                "type": {
-                  "codecId": "pg/int4@1",
-                  "kind": "scalar"
-                }
-              },
               "size": {
                 "nullable": true,
                 "type": {
@@ -210,8 +190,12 @@
                 "cardinality": "N:1",
                 "nullable": true,
                 "on": {
-                  "localFields": ["folderId"],
-                  "targetFields": ["id"]
+                  "localFields": [
+                    "folderId"
+                  ],
+                  "targetFields": [
+                    "id"
+                  ]
                 },
                 "to": {
                   "model": "Folder",
@@ -222,8 +206,12 @@
                 "cardinality": "N:1",
                 "nullable": true,
                 "on": {
-                  "localFields": ["lastModifiedById"],
-                  "targetFields": ["id"]
+                  "localFields": [
+                    "lastModifiedById"
+                  ],
+                  "targetFields": [
+                    "id"
+                  ]
                 },
                 "to": {
                   "model": "User",
@@ -234,8 +222,12 @@
                 "cardinality": "N:1",
                 "nullable": false,
                 "on": {
-                  "localFields": ["ownerId"],
-                  "targetFields": ["id"]
+                  "localFields": [
+                    "ownerId"
+                  ],
+                  "targetFields": [
+                    "id"
+                  ]
                 },
                 "to": {
                   "model": "User",
@@ -248,11 +240,11 @@
                 "content": {
                   "column": "content"
                 },
+                "contentRevision": {
+                  "column": "contentRevision"
+                },
                 "createdAt": {
                   "column": "createdAt"
-                },
-                "displayedVersion": {
-                  "column": "displayedVersion"
                 },
                 "folderId": {
                   "column": "folderId"
@@ -277,9 +269,6 @@
                 },
                 "ownerId": {
                   "column": "ownerId"
-                },
-                "revision": {
-                  "column": "revision"
                 },
                 "size": {
                   "column": "size"
@@ -344,8 +333,12 @@
                 "cardinality": "N:1",
                 "nullable": false,
                 "on": {
-                  "localFields": ["documentId"],
-                  "targetFields": ["id"]
+                  "localFields": [
+                    "documentId"
+                  ],
+                  "targetFields": [
+                    "id"
+                  ]
                 },
                 "to": {
                   "model": "Document",
@@ -356,8 +349,12 @@
                 "cardinality": "N:1",
                 "nullable": false,
                 "on": {
-                  "localFields": ["invitedById"],
-                  "targetFields": ["id"]
+                  "localFields": [
+                    "invitedById"
+                  ],
+                  "targetFields": [
+                    "id"
+                  ]
                 },
                 "to": {
                   "model": "User",
@@ -368,8 +365,12 @@
                 "cardinality": "N:1",
                 "nullable": false,
                 "on": {
-                  "localFields": ["userId"],
-                  "targetFields": ["id"]
+                  "localFields": [
+                    "userId"
+                  ],
+                  "targetFields": [
+                    "id"
+                  ]
                 },
                 "to": {
                   "model": "User",
@@ -429,17 +430,17 @@
                   "kind": "scalar"
                 }
               },
-              "length": {
-                "nullable": true,
+              "opId": {
+                "nullable": false,
                 "type": {
-                  "codecId": "pg/int4@1",
+                  "codecId": "pg/text@1",
                   "kind": "scalar"
                 }
               },
-              "position": {
+              "operation": {
                 "nullable": false,
                 "type": {
-                  "codecId": "pg/int4@1",
+                  "codecId": "pg/json@1",
                   "kind": "scalar"
                 }
               },
@@ -449,26 +450,6 @@
                   "codecId": "pg/int4@1",
                   "kind": "scalar"
                 }
-              },
-              "text": {
-                "nullable": true,
-                "type": {
-                  "codecId": "pg/text@1",
-                  "kind": "scalar"
-                }
-              },
-              "type": {
-                "nullable": false,
-                "type": {
-                  "codecId": "pg/text@1",
-                  "kind": "scalar"
-                },
-                "valueSet": {
-                  "entityKind": "enum",
-                  "entityName": "OperationType",
-                  "namespaceId": "public",
-                  "plane": "domain"
-                }
               }
             },
             "relations": {
@@ -476,8 +457,12 @@
                 "cardinality": "N:1",
                 "nullable": false,
                 "on": {
-                  "localFields": ["authorId"],
-                  "targetFields": ["id"]
+                  "localFields": [
+                    "authorId"
+                  ],
+                  "targetFields": [
+                    "id"
+                  ]
                 },
                 "to": {
                   "model": "User",
@@ -488,8 +473,12 @@
                 "cardinality": "N:1",
                 "nullable": false,
                 "on": {
-                  "localFields": ["documentId"],
-                  "targetFields": ["id"]
+                  "localFields": [
+                    "documentId"
+                  ],
+                  "targetFields": [
+                    "id"
+                  ]
                 },
                 "to": {
                   "model": "Document",
@@ -511,20 +500,14 @@
                 "id": {
                   "column": "id"
                 },
-                "length": {
-                  "column": "length"
+                "opId": {
+                  "column": "opId"
                 },
-                "position": {
-                  "column": "position"
+                "operation": {
+                  "column": "operation"
                 },
                 "revision": {
                   "column": "revision"
-                },
-                "text": {
-                  "column": "text"
-                },
-                "type": {
-                  "column": "type"
                 }
               },
               "namespaceId": "public",
@@ -581,8 +564,12 @@
                 "cardinality": "N:1",
                 "nullable": false,
                 "on": {
-                  "localFields": ["ownerId"],
-                  "targetFields": ["id"]
+                  "localFields": [
+                    "ownerId"
+                  ],
+                  "targetFields": [
+                    "id"
+                  ]
                 },
                 "to": {
                   "model": "User",
@@ -593,8 +580,12 @@
                 "cardinality": "N:1",
                 "nullable": true,
                 "on": {
-                  "localFields": ["parentId"],
-                  "targetFields": ["id"]
+                  "localFields": [
+                    "parentId"
+                  ],
+                  "targetFields": [
+                    "id"
+                  ]
                 },
                 "to": {
                   "model": "Folder",
@@ -670,8 +661,12 @@
                 "cardinality": "N:1",
                 "nullable": false,
                 "on": {
-                  "localFields": ["authorId"],
-                  "targetFields": ["id"]
+                  "localFields": [
+                    "authorId"
+                  ],
+                  "targetFields": [
+                    "id"
+                  ]
                 },
                 "to": {
                   "model": "User",
@@ -682,8 +677,12 @@
                 "cardinality": "N:1",
                 "nullable": false,
                 "on": {
-                  "localFields": ["documentId"],
-                  "targetFields": ["id"]
+                  "localFields": [
+                    "documentId"
+                  ],
+                  "targetFields": [
+                    "id"
+                  ]
                 },
                 "to": {
                   "model": "Document",
@@ -770,8 +769,12 @@
                 "cardinality": "N:1",
                 "nullable": false,
                 "on": {
-                  "localFields": ["userId"],
-                  "targetFields": ["id"]
+                  "localFields": [
+                    "userId"
+                  ],
+                  "targetFields": [
+                    "id"
+                  ]
                 },
                 "to": {
                   "model": "User",
@@ -933,8 +936,12 @@
                 "cardinality": "N:1",
                 "nullable": true,
                 "on": {
-                  "localFields": ["blockedById"],
-                  "targetFields": ["id"]
+                  "localFields": [
+                    "blockedById"
+                  ],
+                  "targetFields": [
+                    "id"
+                  ]
                 },
                 "to": {
                   "model": "User",
@@ -945,8 +952,12 @@
                 "cardinality": "N:1",
                 "nullable": true,
                 "on": {
-                  "localFields": ["createdById"],
-                  "targetFields": ["id"]
+                  "localFields": [
+                    "createdById"
+                  ],
+                  "targetFields": [
+                    "id"
+                  ]
                 },
                 "to": {
                   "model": "User",
@@ -1032,6 +1043,15 @@
                   "nativeType": "text",
                   "nullable": true
                 },
+                "contentRevision": {
+                  "codecId": "pg/int4@1",
+                  "default": {
+                    "kind": "literal",
+                    "value": 0
+                  },
+                  "nativeType": "int4",
+                  "nullable": false
+                },
                 "createdAt": {
                   "codecId": "pg/timestamptz-string@1",
                   "default": {
@@ -1039,15 +1059,6 @@
                     "kind": "function"
                   },
                   "nativeType": "timestamptz",
-                  "nullable": false
-                },
-                "displayedVersion": {
-                  "codecId": "pg/int4@1",
-                  "default": {
-                    "kind": "literal",
-                    "value": 0
-                  },
-                  "nativeType": "int4",
                   "nullable": false
                 },
                 "folderId": {
@@ -1100,15 +1111,6 @@
                   "nativeType": "int4",
                   "nullable": false
                 },
-                "revision": {
-                  "codecId": "pg/int4@1",
-                  "default": {
-                    "kind": "literal",
-                    "value": 0
-                  },
-                  "nativeType": "int4",
-                  "nullable": false
-                },
                 "size": {
                   "codecId": "pg/int4@1",
                   "nativeType": "int4",
@@ -1128,12 +1130,16 @@
               "foreignKeys": [
                 {
                   "source": {
-                    "columns": ["ownerId"],
+                    "columns": [
+                      "ownerId"
+                    ],
                     "namespaceId": "public",
                     "tableName": "Document"
                   },
                   "target": {
-                    "columns": ["id"],
+                    "columns": [
+                      "id"
+                    ],
                     "namespaceId": "public",
                     "tableName": "User"
                   }
@@ -1141,24 +1147,32 @@
                 {
                   "onDelete": "cascade",
                   "source": {
-                    "columns": ["folderId"],
+                    "columns": [
+                      "folderId"
+                    ],
                     "namespaceId": "public",
                     "tableName": "Document"
                   },
                   "target": {
-                    "columns": ["id"],
+                    "columns": [
+                      "id"
+                    ],
                     "namespaceId": "public",
                     "tableName": "Folder"
                   }
                 },
                 {
                   "source": {
-                    "columns": ["lastModifiedById"],
+                    "columns": [
+                      "lastModifiedById"
+                    ],
                     "namespaceId": "public",
                     "tableName": "Document"
                   },
                   "target": {
-                    "columns": ["id"],
+                    "columns": [
+                      "id"
+                    ],
                     "namespaceId": "public",
                     "tableName": "User"
                   }
@@ -1166,32 +1180,43 @@
               ],
               "indexes": [
                 {
-                  "columns": ["folderId"],
+                  "columns": [
+                    "folderId"
+                  ],
                   "name": "Document_folderId_idx_5985e562",
                   "prefix": "Document_folderId_idx",
                   "unique": false
                 },
                 {
-                  "columns": ["lastModifiedById"],
+                  "columns": [
+                    "lastModifiedById"
+                  ],
                   "name": "Document_lastModifiedById_idx_f811679d",
                   "prefix": "Document_lastModifiedById_idx",
                   "unique": false
                 },
                 {
-                  "columns": ["ownerId", "folderId"],
+                  "columns": [
+                    "ownerId",
+                    "folderId"
+                  ],
                   "name": "Document_ownerId_folderId_idx_e5008c91",
                   "prefix": "Document_ownerId_folderId_idx",
                   "unique": false
                 },
                 {
-                  "columns": ["ownerId"],
+                  "columns": [
+                    "ownerId"
+                  ],
                   "name": "Document_ownerId_idx_e2d0c1ef",
                   "prefix": "Document_ownerId_idx",
                   "unique": false
                 }
               ],
               "primaryKey": {
-                "columns": ["id"]
+                "columns": [
+                  "id"
+                ]
               },
               "uniques": []
             },
@@ -1244,36 +1269,48 @@
                 {
                   "onDelete": "cascade",
                   "source": {
-                    "columns": ["documentId"],
+                    "columns": [
+                      "documentId"
+                    ],
                     "namespaceId": "public",
                     "tableName": "DocumentMember"
                   },
                   "target": {
-                    "columns": ["id"],
+                    "columns": [
+                      "id"
+                    ],
                     "namespaceId": "public",
                     "tableName": "Document"
                   }
                 },
                 {
                   "source": {
-                    "columns": ["userId"],
+                    "columns": [
+                      "userId"
+                    ],
                     "namespaceId": "public",
                     "tableName": "DocumentMember"
                   },
                   "target": {
-                    "columns": ["id"],
+                    "columns": [
+                      "id"
+                    ],
                     "namespaceId": "public",
                     "tableName": "User"
                   }
                 },
                 {
                   "source": {
-                    "columns": ["invitedById"],
+                    "columns": [
+                      "invitedById"
+                    ],
                     "namespaceId": "public",
                     "tableName": "DocumentMember"
                   },
                   "target": {
-                    "columns": ["id"],
+                    "columns": [
+                      "id"
+                    ],
                     "namespaceId": "public",
                     "tableName": "User"
                   }
@@ -1281,37 +1318,39 @@
               ],
               "indexes": [
                 {
-                  "columns": ["documentId"],
+                  "columns": [
+                    "documentId"
+                  ],
                   "name": "DocumentMember_documentId_idx_825ef746",
                   "prefix": "DocumentMember_documentId_idx",
                   "unique": false
                 },
                 {
-                  "columns": ["invitedById"],
+                  "columns": [
+                    "invitedById"
+                  ],
                   "name": "DocumentMember_invitedById_idx_61689f37",
                   "prefix": "DocumentMember_invitedById_idx",
                   "unique": false
                 },
                 {
-                  "columns": ["userId"],
+                  "columns": [
+                    "userId"
+                  ],
                   "name": "DocumentMember_userId_idx_a489d58a",
                   "prefix": "DocumentMember_userId_idx",
                   "unique": false
                 }
               ],
               "primaryKey": {
-                "columns": ["documentId", "userId"]
+                "columns": [
+                  "documentId",
+                  "userId"
+                ]
               },
               "uniques": []
             },
             "DocumentOperation": {
-              "checks": [
-                {
-                  "expression": "\"type\" IN ('INSERT', 'DELETE')",
-                  "name": "DocumentOperation_type_check_c40a7336",
-                  "prefix": "DocumentOperation_type_check"
-                }
-              ],
               "columns": {
                 "authorId": {
                   "codecId": "pg/int4@1",
@@ -1341,60 +1380,52 @@
                   "nativeType": "int4",
                   "nullable": false
                 },
-                "length": {
-                  "codecId": "pg/int4@1",
-                  "nativeType": "int4",
-                  "nullable": true
+                "opId": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": false
                 },
-                "position": {
-                  "codecId": "pg/int4@1",
-                  "nativeType": "int4",
+                "operation": {
+                  "codecId": "pg/json@1",
+                  "nativeType": "json",
                   "nullable": false
                 },
                 "revision": {
                   "codecId": "pg/int4@1",
                   "nativeType": "int4",
                   "nullable": false
-                },
-                "text": {
-                  "codecId": "pg/text@1",
-                  "nativeType": "text",
-                  "nullable": true
-                },
-                "type": {
-                  "codecId": "pg/text@1",
-                  "nativeType": "text",
-                  "nullable": false,
-                  "valueSet": {
-                    "entityKind": "valueSet",
-                    "entityName": "OperationType",
-                    "namespaceId": "public",
-                    "plane": "storage"
-                  }
                 }
               },
               "foreignKeys": [
                 {
                   "onDelete": "cascade",
                   "source": {
-                    "columns": ["documentId"],
+                    "columns": [
+                      "documentId"
+                    ],
                     "namespaceId": "public",
                     "tableName": "DocumentOperation"
                   },
                   "target": {
-                    "columns": ["id"],
+                    "columns": [
+                      "id"
+                    ],
                     "namespaceId": "public",
                     "tableName": "Document"
                   }
                 },
                 {
                   "source": {
-                    "columns": ["authorId"],
+                    "columns": [
+                      "authorId"
+                    ],
                     "namespaceId": "public",
                     "tableName": "DocumentOperation"
                   },
                   "target": {
-                    "columns": ["id"],
+                    "columns": [
+                      "id"
+                    ],
                     "namespaceId": "public",
                     "tableName": "User"
                   }
@@ -1402,24 +1433,38 @@
               ],
               "indexes": [
                 {
-                  "columns": ["authorId"],
+                  "columns": [
+                    "authorId"
+                  ],
                   "name": "DocumentOperation_authorId_idx_e47547ed",
                   "prefix": "DocumentOperation_authorId_idx",
                   "unique": false
                 },
                 {
-                  "columns": ["documentId"],
+                  "columns": [
+                    "documentId"
+                  ],
                   "name": "DocumentOperation_documentId_idx_825ef746",
                   "prefix": "DocumentOperation_documentId_idx",
                   "unique": false
                 }
               ],
               "primaryKey": {
-                "columns": ["id"]
+                "columns": [
+                  "id"
+                ]
               },
               "uniques": [
                 {
-                  "columns": ["documentId", "revision"]
+                  "columns": [
+                    "opId"
+                  ]
+                },
+                {
+                  "columns": [
+                    "documentId",
+                    "revision"
+                  ]
                 }
               ]
             },
@@ -1468,24 +1513,32 @@
                 {
                   "onDelete": "cascade",
                   "source": {
-                    "columns": ["parentId"],
+                    "columns": [
+                      "parentId"
+                    ],
                     "namespaceId": "public",
                     "tableName": "Folder"
                   },
                   "target": {
-                    "columns": ["id"],
+                    "columns": [
+                      "id"
+                    ],
                     "namespaceId": "public",
                     "tableName": "Folder"
                   }
                 },
                 {
                   "source": {
-                    "columns": ["ownerId"],
+                    "columns": [
+                      "ownerId"
+                    ],
                     "namespaceId": "public",
                     "tableName": "Folder"
                   },
                   "target": {
-                    "columns": ["id"],
+                    "columns": [
+                      "id"
+                    ],
                     "namespaceId": "public",
                     "tableName": "User"
                   }
@@ -1493,19 +1546,26 @@
               ],
               "indexes": [
                 {
-                  "columns": ["ownerId"],
+                  "columns": [
+                    "ownerId"
+                  ],
                   "name": "Folder_ownerId_idx_e2d0c1ef",
                   "prefix": "Folder_ownerId_idx",
                   "unique": false
                 },
                 {
-                  "columns": ["parentId"],
+                  "columns": [
+                    "parentId"
+                  ],
                   "name": "Folder_parentId_idx_6a68f597",
                   "prefix": "Folder_parentId_idx",
                   "unique": false
                 },
                 {
-                  "columns": ["ownerId", "name"],
+                  "columns": [
+                    "ownerId",
+                    "name"
+                  ],
                   "name": "Folder_root_name_unique_0d8a2683",
                   "prefix": "Folder_root_name_unique",
                   "unique": true,
@@ -1513,11 +1573,17 @@
                 }
               ],
               "primaryKey": {
-                "columns": ["id"]
+                "columns": [
+                  "id"
+                ]
               },
               "uniques": [
                 {
-                  "columns": ["ownerId", "parentId", "name"]
+                  "columns": [
+                    "ownerId",
+                    "parentId",
+                    "name"
+                  ]
                 }
               ]
             },
@@ -1561,24 +1627,32 @@
                 {
                   "onDelete": "cascade",
                   "source": {
-                    "columns": ["documentId"],
+                    "columns": [
+                      "documentId"
+                    ],
                     "namespaceId": "public",
                     "tableName": "Message"
                   },
                   "target": {
-                    "columns": ["id"],
+                    "columns": [
+                      "id"
+                    ],
                     "namespaceId": "public",
                     "tableName": "Document"
                   }
                 },
                 {
                   "source": {
-                    "columns": ["authorId"],
+                    "columns": [
+                      "authorId"
+                    ],
                     "namespaceId": "public",
                     "tableName": "Message"
                   },
                   "target": {
-                    "columns": ["id"],
+                    "columns": [
+                      "id"
+                    ],
                     "namespaceId": "public",
                     "tableName": "User"
                   }
@@ -1586,26 +1660,35 @@
               ],
               "indexes": [
                 {
-                  "columns": ["authorId"],
+                  "columns": [
+                    "authorId"
+                  ],
                   "name": "Message_authorId_idx_e47547ed",
                   "prefix": "Message_authorId_idx",
                   "unique": false
                 },
                 {
-                  "columns": ["documentId", "createdAt"],
+                  "columns": [
+                    "documentId",
+                    "createdAt"
+                  ],
                   "name": "Message_documentId_createdAt_idx_93015d6d",
                   "prefix": "Message_documentId_createdAt_idx",
                   "unique": false
                 },
                 {
-                  "columns": ["documentId"],
+                  "columns": [
+                    "documentId"
+                  ],
                   "name": "Message_documentId_idx_825ef746",
                   "prefix": "Message_documentId_idx",
                   "unique": false
                 }
               ],
               "primaryKey": {
-                "columns": ["id"]
+                "columns": [
+                  "id"
+                ]
               },
               "uniques": []
             },
@@ -1663,12 +1746,16 @@
                 {
                   "onDelete": "cascade",
                   "source": {
-                    "columns": ["userId"],
+                    "columns": [
+                      "userId"
+                    ],
                     "namespaceId": "public",
                     "tableName": "Session"
                   },
                   "target": {
-                    "columns": ["id"],
+                    "columns": [
+                      "id"
+                    ],
                     "namespaceId": "public",
                     "tableName": "User"
                   }
@@ -1676,18 +1763,24 @@
               ],
               "indexes": [
                 {
-                  "columns": ["userId"],
+                  "columns": [
+                    "userId"
+                  ],
                   "name": "Session_userId_idx_a489d58a",
                   "prefix": "Session_userId_idx",
                   "unique": false
                 }
               ],
               "primaryKey": {
-                "columns": ["id"]
+                "columns": [
+                  "id"
+                ]
               },
               "uniques": [
                 {
-                  "columns": ["tokenHash"]
+                  "columns": [
+                    "tokenHash"
+                  ]
                 }
               ]
             },
@@ -1810,24 +1903,32 @@
               "foreignKeys": [
                 {
                   "source": {
-                    "columns": ["blockedById"],
+                    "columns": [
+                      "blockedById"
+                    ],
                     "namespaceId": "public",
                     "tableName": "User"
                   },
                   "target": {
-                    "columns": ["id"],
+                    "columns": [
+                      "id"
+                    ],
                     "namespaceId": "public",
                     "tableName": "User"
                   }
                 },
                 {
                   "source": {
-                    "columns": ["createdById"],
+                    "columns": [
+                      "createdById"
+                    ],
                     "namespaceId": "public",
                     "tableName": "User"
                   },
                   "target": {
-                    "columns": ["id"],
+                    "columns": [
+                      "id"
+                    ],
                     "namespaceId": "public",
                     "tableName": "User"
                   }
@@ -1835,24 +1936,32 @@
               ],
               "indexes": [
                 {
-                  "columns": ["blockedById"],
+                  "columns": [
+                    "blockedById"
+                  ],
                   "name": "User_blockedById_idx_60a57bcc",
                   "prefix": "User_blockedById_idx",
                   "unique": false
                 },
                 {
-                  "columns": ["createdById"],
+                  "columns": [
+                    "createdById"
+                  ],
                   "name": "User_createdById_idx_8bf640ed",
                   "prefix": "User_createdById_idx",
                   "unique": false
                 }
               ],
               "primaryKey": {
-                "columns": ["id"]
+                "columns": [
+                  "id"
+                ]
               },
               "uniques": [
                 {
-                  "columns": ["username"]
+                  "columns": [
+                    "username"
+                  ]
                 }
               ]
             }
@@ -1860,19 +1969,24 @@
           "valueSet": {
             "DocumentKind": {
               "kind": "valueSet",
-              "values": ["TEXT", "FILE"]
+              "values": [
+                "TEXT",
+                "FILE"
+              ]
             },
             "MemberRole": {
               "kind": "valueSet",
-              "values": ["EDITOR", "VIEWER"]
-            },
-            "OperationType": {
-              "kind": "valueSet",
-              "values": ["INSERT", "DELETE"]
+              "values": [
+                "EDITOR",
+                "VIEWER"
+              ]
             },
             "Role": {
               "kind": "valueSet",
-              "values": ["USER", "ADMIN"]
+              "values": [
+                "USER",
+                "ADMIN"
+              ]
             }
           }
         },
@@ -1880,7 +1994,7 @@
         "kind": "postgres-schema"
       }
     },
-    "storageHash": "07051170eadf552fc9f08e44c0fd57d54176cebf62a448808bff8833407b6491"
+    "storageHash": "64e5a1146d5566ffad9e608d6b656b732d8169cfe180a40aa5bca74660973d6a"
   },
   "execution": {
     "executionHash": "0b055b82a690d3f162aef43711a9fd620a4600d4c62ae34dac7dedd27bd43c38",

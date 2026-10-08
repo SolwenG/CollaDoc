@@ -1,4 +1,5 @@
 import type { Request, Response } from "express";
+import { notifySessionsChanged } from "../../realtime/realtime-notifier.ts";
 import {
   PASSWORD_MAX_LENGTH,
   PASSWORD_MIN_LENGTH,
@@ -72,6 +73,7 @@ export async function changePassword(req: Request, res: Response) {
   }
 
   await profileService.changePassword(id, sessionId, newPassword);
+  await notifySessionsChanged(id);
 
   return res.status(204).end();
 }

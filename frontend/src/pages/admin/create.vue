@@ -52,20 +52,12 @@
       </q-card-section>
 
       <q-card-section>
-        <p>Utilisateur {{ createdUsername }} créé avec succès. Voici le mot de passe temporaire :</p>
-        <q-input
-          v-model="temporaryPassword"
-          readonly
-          outlined
-          dense
-        >
+        <p>
+          Utilisateur {{ createdUsername }} créé avec succès. Voici le mot de passe temporaire :
+        </p>
+        <q-input v-model="temporaryPassword" readonly outlined dense>
           <template #append>
-            <q-btn
-              icon="content_copy"
-              flat
-              round
-              @click="copyPassword"
-            >
+            <q-btn icon="content_copy" flat round @click="copyPassword">
               <q-tooltip>Copier</q-tooltip>
             </q-btn>
           </template>
@@ -78,7 +70,6 @@
       <q-card-actions align="right">
         <q-btn flat label="Fermer" color="grey" @click="closePasswordDialog" />
         <q-btn flat label="Retour" color="primary" @click="closeAndGoBack" />
-
       </q-card-actions>
     </q-card>
   </q-dialog>

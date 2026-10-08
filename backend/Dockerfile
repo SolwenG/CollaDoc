@@ -1,13 +1,16 @@
+# Built from the repository root: the realtime server imports ../shared
 FROM node:24-alpine
 
-WORKDIR /app
+WORKDIR /app/backend
 
-COPY package.json package-lock.json ./
+COPY backend/package.json backend/package-lock.json ./
 RUN npm ci --omit=dev
 
-COPY . .
+COPY shared/ /app/shared/
+COPY backend/ ./
 
 ENV NODE_ENV=production
-EXPOSE 3000
+EXPOSE 3000 3001
 
+# The realtime service overrides this with src/realtime.ts
 CMD ["node", "src/app.ts"]

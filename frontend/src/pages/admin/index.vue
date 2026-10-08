@@ -47,7 +47,11 @@
               <q-item-label>{{ user.displayName }}</q-item-label>
               <q-item-label caption>@{{ user.username }}</q-item-label>
               <q-item-label caption>
-                <q-chip size="xs" :color="user.role === 'ADMIN' ? 'primary' : 'grey'" text-color="white">
+                <q-chip
+                  size="xs"
+                  :color="user.role === 'ADMIN' ? 'primary' : 'grey'"
+                  text-color="white"
+                >
                   {{ user.role }}
                 </q-chip>
                 <q-chip v-if="user.mfaEnabled" size="xs" color="positive" text-color="white">
@@ -153,7 +157,7 @@ const blockDialog = reactive({
 async function loadUsers() {
   loading.value = true;
   errorMessage.value = '';
-  
+
   const params: { page: number; pageSize: number; search?: string } = {
     page: pagination.page,
     pageSize: pagination.pageSize,
@@ -161,9 +165,9 @@ async function loadUsers() {
   if (searchQuery.value) {
     params.search = searchQuery.value;
   }
-  
+
   const result = await userStore.fetchAllUsers(params);
-  
+
   if (result) {
     users.value = result.users;
     pagination.total = result.total;
@@ -172,7 +176,7 @@ async function loadUsers() {
     users.value = [];
     pagination.total = 0;
   }
-  
+
   loading.value = false;
 }
 
