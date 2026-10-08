@@ -9,6 +9,9 @@ import {
 import { useAuthStore } from '@/stores/auth';
 import { onUnauthorized } from '@/utils/api';
 
+// Pages reachable without being logged in
+const PUBLIC_PATHS = ['/login', '/register'];
+
 function isAdminPath(path: string) {
   return path === '/admin' || path.startsWith('/admin/');
 }
