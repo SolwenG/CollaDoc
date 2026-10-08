@@ -26,10 +26,10 @@ export async function login({ username, password }: LoginInput) {
 		throw new AppError("ACCOUNT_BLOCKED", "This account is blocked");
 	}
 
-	const mfaVerified = user.totpEnabledAt === null;
+	const mfaSatisfied = user.totpEnabledAt === null;
 	const { token, expiresAt } = await createSession({
 		userId: user.id,
-		mfaVerified,
+		mfaSatisfied,
 	});
 
 	return {
@@ -41,6 +41,6 @@ export async function login({ username, password }: LoginInput) {
 		},
 		token,
 		expiresAt,
-		mfaRequired: !mfaVerified,
+		mfaRequired: !mfaSatisfied,
 	};
 }
