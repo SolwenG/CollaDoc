@@ -6,12 +6,12 @@ import {
   createWebHashHistory,
   createWebHistory,
 } from 'vue-router';
-// import { useAuthStore } from '@/stores/auth';
-// import { onUnauthorized } from '@/utils/api';
+import { useAuthStore } from '@/stores/auth';
+import { onUnauthorized } from '@/utils/api';
 
-// function isAdminPath(path: string) {
-//   return path === '/admin' || path.startsWith('/admin/');
-// }
+function isAdminPath(path: string) {
+  return path === '/admin' || path.startsWith('/admin/');
+}
 
 /*
  * If not building with SSR mode, you can
@@ -39,33 +39,33 @@ export default defineRouter((/* { store, ssrContext } */) => {
     history: createHistory(import.meta.env.QUASAR_VUE_ROUTER_BASE),
   });
 
-  // Router.beforeEach(async (to) => {
-  //   const auth = useAuthStore();
-  //
-  //   // On first load, ask the back who is logged in
-  //   if (!auth.initialized) {
-  //     await auth.fetchCurrentUser();
-  //   }
-  //
-  //   const isPublic = PUBLIC_PATHS.includes(to.path);
-  //
-  //   if (!auth.isLoggedIn && !isPublic) {
-  //     return '/login';
-  //   }
-  //
-  //   if (auth.isLoggedIn && isPublic) {
-  //     return '/';
-  //   }
-  //
-  //   if (isAdminPath(to.path) && !auth.isAdmin) {
-  //     return '/';
-  //   }
-  // });
-  //
-  // onUnauthorized(() => {
-  //   useAuthStore().forgetUser();
-  //   void Router.push('/login');
-  // });
+  Router.beforeEach(async (to) => {
+    const auth = useAuthStore();
+
+    // On first load, ask the back who is logged in
+    if (!auth.initialized) {
+      await auth.fetchCurrentUser();
+    }
+
+    const isPublic = PUBLIC_PATHS.includes(to.path);
+
+    if (!auth.isLoggedIn && !isPublic) {
+      return '/login';
+    }
+
+    if (auth.isLoggedIn && isPublic) {
+      return '/';
+    }
+
+    if (isAdminPath(to.path) && !auth.isAdmin) {
+      return '/';
+    }
+  });
+
+  onUnauthorized(() => {
+    useAuthStore().forgetUser();
+    void Router.push('/login');
+  });
 
   // enable HMR for it
   if (import.meta.hot) {
