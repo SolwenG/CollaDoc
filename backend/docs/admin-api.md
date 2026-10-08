@@ -2,7 +2,7 @@
 
 Endpoints de gestion des comptes, tous montés sous `/admin`. L'authentification et la vérification du rôle `ADMIN` sont gérées en amont par le middleware d'auth (hors périmètre de ce module).
 
-L'admin connecté est lu via `getCurrentUser(res)` (`src/auth/current-user.ts`), qui attend `res.locals.user = { id, role }`.
+L'admin connecté est lu via `getAuthUser(req)` (`src/middlewares/auth.middleware.ts`), qui attend `req.user = { id, sessionId, role }`.
 
 ## Format d'un utilisateur (`AdminUserView`)
 
@@ -69,16 +69,18 @@ Erreurs communes à block/unblock :
 
 ### Auth (collègue en charge de l'auth)
 
-- [ ] Confirmer que le middleware d'auth expose `res.locals.user = { id, role }`, sinon adapter `getCurrentUser` (`// TODO(auth)`).
-- [ ] Protéger tout le préfixe `/admin` (session valide + MFA vérifiée + rôle `ADMIN`).
+- [x] Le middleware d'auth expose `req.user = { id, sessionId, role }` via `getAuthUser(req)`.
+- [x] Protéger tout le préfixe `/admin` (session valide + MFA vérifiée + rôle `ADMIN`).
 - [ ] Le login doit refuser les comptes avec `blockedAt` non null (le blocage supprime déjà les sessions existantes).
 - [ ] Le login doit forcer le changement de mot de passe quand `mustChangePassword = true`.
 
 ### Front (`feat/pages-profil-admin`)
 
-- [ ] `GET /admin` → `GET /admin/users`, réponse paginée `{ users, page, pageSize, total }`.
-- [ ] `POST /admin/create` → `POST /admin/users` avec `{ username, role }` uniquement : retirer le champ mot de passe du formulaire et afficher le `temporaryPassword` renvoyé.
-- [ ] `POST /users/:id/block` avec body → `POST /admin/users/:id/block` ou `/unblock`, sans body.
+- [x] `GET /admin` → `GET /admin/users`, réponse paginée `{ users, page, pageSize, total }`.
+- [x] `POST /admin/create` → `POST /admin/users` avec `{ username, role }` uniquement : retirer le champ mot de passe du formulaire et afficher le `temporaryPassword` renvoyé.
+- [x] `POST /users/:id/block` avec body → `POST /admin/users/:id/block` ou `/unblock`, sans body.
+- [x] Gestion des erreurs via `readApiError` et codes d'erreur.
+- [x] Types `UserProfile` et `AdminUserView` alignés avec le back.
 
 ### Évolutions possibles
 

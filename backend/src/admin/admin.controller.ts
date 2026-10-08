@@ -1,5 +1,5 @@
 import type { Request, Response } from "express";
-import { getCurrentUser } from "../auth/current-user.ts";
+import { getAuthUser } from "../middlewares/auth.middleware.ts";
 import { generateTemporaryPassword, hashPassword } from "../auth/password.ts";
 import { AppError } from "../errors/app-error.ts";
 import { createAccount, findByUsername } from "../users/users.service.ts";
@@ -21,7 +21,7 @@ export async function getUsers(req: Request, res: Response) {
 }
 
 export async function createUser(req: Request, res: Response) {
-  const currentUser = getCurrentUser(res);
+  const currentUser = getAuthUser(req);
   const { username, role } = createUserSchema.parse(req.body);
 
   if (await findByUsername(username)) {
@@ -44,7 +44,7 @@ export async function createUser(req: Request, res: Response) {
 }
 
 async function findTargetUser(req: Request, res: Response) {
-  const currentUser = getCurrentUser(res);
+  const currentUser = getAuthUser(req);
   const { id } = userIdParamsSchema.parse(req.params);
 
   if (id === currentUser.id) {

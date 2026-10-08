@@ -44,6 +44,44 @@
       </div>
     </q-form>
   </AuthCard>
+
+  <q-dialog v-model="showPasswordDialog">
+    <q-card>
+      <q-card-section>
+        <div class="text-h6">Mot de passe temporaire</div>
+      </q-card-section>
+
+      <q-card-section>
+        <p>Utilisateur {{ createdUsername }} créé avec succès. Voici le mot de passe temporaire :</p>
+        <q-input
+          v-model="temporaryPassword"
+          readonly
+          outlined
+          dense
+        >
+          <template #append>
+            <q-btn
+              icon="content_copy"
+              flat
+              round
+              @click="copyPassword"
+            >
+              <q-tooltip>Copier</q-tooltip>
+            </q-btn>
+          </template>
+        </q-input>
+        <p class="text-caption text-negative">
+          Ce mot de passe ne sera affiché qu'une seule fois. Copiez-le maintenant.
+        </p>
+      </q-card-section>
+
+      <q-card-actions align="right">
+        <q-btn flat label="Fermer" color="grey" @click="closePasswordDialog" />
+        <q-btn flat label="Retour" color="primary" @click="closeAndGoBack" />
+
+      </q-card-actions>
+    </q-card>
+  </q-dialog>
 </template>
 
 <script setup lang="ts">
@@ -65,7 +103,7 @@ const userStore = useUserStore();
 
 const formData = reactive({
   username: '',
-  role: '' as 'USER' | 'ADMIN',
+  role: 'USER' as const,
 });
 
 const roleOptions = [
@@ -77,6 +115,9 @@ const usernameError = ref('');
 const errorMessage = ref('');
 const successMessage = ref('');
 const loading = ref(false);
+const showPasswordDialog = ref(false);
+const temporaryPassword = ref('');
+const createdUsername = ref('');
 
 async function handleCreateUser() {
   errorMessage.value = '';
@@ -101,24 +142,34 @@ async function handleCreateUser() {
   });
 
   if (result.success) {
-    successMessage.value = `Utilisateur créé avec succès. Mot de passe temporaire: ${result.temporaryPassword}`;
+    createdUsername.value = formData.username;
+    temporaryPassword.value = result.temporaryPassword || '';
+    showPasswordDialog.value = true;
     formData.username = '';
     formData.role = 'USER';
-
-    setTimeout(() => {
-      void router.push('/admin');
-    }, 3000);
   } else {
-    if (result.error?.includes('déjà utilisé') || result.error?.includes('already exists')) {
-      usernameError.value = result.error || 'Cet identifiant est déjà utilisé.';
-    } else {
-      errorMessage.value = result.error || "Erreur lors de la création de l'utilisateur";
-    }
+    // Error is already a string from the store, display it
+    usernameError.value = result.error || "Erreur lors de la création de l'utilisateur";
   }
   loading.value = false;
 }
 
 function goBack() {
+  void router.push('/admin');
+}
+
+function copyPassword() {
+  void navigator.clipboard.writeText(temporaryPassword.value);
+}
+
+function closePasswordDialog() {
+  showPasswordDialog.value = false;
+  temporaryPassword.value = '';
+  createdUsername.value = '';
+}
+
+function closeAndGoBack() {
+  closePasswordDialog();
   void router.push('/admin');
 }
 </script>

@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { requireAuth } from "../auth/requireAuth.ts";
+import { requireAuth } from "../middlewares/auth.middleware.ts";
 import {
   changePassword,
   getProfile,
