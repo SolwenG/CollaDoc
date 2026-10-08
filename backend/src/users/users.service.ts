@@ -37,3 +37,9 @@ export async function findUserForLogin(username: string) {
 		.where({ username })
 		.first();
 }
+
+export async function findUserForAuth(id: number) {
+	return db.orm.public.User.select("id", "role", "blockedAt")
+		.where({ id })
+		.first();
+}

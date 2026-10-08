@@ -1,4 +1,4 @@
-import type { CookieOptions, Response } from "express";
+import type { CookieOptions, Request, Response } from "express";
 import { createHash, randomBytes } from "node:crypto";
 import { db } from "../prisma/db.ts";
 
@@ -101,4 +101,9 @@ export function setSessionCookie(
 
 export function clearSessionCookie(res: Response) {
 	res.clearCookie(SESSION_COOKIE_NAME, SESSION_COOKIE_OPTIONS);
+}
+
+export function readSessionToken(req: Request): string | null {
+	const token: unknown = req.cookies?.[SESSION_COOKIE_NAME];
+	return typeof token === "string" && token !== "" ? token : null;
 }
