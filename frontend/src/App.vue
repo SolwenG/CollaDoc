@@ -6,6 +6,11 @@
         <q-toolbar-title>
           <router-link to="/">CollaDoc</router-link>
         </q-toolbar-title>
+
+        <div v-if="auth.user" class="row items-center q-gutter-sm">
+          <span>{{ auth.user.displayName }}</span>
+          <q-btn flat dense round icon="logout" aria-label="Se déconnecter" @click="onLogout" />
+        </div>
       </q-toolbar>
     </q-header>
 
@@ -36,6 +41,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
+import { useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
 
 const leftDrawerOpen = ref(false);
@@ -45,4 +51,10 @@ function toggleLeftDrawer() {
 }
 
 const auth = useAuthStore();
+const router = useRouter();
+
+async function onLogout() {
+  await auth.logout();
+  await router.push('/login');
+}
 </script>
