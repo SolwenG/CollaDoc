@@ -88,6 +88,10 @@ export async function deleteSessionByToken(token: string): Promise<void> {
   await db.orm.public.Session.where({ tokenHash }).delete();
 }
 
+export async function deleteSessionById(sessionId: number): Promise<void> {
+  await db.orm.public.Session.where({ id: sessionId }).delete();
+}
+
 export function setSessionCookie(
   res: Response,
   token: string,
