@@ -80,8 +80,8 @@ Content-Type: application/json
   "password": "correct-horse-battery"
 }
 
-### Username taken AND password too short -> 400 PASSWORD_TOO_SHORT, not 409
-# The password policy runs before the database lookup in createAccount
+### Username taken AND password too short -> 409 USERNAME_TAKEN, not 400
+# registerUser looks the username up before checking the password policy
 POST {{baseUrl}}/users/register HTTP/1.1
 Content-Type: application/json
 
