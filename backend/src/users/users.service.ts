@@ -4,9 +4,9 @@ type Register = {
   username: string;
   displayName: string;
   passwordHash: string;
-  role: "USER" | "ADMIN";
-  mustChangePassword: boolean;
-  createdById: number;
+  role?: "USER" | "ADMIN";
+  mustChangePassword?: boolean;
+  createdById?: number;
 };
 
 export async function findByUsername(username: string) {
@@ -27,7 +27,14 @@ export async function createAccount({
     "displayName",
     "role",
     "createdAt",
-  ).create({ username, displayName, passwordHash, role, mustChangePassword, createdById });
+  ).create({
+    username,
+    displayName,
+    passwordHash,
+    role,
+    mustChangePassword,
+    createdById,
+  });
 }
 
 export async function findUserForLogin(username: string) {
