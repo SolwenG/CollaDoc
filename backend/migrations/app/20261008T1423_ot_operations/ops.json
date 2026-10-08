@@ -1,0 +1,618 @@
+[
+  {
+    "id": "dropColumn.Document.displayedVersion",
+    "label": "Drop column \"displayedVersion\" from \"Document\"",
+    "operationClass": "destructive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "displayedVersion",
+        "table": "Document"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"displayedVersion\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "Document",
+          "displayedVersion"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "drop column \"displayedVersion\"",
+        "sql": "ALTER TABLE \"public\".\"Document\" DROP COLUMN \"displayedVersion\""
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"displayedVersion\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "Document",
+          "displayedVersion"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "dropColumn.Document.revision",
+    "label": "Drop column \"revision\" from \"Document\"",
+    "operationClass": "destructive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "revision",
+        "table": "Document"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"revision\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "Document",
+          "revision"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "drop column \"revision\"",
+        "sql": "ALTER TABLE \"public\".\"Document\" DROP COLUMN \"revision\""
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"revision\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "Document",
+          "revision"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "dropCheckConstraint.DocumentOperation.DocumentOperation_type_check_c40a7336",
+    "label": "Drop check constraint \"DocumentOperation_type_check_c40a7336\" on \"DocumentOperation\"",
+    "operationClass": "destructive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "checkConstraint",
+        "name": "DocumentOperation_type_check_c40a7336",
+        "table": "DocumentOperation"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"DocumentOperation_type_check_c40a7336\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "DocumentOperation_type_check_c40a7336",
+          "public",
+          "\"public\".\"DocumentOperation\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "drop check constraint \"DocumentOperation_type_check_c40a7336\"",
+        "sql": "ALTER TABLE \"public\".\"DocumentOperation\" DROP CONSTRAINT \"DocumentOperation_type_check_c40a7336\""
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"DocumentOperation_type_check_c40a7336\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "DocumentOperation_type_check_c40a7336",
+          "public",
+          "\"public\".\"DocumentOperation\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "dropColumn.DocumentOperation.length",
+    "label": "Drop column \"length\" from \"DocumentOperation\"",
+    "operationClass": "destructive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "length",
+        "table": "DocumentOperation"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"length\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "DocumentOperation",
+          "length"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "drop column \"length\"",
+        "sql": "ALTER TABLE \"public\".\"DocumentOperation\" DROP COLUMN \"length\""
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"length\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "DocumentOperation",
+          "length"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "dropColumn.DocumentOperation.position",
+    "label": "Drop column \"position\" from \"DocumentOperation\"",
+    "operationClass": "destructive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "position",
+        "table": "DocumentOperation"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"position\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "DocumentOperation",
+          "position"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "drop column \"position\"",
+        "sql": "ALTER TABLE \"public\".\"DocumentOperation\" DROP COLUMN \"position\""
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"position\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "DocumentOperation",
+          "position"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "dropColumn.DocumentOperation.text",
+    "label": "Drop column \"text\" from \"DocumentOperation\"",
+    "operationClass": "destructive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "text",
+        "table": "DocumentOperation"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"text\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "DocumentOperation",
+          "text"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "drop column \"text\"",
+        "sql": "ALTER TABLE \"public\".\"DocumentOperation\" DROP COLUMN \"text\""
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"text\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "DocumentOperation",
+          "text"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "dropColumn.DocumentOperation.type",
+    "label": "Drop column \"type\" from \"DocumentOperation\"",
+    "operationClass": "destructive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "type",
+        "table": "DocumentOperation"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"type\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "DocumentOperation",
+          "type"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "drop column \"type\"",
+        "sql": "ALTER TABLE \"public\".\"DocumentOperation\" DROP COLUMN \"type\""
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"type\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "DocumentOperation",
+          "type"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.Document.contentRevision",
+    "label": "Add column \"contentRevision\" to \"Document\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "contentRevision",
+        "table": "Document"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"contentRevision\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "Document",
+          "contentRevision"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"contentRevision\"",
+        "sql": "ALTER TABLE \"public\".\"Document\" ADD COLUMN \"contentRevision\" int4 DEFAULT 0 NOT NULL"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"contentRevision\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "Document",
+          "contentRevision"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.DocumentOperation.opId",
+    "label": "Add column \"opId\" to \"DocumentOperation\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "opId",
+        "table": "DocumentOperation"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"opId\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "DocumentOperation",
+          "opId"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"opId\"",
+        "sql": "ALTER TABLE \"public\".\"DocumentOperation\" ADD COLUMN \"opId\" text"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"opId\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "DocumentOperation",
+          "opId"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "data_migration.backfill-DocumentOperation-opId",
+    "label": "Data transform: backfill-DocumentOperation-opId",
+    "operationClass": "data",
+    "target": {
+      "id": "postgres"
+    },
+    "precheck": [
+      {
+        "description": "Check backfill-DocumentOperation-opId has work to do",
+        "sql": "SELECT EXISTS (SELECT \"id\" AS \"id\" FROM \"public\".\"DocumentOperation\" WHERE \"opId\" IS NULL LIMIT 1) AS ok",
+        "params": []
+      }
+    ],
+    "execute": [
+      {
+        "description": "Run backfill-DocumentOperation-opId",
+        "sql": "DELETE FROM \"public\".\"DocumentOperation\" WHERE \"opId\" IS NULL",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "Verify backfill-DocumentOperation-opId resolved all violations",
+        "sql": "SELECT NOT EXISTS (SELECT \"id\" AS \"id\" FROM \"public\".\"DocumentOperation\" WHERE \"opId\" IS NULL LIMIT 1) AS ok",
+        "params": []
+      }
+    ]
+  },
+  {
+    "id": "alterNullability.setNotNull.DocumentOperation.opId",
+    "label": "Set NOT NULL on \"DocumentOperation\".\"opId\"",
+    "operationClass": "destructive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "opId",
+        "table": "DocumentOperation"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"opId\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "DocumentOperation",
+          "opId"
+        ]
+      },
+      {
+        "description": "ensure no NULL values in \"opId\"",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"public\".\"DocumentOperation\" WHERE \"opId\" IS NULL) AS \"result\"",
+        "params": []
+      }
+    ],
+    "execute": [
+      {
+        "description": "set NOT NULL on \"opId\"",
+        "sql": "ALTER TABLE \"public\".\"DocumentOperation\" ALTER COLUMN \"opId\" SET NOT NULL"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"opId\" is NOT NULL",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3 AND \"is_nullable\" = $4)) AS \"result\"",
+        "params": [
+          "public",
+          "DocumentOperation",
+          "opId",
+          "NO"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.DocumentOperation.operation",
+    "label": "Add column \"operation\" to \"DocumentOperation\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "operation",
+        "table": "DocumentOperation"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"operation\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "DocumentOperation",
+          "operation"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"operation\"",
+        "sql": "ALTER TABLE \"public\".\"DocumentOperation\" ADD COLUMN \"operation\" json"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"operation\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "DocumentOperation",
+          "operation"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "data_migration.backfill-DocumentOperation-operation",
+    "label": "Data transform: backfill-DocumentOperation-operation",
+    "operationClass": "data",
+    "target": {
+      "id": "postgres"
+    },
+    "precheck": [
+      {
+        "description": "Check backfill-DocumentOperation-operation has work to do",
+        "sql": "SELECT EXISTS (SELECT \"id\" AS \"id\" FROM \"public\".\"DocumentOperation\" WHERE \"operation\" IS NULL LIMIT 1) AS ok",
+        "params": []
+      }
+    ],
+    "execute": [
+      {
+        "description": "Run backfill-DocumentOperation-operation",
+        "sql": "DELETE FROM \"public\".\"DocumentOperation\" WHERE \"operation\" IS NULL",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "Verify backfill-DocumentOperation-operation resolved all violations",
+        "sql": "SELECT NOT EXISTS (SELECT \"id\" AS \"id\" FROM \"public\".\"DocumentOperation\" WHERE \"operation\" IS NULL LIMIT 1) AS ok",
+        "params": []
+      }
+    ]
+  },
+  {
+    "id": "alterNullability.setNotNull.DocumentOperation.operation",
+    "label": "Set NOT NULL on \"DocumentOperation\".\"operation\"",
+    "operationClass": "destructive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "operation",
+        "table": "DocumentOperation"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"operation\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "DocumentOperation",
+          "operation"
+        ]
+      },
+      {
+        "description": "ensure no NULL values in \"operation\"",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"public\".\"DocumentOperation\" WHERE \"operation\" IS NULL) AS \"result\"",
+        "params": []
+      }
+    ],
+    "execute": [
+      {
+        "description": "set NOT NULL on \"operation\"",
+        "sql": "ALTER TABLE \"public\".\"DocumentOperation\" ALTER COLUMN \"operation\" SET NOT NULL"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"operation\" is NOT NULL",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3 AND \"is_nullable\" = $4)) AS \"result\"",
+        "params": [
+          "public",
+          "DocumentOperation",
+          "operation",
+          "NO"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.DocumentOperation.DocumentOperation_opId_key",
+    "label": "Add unique constraint on \"DocumentOperation\" (opId)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "DocumentOperation_opId_key",
+        "table": "DocumentOperation"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"DocumentOperation_opId_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "DocumentOperation_opId_key",
+          "public",
+          "\"public\".\"DocumentOperation\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"DocumentOperation_opId_key\"",
+        "sql": "ALTER TABLE \"public\".\"DocumentOperation\" ADD CONSTRAINT \"DocumentOperation_opId_key\" UNIQUE (\"opId\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"DocumentOperation_opId_key\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "DocumentOperation_opId_key",
+          "public",
+          "\"public\".\"DocumentOperation\""
+        ]
+      }
+    ]
+  }
+]
