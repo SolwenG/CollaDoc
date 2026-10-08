@@ -59,6 +59,13 @@ declare module 'vue-router/auto-routes' {
       Record<never, never>,
       | never
     >,
+    '/documents/[id]': RouteRecordInfo<
+      '/documents/[id]',
+      '/documents/:id',
+      { id: ParamValue<true> },
+      { id: ParamValue<false> },
+      | never
+    >,
     '/login': RouteRecordInfo<
       '/login',
       '/login',
@@ -124,6 +131,14 @@ declare module 'vue-router/auto-routes' {
         | never
       pathParamNames:
         | never
+    }
+    'src/pages/documents/[id].vue': {
+      routes:
+        | '/documents/[id]'
+      views:
+        | never
+      pathParamNames:
+        | 'id'
     }
     'src/pages/login.vue': {
       routes:

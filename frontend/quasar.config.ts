@@ -46,6 +46,11 @@ export default defineConfig((ctx) => {
       filenameBasedRouting: true,
 
       vueRouterMode: 'history', // available values: 'hash', 'history'
+
+      // OT code shared with the realtime server
+      alias: {
+        '@shared': ctx.appPaths.resolve.app('../shared'),
+      },
       // vueRouterBase,
 
       // publicPath: '/',
@@ -97,11 +102,17 @@ export default defineConfig((ctx) => {
     devServer: {
       // https: true,
       open: true, // opens browser window automatically
+      // Allows serving ../shared
+      fs: { allow: ['..'] },
       proxy: {
         '/api': {
           target: 'http://localhost:3000',
           changeOrigin: true,
           rewrite: (path) => path.replace(/^\/api/, ''),
+        },
+        '/socket.io': {
+          target: 'http://localhost:3001',
+          ws: true,
         },
       },
     },
