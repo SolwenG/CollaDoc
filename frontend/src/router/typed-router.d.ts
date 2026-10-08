@@ -14,15 +14,13 @@ import type {
   ParamValueZeroOrMore,
   ParamValueZeroOrOne,
 } from 'vue-router'
-import type {
-  _ExtractParamParserType,
-} from 'vue-router/experimental'
+import type { _ExtractParamParserType } from 'vue-router/experimental';
 
 declare module 'vue-router' {
   interface TypesConfig {
-    _ParamParsers: {}
-    RouteNamedMap: import('vue-router/auto-routes').RouteNamedMap
-    _RouteFileInfoMap: import('vue-router/auto-routes')._RouteFileInfoMap
+    _ParamParsers: {};
+    RouteNamedMap: import('vue-router/auto-routes').RouteNamedMap;
+    _RouteFileInfoMap: import('vue-router/auto-routes')._RouteFileInfoMap;
   }
 }
 
@@ -36,57 +34,57 @@ declare module 'vue-router/auto-routes' {
       '/',
       Record<never, never>,
       Record<never, never>,
-      | never
-    >,
+      never
+    >;
     '/[...path]': RouteRecordInfo<
       '/[...path]',
       '/:path(.*)',
       { path: ParamValue<true> },
       { path: ParamValue<false> },
-      | never
-    >,
+      never
+    >;
     '/admin/': RouteRecordInfo<
       '/admin/',
       '/admin',
       Record<never, never>,
       Record<never, never>,
-      | never
-    >,
+      never
+    >;
     '/admin/create': RouteRecordInfo<
       '/admin/create',
       '/admin/create',
       Record<never, never>,
       Record<never, never>,
-      | never
-    >,
+      never
+    >;
     '/documents/[id]': RouteRecordInfo<
       '/documents/[id]',
       '/documents/:id',
       { id: ParamValue<true> },
       { id: ParamValue<false> },
-      | never
-    >,
+      never
+    >;
     '/login': RouteRecordInfo<
       '/login',
       '/login',
       Record<never, never>,
       Record<never, never>,
-      | never
-    >,
-    '/profil': RouteRecordInfo<
-      '/profil',
-      '/profil',
+      never
+    >;
+    '/profile': RouteRecordInfo<
+      '/profile',
+      '/profile',
       Record<never, never>,
       Record<never, never>,
-      | never
-    >,
+      never
+    >;
     '/register': RouteRecordInfo<
       '/register',
       '/register',
       Record<never, never>,
       Record<never, never>,
-      | never
-    >,
+      never
+    >;
   }
 
   /**
@@ -101,69 +99,45 @@ declare module 'vue-router/auto-routes' {
    */
   export interface _RouteFileInfoMap {
     'src/pages/index/(index).vue': {
-      routes:
-        | '//(index)'
-      views:
-        | never
-      pathParamNames:
-        | never
-    }
+      routes: '//(index)';
+      views: never;
+      pathParamNames: never;
+    };
     'src/pages/[...path].vue': {
-      routes:
-        | '/[...path]'
-      views:
-        | never
-      pathParamNames:
-        | 'path'
-    }
+      routes: '/[...path]';
+      views: never;
+      pathParamNames: 'path';
+    };
     'src/pages/admin/index.vue': {
-      routes:
-        | '/admin/'
-      views:
-        | never
-      pathParamNames:
-        | never
-    }
+      routes: '/admin/';
+      views: never;
+      pathParamNames: never;
+    };
     'src/pages/admin/create.vue': {
-      routes:
-        | '/admin/create'
-      views:
-        | never
-      pathParamNames:
-        | never
-    }
+      routes: '/admin/create';
+      views: never;
+      pathParamNames: never;
+    };
     'src/pages/documents/[id].vue': {
-      routes:
-        | '/documents/[id]'
-      views:
-        | never
-      pathParamNames:
-        | 'id'
-    }
+      routes: '/documents/[id]';
+      views: never;
+      pathParamNames: 'id';
+    };
     'src/pages/login.vue': {
-      routes:
-        | '/login'
-      views:
-        | never
-      pathParamNames:
-        | never
-    }
-    'src/pages/profil.vue': {
-      routes:
-        | '/profil'
-      views:
-        | never
-      pathParamNames:
-        | never
-    }
+      routes: '/login';
+      views: never;
+      pathParamNames: never;
+    };
+    'src/pages/profile.vue': {
+      routes: '/profile';
+      views: never;
+      pathParamNames: never;
+    };
     'src/pages/register.vue': {
-      routes:
-        | '/register'
-      views:
-        | never
-      pathParamNames:
-        | never
-    }
+      routes: '/register';
+      views: never;
+      pathParamNames: never;
+    };
   }
 
   /**
@@ -173,9 +147,7 @@ declare module 'vue-router/auto-routes' {
    * @internal
    */
   export type _RouteNamesForFilePath<FilePath extends string> =
-    _RouteFileInfoMap extends Record<FilePath, infer Info>
-      ? Info['routes']
-      : keyof RouteNamedMap
+    _RouteFileInfoMap extends Record<FilePath, infer Info> ? Info['routes'] : keyof RouteNamedMap;
 }
 
-export {}
+export {};
