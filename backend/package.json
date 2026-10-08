@@ -7,8 +7,11 @@
     "start": "node --env-file-if-exists=.env src/app.ts",
     "test": "vitest run --configLoader runner",
     "test:watch": "vitest --configLoader runner",
-    "contract:emit": "prisma contract emit",
-    "typecheck": "tsc --noEmit && tsc --noEmit -p migrations"
+    "prisma:contract": "prisma contract emit",
+    "prisma:migrate": "prisma db migrate --advance-ref db",
+    "prisma:verify": "prisma db verify",
+    "typecheck": "tsc --noEmit && tsc --noEmit -p migrations",
+    "lint": "prettier --write ."
   },
   "keywords": [],
   "author": "",
