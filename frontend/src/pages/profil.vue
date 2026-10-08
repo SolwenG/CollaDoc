@@ -318,11 +318,8 @@ async function saveField(field: 'displayName' | 'password') {
       formData.currentPassword = '';
       editing.password = false;
     } else {
-      if (result.error?.includes('actuel')) {
-        currentPasswordError.value = result.error || 'Erreur lors de la mise à jour';
-      } else {
-        passwordError.value = result.error || 'Erreur lors de la mise à jour';
-      }
+      // Error is already a string from the store, display it
+      passwordError.value = result.error || 'Erreur lors de la mise à jour';
     }
   }
 }

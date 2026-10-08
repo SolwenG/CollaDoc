@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { requireAuth, requireAdmin } from "../middlewares/auth.middleware.ts";
 import {
   blockUserAccount,
   createUser,
@@ -8,8 +9,10 @@ import {
 
 const router = Router();
 
+router.use(requireAuth, requireAdmin);
+
 router.get("/users", getUsers);
-router.post("/users/create", createUser);
+router.post("/users", createUser);
 router.post("/users/:id/block", blockUserAccount);
 router.post("/users/:id/unblock", unblockUserAccount);
 
