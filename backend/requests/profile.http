@@ -1,0 +1,110 @@
+# ================================= /profile =================================
+# Replayable on a database that is not purged: each run registers a fresh user ({{$timestamp}}),
+# and later requests read it back from the named response.
+# - Send the requests in order, from the top: "{{register.response...}}" only resolves once
+#   the "register" request was sent in this VS Code session.
+# - REST Client keeps cookies in one jar shared by every .http file: this file logs in on its own.
+# - Run against the LOCAL backend (cd backend && npm start): the Docker image sets
+#   NODE_ENV=production, so the cookie is Secure and REST Client never sends it over http.
+# - Test users pile up in the dev database; clean them up in psql when needed
+#   (docker compose exec db psql -U colladoc colladoc):
+#   DELETE FROM "User" WHERE "username" ~ '^prof_[0-9]+$';
+
+@baseUrl = http://localhost:3000
+@password = correct-horse-battery
+@newPassword = another-horse-battery
+
+### Create the user of this run -> 201
+# @name register
+POST {{baseUrl}}/users/register HTTP/1.1
+Content-Type: application/json
+
+{
+  "username": "prof_{{$timestamp}}",
+  "displayName": "Profile User",
+  "password": "{{password}}"
+}
+
+### Login -> 200 { user }
+POST {{baseUrl}}/auth/login HTTP/1.1
+Content-Type: application/json
+
+{
+  "username": "{{register.response.body.user.username}}",
+  "password": "{{password}}"
+}
+
+# =============================== Read profile ===============================
+
+### Get own profile -> 200 { profile }
+GET {{baseUrl}}/profile/{{register.response.body.user.id}} HTTP/1.1
+
+### Unknown profile id -> 404 USER_NOT_FOUND
+GET {{baseUrl}}/profile/999999 HTTP/1.1
+
+### Non-numeric profile id -> 400 VALIDATION_ERROR
+GET {{baseUrl}}/profile/abc HTTP/1.1
+
+# =============================== Display name ===============================
+
+### Update own display name -> 200 { profile }
+PATCH {{baseUrl}}/profile HTTP/1.1
+Content-Type: application/json
+
+{
+  "displayName": "Renamed User"
+}
+
+### Invalid display name -> 400 VALIDATION_ERROR on displayName
+PATCH {{baseUrl}}/profile HTTP/1.1
+Content-Type: application/json
+
+{
+  "displayName": "<script>"
+}
+
+# ================================= Password =================================
+# The failures first: once the change succeeds, the old password no longer works
+
+### Wrong current password -> 400 INVALID_CURRENT_PASSWORD
+PATCH {{baseUrl}}/profile/password HTTP/1.1
+Content-Type: application/json
+
+{
+  "currentPassword": "not-my-password",
+  "newPassword": "{{newPassword}}"
+}
+
+### Unchanged password -> 400 PASSWORD_UNCHANGED
+PATCH {{baseUrl}}/profile/password HTTP/1.1
+Content-Type: application/json
+
+{
+  "currentPassword": "{{password}}",
+  "newPassword": "{{password}}"
+}
+
+### Change password -> 204, other sessions are revoked, this one is kept
+PATCH {{baseUrl}}/profile/password HTTP/1.1
+Content-Type: application/json
+
+{
+  "currentPassword": "{{password}}",
+  "newPassword": "{{newPassword}}"
+}
+
+### Login with the new password -> 200 { user }
+POST {{baseUrl}}/auth/login HTTP/1.1
+Content-Type: application/json
+
+{
+  "username": "{{register.response.body.user.username}}",
+  "password": "{{newPassword}}"
+}
+
+# ============================== Missing session =============================
+# Last on purpose: an unknown token clears the session cookie for the requests that follow
+
+### Missing session -> 401 UNAUTHENTICATED
+GET {{baseUrl}}/profile/{{register.response.body.user.id}} HTTP/1.1
+Cookie: colladoc_session=invalid

@@ -59,3 +59,10 @@ docker compose up -d --build
 - frontend : http://localhost:8080
 - backend : http://localhost:3000
 
+## Tester l'API
+
+Les scénarios de requêtes sont dans [`backend/requests/`](backend/requests/), un fichier par domaine (`register`, `auth`, `mfa`, `profile`, `admin`), à lancer avec l'extension VS Code [REST Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client).
+
+- Chaque fichier se rejoue sans purger la base : il crée ses propres utilisateurs (`{{$timestamp}}`) et se connecte lui-même.
+- Envoie les requêtes dans l'ordre, depuis le haut du fichier : l'en-tête de chaque fichier liste ses prérequis (commande `psql` éventuelle, nettoyage des utilisateurs de test).
+- Lance le backend **en local** (`docker compose stop backend`, puis `cd backend && npm start`) : l'image Docker tourne en `NODE_ENV=production`, le cookie de session y est `Secure` et REST Client ne le renvoie pas en http.

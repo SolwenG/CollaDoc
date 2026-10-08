@@ -1,0 +1,104 @@
+# ============================== /users/register ==============================
+# Replayable on a database that is not purged: each run registers a fresh user ({{$timestamp}}),
+# and later requests read it back from the named response.
+# - Send the requests in order, from the top: "{{register.response...}}" only resolves once
+#   the "register" request was sent in this VS Code session.
+# - Test users pile up in the dev database; clean them up in psql when needed
+#   (docker compose exec db psql -U colladoc colladoc):
+#   DELETE FROM "User" WHERE "username" ~ '^reg_[0-9]+$';
+
+@baseUrl = http://localhost:3000
+
+### Valid registration -> 201, username trimmed and lowercased to "reg_<timestamp>"
+# @name register
+POST {{baseUrl}}/users/register HTTP/1.1
+Content-Type: application/json
+
+{
+  "username": "  Reg_{{$timestamp}} ",
+  "displayName": "New User",
+  "password": "correct-horse-battery"
+}
+
+### Same username again -> 409 USERNAME_TAKEN
+POST {{baseUrl}}/users/register HTTP/1.1
+Content-Type: application/json
+
+{
+  "username": "{{register.response.body.user.username}}",
+  "displayName": "New User",
+  "password": "correct-horse-battery"
+}
+
+### Role injection attempt -> 400, unrecognized key
+POST {{baseUrl}}/users/register HTTP/1.1
+Content-Type: application/json
+
+{
+  "username": "mallory_{{$timestamp}}",
+  "displayName": "Mallory",
+  "password": "correct-horse-battery",
+  "role": "ADMIN"
+}
+
+### Invalid input -> 400 VALIDATION_ERROR on username and displayName (password length is checked by the service)
+POST {{baseUrl}}/users/register HTTP/1.1
+Content-Type: application/json
+
+{
+  "username": "a!",
+  "password": "short"
+}
+
+### Password too short -> 400 PASSWORD_TOO_SHORT (min 12 characters)
+POST {{baseUrl}}/users/register HTTP/1.1
+Content-Type: application/json
+
+{
+  "username": "shortpwd_{{$timestamp}}",
+  "displayName": "Short Password",
+  "password": "short"
+}
+
+### Password too long -> 400 PASSWORD_TOO_LONG (81 characters, max 80)
+POST {{baseUrl}}/users/register HTTP/1.1
+Content-Type: application/json
+
+{
+  "username": "longpwd_{{$timestamp}}",
+  "displayName": "Long Password",
+  "password": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+}
+
+### Display name too short -> 400 VALIDATION_ERROR on displayName (min 2 characters)
+POST {{baseUrl}}/users/register HTTP/1.1
+Content-Type: application/json
+
+{
+  "username": "tinyname_{{$timestamp}}",
+  "displayName": "N",
+  "password": "correct-horse-battery"
+}
+
+### Username taken AND password too short -> 400 PASSWORD_TOO_SHORT, not 409
+# The password policy runs before the database lookup in createAccount
+POST {{baseUrl}}/users/register HTTP/1.1
+Content-Type: application/json
+
+{
+  "username": "{{register.response.body.user.username}}",
+  "displayName": "New User",
+  "password": "short"
+}
+
+### Missing body -> 400
+POST {{baseUrl}}/users/register HTTP/1.1
+
+### Malformed JSON -> 400, rejected by express.json() before reaching the controller
+POST {{baseUrl}}/users/register HTTP/1.1
+Content-Type: application/json
+
+{
+  "username": "bob",
+  "displayName":
+}
