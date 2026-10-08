@@ -4,8 +4,10 @@ import type { LoginInput } from "./auth.schema.ts";
 import { hashPassword, verifyPassword } from "./password.ts";
 import { createSession } from "./session.ts";
 
-// Verified against when the username does not exist, so that an unknown
-// username takes as long to reject as a wrong password.
+/**
+ * Verified against when the username does not exist, so that an unknown
+ * username takes as long to reject as a wrong password.
+ */
 const DUMMY_PASSWORD_HASH = await hashPassword("dummy-password-for-timing");
 
 export async function login({ username, password }: LoginInput) {

@@ -4,7 +4,7 @@ import { db } from "../../prisma/db.ts";
 const MFA_MAX_FAILED_ATTEMPTS = 5;
 const MFA_LOCK_DURATION_SECONDS = 15 * 60;
 
-// Spread into the update that records a success, so the reset rides the same query
+/** Spread into the update that records a success, so the reset rides the same query */
 export const MFA_ATTEMPTS_RESET = {
   mfaFailedAttempts: 0,
   mfaLockedUntil: null,

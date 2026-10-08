@@ -36,7 +36,7 @@ export async function getCurrentUser(req: Request, res: Response) {
   return res.status(200).json({ user });
 }
 
-// Idempotent: also succeeds without a cookie or with a dead session, the goal is to be logged out
+/** Idempotent: also succeeds without a cookie or with a dead session, the goal is to be logged out */
 export async function logoutUser(req: Request, res: Response) {
   const token = readSessionToken(req);
   if (token) await deleteSessionByToken(token);

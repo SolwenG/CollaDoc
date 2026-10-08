@@ -3,14 +3,14 @@ import { generateSecret, generateURI, verify } from "otplib";
 import QRCode from "qrcode";
 
 const TOTP_ISSUER = "CollaDoc";
-// One 30 s step on each side, for a phone clock slightly ahead or behind
+/** One 30 s step on each side, for a phone clock slightly ahead or behind */
 const TOTP_EPOCH_TOLERANCE_SECONDS = 30;
 
 const CIPHER_ALGORITHM = "aes-256-gcm";
 const IV_LENGTH = 12;
 const AUTH_TAG_LENGTH = 16;
 
-// Read at import time: a missing or malformed key stops the server at startup, not at the first login
+/** Read at import time: a missing or malformed key stops the server at startup, not at the first login */
 const ENCRYPTION_KEY = loadEncryptionKey();
 
 function loadEncryptionKey(): Buffer {
@@ -21,7 +21,7 @@ function loadEncryptionKey(): Buffer {
   return key;
 }
 
-// Stored as "iv.tag.ciphertext", each part in base64url ("." is outside that alphabet)
+/** Stored as "iv.tag.ciphertext", each part in base64url ("." is outside that alphabet) */
 function encryptSecret(secret: string): string {
   const iv = randomBytes(IV_LENGTH);
   const cipher = createCipheriv(CIPHER_ALGORITHM, ENCRYPTION_KEY, iv, {
@@ -61,7 +61,7 @@ export type TotpSetup = {
   encryptedSecret: string;
 };
 
-// The plain secret is returned only to be shown once; only encryptedSecret is stored
+/** The plain secret is returned only to be shown once; only encryptedSecret is stored */
 export async function createTotpSetup(label: string): Promise<TotpSetup> {
   const secret = generateSecret();
   const otpauthUrl = generateURI({ issuer: TOTP_ISSUER, label, secret });
@@ -81,7 +81,10 @@ type VerifyTotpCode = {
   lastUsedStep: number | null;
 };
 
-// Returns the matched time step, to store as the new replay barrier, or null when the code is refused
+/**
+ * Checks a 6-digit code against the stored secret, refusing any step up to `lastUsedStep`.
+ * @returns the matched time step, to store as the new replay barrier, or null when the code is refused
+ */
 export async function verifyTotpCode({
   encryptedSecret,
   code,

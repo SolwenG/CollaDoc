@@ -7,12 +7,12 @@ const LOGIN_WINDOW_MS = 15 * 60 * 1000;
 const LOGIN_ATTEMPTS_PER_ACCOUNT = 5;
 const LOGIN_ATTEMPTS_PER_IP = 50;
 
-// ipKeyGenerator groups an IPv6 /56 into one key: a single client owns the whole range
+/** ipKeyGenerator groups an IPv6 /56 into one key: a single client owns the whole range */
 function clientKey(req: Request): string {
   return ipKeyGenerator(req.ip ?? "");
 }
 
-// Normalized like the login itself, so "Alice" and " alice" share one counter
+/** Normalized like the login itself, so "Alice" and " alice" share one counter */
 function attemptedUsername(req: Request): string {
   const result = normalizedUsernameSchema.safeParse(req.body?.username);
   return result.success ? result.data : "";

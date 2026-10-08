@@ -11,13 +11,14 @@ import {
 import { AppError } from "../errors/app-error.ts";
 import { findUserForAuth } from "../users/users.service.ts";
 
-// What an authenticated request carries, set by requireAuth
+/** What an authenticated request carries, set by requireAuth */
 export type AuthUser = {
   id: number;
   sessionId: number;
   role: "USER" | "ADMIN";
 };
 
+/** What a request still waiting for its 2FA code carries, set by requirePendingMfa */
 export type PendingMfa = {
   userId: number;
   sessionId: number;
@@ -36,13 +37,13 @@ function unauthenticated(): AppError {
   return new AppError("UNAUTHENTICATED", "Authentication required");
 }
 
-// Drops a session that can never become valid again, in the database and in the browser
+/** Drops a session that can never become valid again, in the database and in the browser */
 async function revokeSession(res: Response, token: string): Promise<void> {
   await deleteSessionByToken(token);
   clearSessionCookie(res);
 }
 
-// Shared by requireAuth and requirePendingMfa: a live session of an active user
+/** Shared by requireAuth and requirePendingMfa: a live session of an active user */
 async function loadActiveSession(req: Request, res: Response) {
   const token = readSessionToken(req);
   if (!token) throw unauthenticated();
@@ -102,7 +103,7 @@ export function requireAdmin(req: Request, _res: Response, next: NextFunction) {
   next();
 }
 
-// The only gate a pending session passes: it opens /auth/mfa/verify and nothing else
+/** The only gate a pending session passes: it opens /auth/mfa/verify and nothing else */
 export async function requirePendingMfa(
   req: Request,
   res: Response,

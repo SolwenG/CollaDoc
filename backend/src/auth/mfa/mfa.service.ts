@@ -11,14 +11,15 @@ function mfaAlreadyEnabled(): AppError {
   return new AppError("MFA_ALREADY_ENABLED", "MFA is already enabled");
 }
 
+/** Holds the password hash and the encrypted secret: never send this row to the client */
 async function findUserForMfa(id: number) {
   return db.orm.public.User.select(
     "id",
     "username",
     "displayName",
     "role",
-    "passwordHash", // Holds the password hash
-    "totpSecret", // AND the encrypted secret: never send these rows to the client
+    "passwordHash",
+    "totpSecret",
     "totpEnabledAt",
     "totpLastUsedStep",
   )
