@@ -19,6 +19,9 @@
 #   UPDATE "User" SET "role" = 'ADMIN'
 #   WHERE "id" = (SELECT max("id") FROM "User" WHERE "username" LIKE 'admin\_%');
 # then send "Login as the admin".
+# ⚠️ Without this step every /admin request below answers 403 FORBIDDEN, and the member
+# requests answer 401 (the member is never created). Check: "Login as the admin" must
+# answer "role": "ADMIN". The role is read on every request: promoting after the login is enough.
 
 ### Create the future admin -> 201
 # @name adminRegister
@@ -31,7 +34,7 @@ Content-Type: application/json
   "password": "{{password}}"
 }
 
-### Login as the admin (promoted in psql) -> 200 { user } with role "ADMIN"
+### Login as the admin (⚠️ promote it in psql first) -> 200 { user } with role "ADMIN"
 # @name adminLogin
 POST {{baseUrl}}/auth/login HTTP/1.1
 Content-Type: application/json
