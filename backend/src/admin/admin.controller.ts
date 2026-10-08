@@ -5,83 +5,83 @@ import { getAuthUser } from "../middlewares/auth.middleware.ts";
 import { notifySessionsChanged } from "../realtime/realtime-notifier.ts";
 import { createAccount, findByUsername } from "../users/users.service.ts";
 import {
-	createUserSchema,
-	listUsersQuerySchema,
-	userIdParamsSchema,
+  createUserSchema,
+  listUsersQuerySchema,
+  userIdParamsSchema,
 } from "./admin.schema.ts";
 import {
-	blockUser,
-	findAdminUserView,
-	listUsers,
-	unblockUser,
+  blockUser,
+  findAdminUserView,
+  listUsers,
+  unblockUser,
 } from "./admin.service.ts";
 
 export async function getUsers(req: Request, res: Response) {
-	const query = listUsersQuerySchema.parse(req.query);
-	return res.json(await listUsers(query));
+  const query = listUsersQuerySchema.parse(req.query);
+  return res.json(await listUsers(query));
 }
 
 export async function createUser(req: Request, res: Response) {
-	const currentUser = getAuthUser(req);
-	const { username, role } = createUserSchema.parse(req.body);
+  const currentUser = getAuthUser(req);
+  const { username, role } = createUserSchema.parse(req.body);
 
-	if (await findByUsername(username)) {
-		throw new AppError("USERNAME_TAKEN", "Username already taken");
-	}
+  if (await findByUsername(username)) {
+    throw new AppError("USERNAME_TAKEN", "Username already taken");
+  }
 
-	const temporaryPassword = generateTemporaryPassword();
-	const passwordHash = await hashPassword(temporaryPassword);
+  const temporaryPassword = generateTemporaryPassword();
+  const passwordHash = await hashPassword(temporaryPassword);
 
-	const user = await createAccount({
-		username,
-		displayName: username,
-		passwordHash,
-		role,
-		mustChangePassword: true,
-		createdById: currentUser.id,
-	});
+  const user = await createAccount({
+    username,
+    displayName: username,
+    passwordHash,
+    role,
+    mustChangePassword: true,
+    createdById: currentUser.id,
+  });
 
-	return res.status(201).json({ user, temporaryPassword });
+  return res.status(201).json({ user, temporaryPassword });
 }
 
 async function findTargetUser(req: Request, res: Response) {
-	const currentUser = getAuthUser(req);
-	const { id } = userIdParamsSchema.parse(req.params);
+  const currentUser = getAuthUser(req);
+  const { id } = userIdParamsSchema.parse(req.params);
 
-	if (id === currentUser.id) {
-		throw new AppError(
-			"CANNOT_BLOCK_SELF",
-			"Un administrateur ne peut pas modifier le blocage de son propre compte",
-		);
-	}
+  if (id === currentUser.id) {
+    throw new AppError(
+      "CANNOT_BLOCK_SELF",
+      "Un administrateur ne peut pas modifier le blocage de son propre compte",
+    );
+  }
 
-	const target = await findAdminUserView(id);
-	if (!target) {
-		throw new AppError("USER_NOT_FOUND", "Utilisateur introuvable");
-	}
+  const target = await findAdminUserView(id);
+  if (!target) {
+    throw new AppError("USER_NOT_FOUND", "Utilisateur introuvable");
+  }
 
-	return { currentUser, target };
+  return { currentUser, target };
 }
 
 export async function blockUserAccount(req: Request, res: Response) {
-	const { currentUser, target } = await findTargetUser(req, res);
+  const { currentUser, target } = await findTargetUser(req, res);
 
-	if (target.blockedAt !== null) {
-		return res.json({ user: target });
-	}
+  if (target.blockedAt !== null) {
+    return res.json({ user: target });
+  }
 
-	await blockUser(target.id, currentUser.id);
-	await notifySessionsChanged(target.id);
-	return res.json({ user: await findAdminUserView(target.id) });
+  await blockUser(target.id, currentUser.id);
+  await notifySessionsChanged(target.id);
+  return res.json({ user: await findAdminUserView(target.id) });
 }
 
 export async function unblockUserAccount(req: Request, res: Response) {
-	const { target } = await findTargetUser(req, res);
+  const { target } = await findTargetUser(req, res);
 
-	if (target.blockedAt === null) {
-		return res.json({ user: target });
-	}
+  if (target.blockedAt === null) {
+    return res.json({ user: target });
+  }
 
-	await unblockUser(target.id);
-	return res.json({ user: await findAdminUserView(target.id) });
+  await unblockUser(target.id);
+  return res.json({ user: await findAdminUserView(target.id) });
 }
