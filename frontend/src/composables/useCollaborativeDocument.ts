@@ -70,7 +70,6 @@ export function useCollaborativeDocument(
     send(toSend);
   }
 
-  // Throws away local state and starts again from the server's text
   function reload(keepLocalText: boolean) {
     if (keepLocalText && client?.outgoing()) lostText.value = text;
     client = null;
@@ -93,7 +92,6 @@ export function useCollaborativeDocument(
       render();
     } else if (client) {
       for (const message of response.missed) receive(message);
-      // Sent again: if the server already had it, it only acknowledges it
       send(client.outgoing());
     }
     ready.value = true;
@@ -135,7 +133,6 @@ export function useCollaborativeDocument(
     if (message.documentId === documentId) receive(message);
   });
   socket.on('operation:rejected', (message) => {
-    // Joining again also refreshes the role, in case it was lowered to viewer
     if (message.documentId === documentId) reload(true);
   });
   socket.on('document:closed', (message) => {
