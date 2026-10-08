@@ -29,6 +29,14 @@ DATABASE_URL="postgresql://colladoc:colladoc@localhost:5433/colladoc"
 > Depuis la machine hôte, Postgres est exposé sur le port **5433** (`DB_PORT`), pas 5432.
 > Dans le réseau Docker, le conteneur `backend` utilise `db:5432` (déjà configuré dans `docker-compose.yml`).
 
+Dans les **deux** fichiers, renseigne la **même** `TOTP_ENCRYPTION_KEY` (clé qui chiffre les secrets 2FA en base) :
+
+```bash
+node -e "console.log(require('node:crypto').randomBytes(32).toString('base64'))"
+```
+
+> Même clé dans les deux : le backend local et celui de Docker partagent la même base, un secret chiffré par l'un doit pouvoir être déchiffré par l'autre.
+
 ### 2. Base de données
 
 ```bash
@@ -50,3 +58,4 @@ docker compose up -d --build
 
 - frontend : http://localhost:8080
 - backend : http://localhost:3000
+
