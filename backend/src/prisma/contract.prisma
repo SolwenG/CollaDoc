@@ -45,14 +45,14 @@ model User {
 }
 
 model Session {
-  id          Int               @id @default(autoincrement())
-  tokenHash   String            @unique // SHA-256 du token du cookie
-  userId      Int
-  user        User              @relation(fields: [userId], references: [id], onDelete: Cascade)
-  mfaVerified Boolean
-  expiresAt   TimestamptzString // 5 min si non vérifiée, 7 jours glissants sinon
-  createdAt   TimestamptzString @default(now())
-  lastUsedAt  TimestamptzString @default(now())
+  id           Int               @id @default(autoincrement())
+  tokenHash    String            @unique // SHA-256 du token du cookie
+  userId       Int
+  user         User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  mfaSatisfied Boolean // false = 2FA activé et TOTP toujours en attente; true = rien d'autre a vérifier (pas de 2FA activé ou code TOTP donné/rempli)
+  expiresAt    TimestamptzString // 5 min si le TOTP est attendu, 7 jours glissants sinon
+  createdAt    TimestamptzString @default(now())
+  lastUsedAt   TimestamptzString @default(now())
 
   @@index([userId])
 }

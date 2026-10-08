@@ -1,4 +1,4 @@
-import type { CookieOptions, Response } from "express";
+import type { CookieOptions, Request, Response } from "express";
 import { createHash, randomBytes } from "node:crypto";
 import { db } from "../prisma/db.ts";
 
@@ -16,7 +16,7 @@ const SESSION_COOKIE_OPTIONS: CookieOptions = {
 
 type CreateSession = {
 	userId: number;
-	mfaVerified: boolean;
+	mfaSatisfied: boolean;
 };
 
 export function generateSessionToken(): string {
@@ -27,11 +27,11 @@ export function hashSessionToken(token: string): string {
 	return createHash("sha256").update(token).digest("hex");
 }
 
-export async function createSession({ userId, mfaVerified }: CreateSession) {
+export async function createSession({ userId, mfaSatisfied }: CreateSession) {
 	const token = generateSessionToken();
 	const tokenHash = hashSessionToken(token);
 	const expiresAt = computeExpirationTime({
-		mfaVerified,
+		mfaSatisfied,
 		now: Date.now(),
 	}).toISOString();
 
@@ -39,7 +39,7 @@ export async function createSession({ userId, mfaVerified }: CreateSession) {
 		tokenHash,
 		expiresAt,
 		userId,
-		mfaVerified,
+		mfaSatisfied,
 	});
 
 	return { token, expiresAt };
@@ -50,7 +50,7 @@ export async function findSessionByToken(token: string) {
 	return db.orm.public.Session.select(
 		"id",
 		"userId",
-		"mfaVerified",
+		"mfaSatisfied",
 		"expiresAt",
 		"lastUsedAt",
 	)
@@ -61,7 +61,7 @@ export async function findSessionByToken(token: string) {
 export async function refreshSession(sessionId: number) {
 	const now = Date.now();
 	const expiresAt = computeExpirationTime({
-		mfaVerified: true,
+		mfaSatisfied: true,
 		now,
 	}).toISOString();
 
@@ -71,13 +71,13 @@ export async function refreshSession(sessionId: number) {
 }
 
 function computeExpirationTime({
-	mfaVerified,
+	mfaSatisfied,
 	now,
 }: {
-	mfaVerified: boolean;
+	mfaSatisfied: boolean;
 	now: number;
 }): Date {
-	const expirationTime = mfaVerified
+	const expirationTime = mfaSatisfied
 		? SESSION_TTL_MS
 		: PENDING_MFA_SESSION_TTL_MS;
 	return new Date(now + expirationTime);
@@ -101,4 +101,9 @@ export function setSessionCookie(
 
 export function clearSessionCookie(res: Response) {
 	res.clearCookie(SESSION_COOKIE_NAME, SESSION_COOKIE_OPTIONS);
+}
+
+export function readSessionToken(req: Request): string | null {
+	const token: unknown = req.cookies?.[SESSION_COOKIE_NAME];
+	return typeof token === "string" && token !== "" ? token : null;
 }

@@ -38,14 +38,14 @@ export async function findUserForLogin(username: string) {
 		.first();
 }
 
-export async function findUserById(id: number) {
-	return db.orm.public.User.select(
-		"id",
-		"username",
-		"displayName",
-		"role",
-		"blockedAt",
-	)
+export async function findUserForAuth(id: number) {
+	return db.orm.public.User.select("id", "role", "blockedAt")
+		.where({ id })
+		.first();
+}
+
+export async function findPublicUserById(id: number) {
+	return db.orm.public.User.select("id", "username", "displayName", "role")
 		.where({ id })
 		.first();
 }
