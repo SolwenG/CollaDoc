@@ -851,6 +851,20 @@
                   "kind": "scalar"
                 }
               },
+              "mfaFailedAttempts": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/int4@1",
+                  "kind": "scalar"
+                }
+              },
+              "mfaLockedUntil": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/timestamptz-string@1",
+                  "kind": "scalar"
+                }
+              },
               "mustChangePassword": {
                 "nullable": false,
                 "type": {
@@ -882,6 +896,13 @@
                 "nullable": true,
                 "type": {
                   "codecId": "pg/timestamptz-string@1",
+                  "kind": "scalar"
+                }
+              },
+              "totpLastUsedStep": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/int4@1",
                   "kind": "scalar"
                 }
               },
@@ -953,6 +974,12 @@
                 "id": {
                   "column": "id"
                 },
+                "mfaFailedAttempts": {
+                  "column": "mfaFailedAttempts"
+                },
+                "mfaLockedUntil": {
+                  "column": "mfaLockedUntil"
+                },
                 "mustChangePassword": {
                   "column": "mustChangePassword"
                 },
@@ -964,6 +991,9 @@
                 },
                 "totpEnabledAt": {
                   "column": "totpEnabledAt"
+                },
+                "totpLastUsedStep": {
+                  "column": "totpLastUsedStep"
                 },
                 "totpSecret": {
                   "column": "totpSecret"
@@ -1708,6 +1738,20 @@
                   "nativeType": "int4",
                   "nullable": false
                 },
+                "mfaFailedAttempts": {
+                  "codecId": "pg/int4@1",
+                  "default": {
+                    "kind": "literal",
+                    "value": 0
+                  },
+                  "nativeType": "int4",
+                  "nullable": false
+                },
+                "mfaLockedUntil": {
+                  "codecId": "pg/timestamptz-string@1",
+                  "nativeType": "timestamptz",
+                  "nullable": true
+                },
                 "mustChangePassword": {
                   "codecId": "pg/bool@1",
                   "default": {
@@ -1740,6 +1784,11 @@
                 "totpEnabledAt": {
                   "codecId": "pg/timestamptz-string@1",
                   "nativeType": "timestamptz",
+                  "nullable": true
+                },
+                "totpLastUsedStep": {
+                  "codecId": "pg/int4@1",
+                  "nativeType": "int4",
                   "nullable": true
                 },
                 "totpSecret": {
@@ -1831,7 +1880,7 @@
         "kind": "postgres-schema"
       }
     },
-    "storageHash": "c9b8642a1f68e6bd61803df5ce9bef027963adf1d830ccca7dc970704bf05882"
+    "storageHash": "07051170eadf552fc9f08e44c0fd57d54176cebf62a448808bff8833407b6491"
   },
   "execution": {
     "executionHash": "0b055b82a690d3f162aef43711a9fd620a4600d4c62ae34dac7dedd27bd43c38",

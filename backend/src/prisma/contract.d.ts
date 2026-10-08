@@ -34,7 +34,7 @@ import type {
 } from "@prisma/orm-postgres/contract/types";
 
 export type StorageHash =
-  StorageHashBase<"c9b8642a1f68e6bd61803df5ce9bef027963adf1d830ccca7dc970704bf05882">;
+  StorageHashBase<"07051170eadf552fc9f08e44c0fd57d54176cebf62a448808bff8833407b6491">;
 export type ExecutionHash =
   ExecutionHashBase<"0b055b82a690d3f162aef43711a9fd620a4600d4c62ae34dac7dedd27bd43c38">;
 export type ProfileHash =
@@ -605,11 +605,15 @@ export type FieldOutputTypes = {
       readonly createdById: CodecTypes["pg/int4@1"]["output"] | null;
       readonly displayName: CodecTypes["pg/text@1"]["output"];
       readonly id: CodecTypes["pg/int4@1"]["output"];
+      readonly mfaFailedAttempts: CodecTypes["pg/int4@1"]["output"];
+      readonly mfaLockedUntil:
+        CodecTypes["pg/timestamptz-string@1"]["output"] | null;
       readonly mustChangePassword: CodecTypes["pg/bool@1"]["output"];
       readonly passwordHash: CodecTypes["pg/text@1"]["output"];
       readonly role: "USER" | "ADMIN";
       readonly totpEnabledAt:
         CodecTypes["pg/timestamptz-string@1"]["output"] | null;
+      readonly totpLastUsedStep: CodecTypes["pg/int4@1"]["output"] | null;
       readonly totpSecret: CodecTypes["pg/text@1"]["output"] | null;
       readonly updatedAt: CodecTypes["pg/timestamptz-string@1"]["output"];
       readonly username: CodecTypes["pg/text@1"]["output"];
@@ -684,11 +688,15 @@ export type FieldInputTypes = {
       readonly createdById: CodecTypes["pg/int4@1"]["input"] | null;
       readonly displayName: CodecTypes["pg/text@1"]["input"];
       readonly id: CodecTypes["pg/int4@1"]["input"];
+      readonly mfaFailedAttempts: CodecTypes["pg/int4@1"]["input"];
+      readonly mfaLockedUntil:
+        CodecTypes["pg/timestamptz-string@1"]["input"] | null;
       readonly mustChangePassword: CodecTypes["pg/bool@1"]["input"];
       readonly passwordHash: CodecTypes["pg/text@1"]["input"];
       readonly role: "USER" | "ADMIN";
       readonly totpEnabledAt:
         CodecTypes["pg/timestamptz-string@1"]["input"] | null;
+      readonly totpLastUsedStep: CodecTypes["pg/int4@1"]["input"] | null;
       readonly totpSecret: CodecTypes["pg/text@1"]["input"] | null;
       readonly updatedAt: CodecTypes["pg/timestamptz-string@1"]["input"];
       readonly username: CodecTypes["pg/text@1"]["input"];
@@ -764,11 +772,15 @@ export type StorageColumnTypes = {
       readonly createdById: CodecTypes["pg/int4@1"]["output"] | null;
       readonly displayName: CodecTypes["pg/text@1"]["output"];
       readonly id: CodecTypes["pg/int4@1"]["output"];
+      readonly mfaFailedAttempts: CodecTypes["pg/int4@1"]["output"];
+      readonly mfaLockedUntil:
+        CodecTypes["pg/timestamptz-string@1"]["output"] | null;
       readonly mustChangePassword: CodecTypes["pg/bool@1"]["output"];
       readonly passwordHash: CodecTypes["pg/text@1"]["output"];
       readonly role: "USER" | "ADMIN";
       readonly totpEnabledAt:
         CodecTypes["pg/timestamptz-string@1"]["output"] | null;
+      readonly totpLastUsedStep: CodecTypes["pg/int4@1"]["output"] | null;
       readonly totpSecret: CodecTypes["pg/text@1"]["output"] | null;
       readonly updatedAt: CodecTypes["pg/timestamptz-string@1"]["output"];
       readonly username: CodecTypes["pg/text@1"]["output"];
@@ -843,11 +855,15 @@ export type StorageColumnInputTypes = {
       readonly createdById: CodecTypes["pg/int4@1"]["input"] | null;
       readonly displayName: CodecTypes["pg/text@1"]["input"];
       readonly id: CodecTypes["pg/int4@1"]["input"];
+      readonly mfaFailedAttempts: CodecTypes["pg/int4@1"]["input"];
+      readonly mfaLockedUntil:
+        CodecTypes["pg/timestamptz-string@1"]["input"] | null;
       readonly mustChangePassword: CodecTypes["pg/bool@1"]["input"];
       readonly passwordHash: CodecTypes["pg/text@1"]["input"];
       readonly role: "USER" | "ADMIN";
       readonly totpEnabledAt:
         CodecTypes["pg/timestamptz-string@1"]["input"] | null;
+      readonly totpLastUsedStep: CodecTypes["pg/int4@1"]["input"] | null;
       readonly totpSecret: CodecTypes["pg/text@1"]["input"] | null;
       readonly updatedAt: CodecTypes["pg/timestamptz-string@1"]["input"];
       readonly username: CodecTypes["pg/text@1"]["input"];
@@ -941,10 +957,13 @@ export namespace Models {
     createdById: CodecTypes["pg/int4@1"]["output"] | null;
     displayName: CodecTypes["pg/text@1"]["output"];
     id: CodecTypes["pg/int4@1"]["output"];
+    mfaFailedAttempts: CodecTypes["pg/int4@1"]["output"];
+    mfaLockedUntil: CodecTypes["pg/timestamptz-string@1"]["output"] | null;
     mustChangePassword: CodecTypes["pg/bool@1"]["output"];
     passwordHash: CodecTypes["pg/text@1"]["output"];
     role: "USER" | "ADMIN";
     totpEnabledAt: CodecTypes["pg/timestamptz-string@1"]["output"] | null;
+    totpLastUsedStep: CodecTypes["pg/int4@1"]["output"] | null;
     totpSecret: CodecTypes["pg/text@1"]["output"] | null;
     updatedAt: CodecTypes["pg/timestamptz-string@1"]["output"];
     username: CodecTypes["pg/text@1"]["output"];
@@ -1634,6 +1653,20 @@ type ContractBase = Omit<
                     readonly expression: "autoincrement()";
                   };
                 };
+                readonly mfaFailedAttempts: {
+                  readonly nativeType: "int4";
+                  readonly codecId: "pg/int4@1";
+                  readonly nullable: false;
+                  readonly default: {
+                    readonly kind: "literal";
+                    readonly value: DefaultLiteralValue<"pg/int4@1", 0>;
+                  };
+                };
+                readonly mfaLockedUntil: {
+                  readonly nativeType: "timestamptz";
+                  readonly codecId: "pg/timestamptz-string@1";
+                  readonly nullable: true;
+                };
                 readonly mustChangePassword: {
                   readonly nativeType: "bool";
                   readonly codecId: "pg/bool@1";
@@ -1660,6 +1693,11 @@ type ContractBase = Omit<
                 readonly totpEnabledAt: {
                   readonly nativeType: "timestamptz";
                   readonly codecId: "pg/timestamptz-string@1";
+                  readonly nullable: true;
+                };
+                readonly totpLastUsedStep: {
+                  readonly nativeType: "int4";
+                  readonly codecId: "pg/int4@1";
                   readonly nullable: true;
                 };
                 readonly totpSecret: {
@@ -2435,6 +2473,20 @@ type ContractBase = Omit<
                   readonly codecId: "pg/int4@1";
                 };
               };
+              readonly mfaFailedAttempts: {
+                readonly nullable: false;
+                readonly type: {
+                  readonly kind: "scalar";
+                  readonly codecId: "pg/int4@1";
+                };
+              };
+              readonly mfaLockedUntil: {
+                readonly nullable: true;
+                readonly type: {
+                  readonly kind: "scalar";
+                  readonly codecId: "pg/timestamptz-string@1";
+                };
+              };
               readonly mustChangePassword: {
                 readonly nullable: false;
                 readonly type: {
@@ -2461,6 +2513,13 @@ type ContractBase = Omit<
                 readonly type: {
                   readonly kind: "scalar";
                   readonly codecId: "pg/timestamptz-string@1";
+                };
+              };
+              readonly totpLastUsedStep: {
+                readonly nullable: true;
+                readonly type: {
+                  readonly kind: "scalar";
+                  readonly codecId: "pg/int4@1";
                 };
               };
               readonly totpSecret: {
@@ -2521,12 +2580,19 @@ type ContractBase = Omit<
                 readonly createdById: { readonly column: "createdById" };
                 readonly displayName: { readonly column: "displayName" };
                 readonly id: { readonly column: "id" };
+                readonly mfaFailedAttempts: {
+                  readonly column: "mfaFailedAttempts";
+                };
+                readonly mfaLockedUntil: { readonly column: "mfaLockedUntil" };
                 readonly mustChangePassword: {
                   readonly column: "mustChangePassword";
                 };
                 readonly passwordHash: { readonly column: "passwordHash" };
                 readonly role: { readonly column: "role" };
                 readonly totpEnabledAt: { readonly column: "totpEnabledAt" };
+                readonly totpLastUsedStep: {
+                  readonly column: "totpLastUsedStep";
+                };
                 readonly totpSecret: { readonly column: "totpSecret" };
                 readonly updatedAt: { readonly column: "updatedAt" };
                 readonly username: { readonly column: "username" };
