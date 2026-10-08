@@ -1,8 +1,8 @@
 import { Router } from "express";
 import {
-	getCurrentSession,
-	loginUser,
-	logoutUser,
+  getCurrentSession,
+  loginUser,
+  logoutUser,
 } from "../auth/auth.controller.ts";
 import { loginRateLimiters } from "../middlewares/rate-limit.middleware.ts";
 

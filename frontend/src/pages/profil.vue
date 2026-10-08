@@ -326,5 +326,4 @@ async function saveField(field: 'displayName' | 'password') {
     }
   }
 }
-
 </script>

@@ -38,27 +38,27 @@ export async function createAccount({
 }
 
 export async function findUserForLogin(username: string) {
-	return db.orm.public.User.select(
-		"id",
-		"username",
-		"displayName",
-		"role",
-		"passwordHash",
-		"blockedAt",
-		"totpEnabledAt",
-	)
-		.where({ username })
-		.first();
+  return db.orm.public.User.select(
+    "id",
+    "username",
+    "displayName",
+    "role",
+    "passwordHash",
+    "blockedAt",
+    "totpEnabledAt",
+  )
+    .where({ username })
+    .first();
 }
 
 export async function findUserById(id: number) {
-	return db.orm.public.User.select(
-		"id",
-		"username",
-		"displayName",
-		"role",
-		"blockedAt",
-	)
-		.where({ id })
-		.first();
+  return db.orm.public.User.select(
+    "id",
+    "username",
+    "displayName",
+    "role",
+    "blockedAt",
+  )
+    .where({ id })
+    .first();
 }
