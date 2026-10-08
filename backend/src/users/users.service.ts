@@ -43,3 +43,9 @@ export async function findUserForAuth(id: number) {
 		.where({ id })
 		.first();
 }
+
+export async function findPublicUserById(id: number) {
+	return db.orm.public.User.select("id", "username", "displayName", "role")
+		.where({ id })
+		.first();
+}

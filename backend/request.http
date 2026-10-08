@@ -174,3 +174,20 @@ Content-Type: application/json
   "username": "newuser_01",
   "password": "wrong-password-for-rate-limit"
 }
+
+# ============================== /auth/session ===============================
+# Run the successful login above first: REST Client keeps the cookie for the next requests
+
+### Current user -> 200 { user }
+GET {{baseUrl}}/auth/session HTTP/1.1
+
+# ============================== /auth/logout ================================
+
+### Logout -> 204, Set-Cookie clears colladoc_session (Expires=Thu, 01 Jan 1970)
+POST {{baseUrl}}/auth/logout HTTP/1.1
+
+### Current user after logout -> 401 UNAUTHENTICATED
+GET {{baseUrl}}/auth/session HTTP/1.1
+
+### Logout again, already logged out -> 204 (idempotent)
+POST {{baseUrl}}/auth/logout HTTP/1.1
