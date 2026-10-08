@@ -52,7 +52,7 @@
       </q-card-section>
 
       <q-card-section>
-        <p>Utilisateur créé avec succès. Voici le mot de passe temporaire :</p>
+        <p>Utilisateur {{ createdUsername }} créé avec succès. Voici le mot de passe temporaire :</p>
         <q-input
           v-model="temporaryPassword"
           readonly
@@ -76,7 +76,9 @@
       </q-card-section>
 
       <q-card-actions align="right">
-        <q-btn flat label="Fermer" color="primary" @click="closePasswordDialog" />
+        <q-btn flat label="Fermer" color="grey" @click="closePasswordDialog" />
+        <q-btn flat label="Retour" color="primary" @click="closeAndGoBack" />
+
       </q-card-actions>
     </q-card>
   </q-dialog>
@@ -115,6 +117,7 @@ const successMessage = ref('');
 const loading = ref(false);
 const showPasswordDialog = ref(false);
 const temporaryPassword = ref('');
+const createdUsername = ref('');
 
 async function handleCreateUser() {
   errorMessage.value = '';
@@ -139,6 +142,7 @@ async function handleCreateUser() {
   });
 
   if (result.success) {
+    createdUsername.value = formData.username;
     temporaryPassword.value = result.temporaryPassword || '';
     showPasswordDialog.value = true;
     formData.username = '';
@@ -161,5 +165,11 @@ function copyPassword() {
 function closePasswordDialog() {
   showPasswordDialog.value = false;
   temporaryPassword.value = '';
+  createdUsername.value = '';
+}
+
+function closeAndGoBack() {
+  closePasswordDialog();
+  void router.push('/admin');
 }
 </script>
