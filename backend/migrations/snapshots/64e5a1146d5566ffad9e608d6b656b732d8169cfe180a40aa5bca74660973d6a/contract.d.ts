@@ -34,7 +34,7 @@ import type {
 } from '@prisma/orm-postgres/contract/types';
 
 export type StorageHash =
-  StorageHashBase<'07051170eadf552fc9f08e44c0fd57d54176cebf62a448808bff8833407b6491'>;
+  StorageHashBase<'64e5a1146d5566ffad9e608d6b656b732d8169cfe180a40aa5bca74660973d6a'>;
 export type ExecutionHash =
   ExecutionHashBase<'0b055b82a690d3f162aef43711a9fd620a4600d4c62ae34dac7dedd27bd43c38'>;
 export type ProfileHash =
@@ -252,8 +252,8 @@ export type FieldOutputTypes = {
   readonly public: {
     readonly Document: {
       readonly content: CodecTypes['pg/text@1']['output'] | null;
+      readonly contentRevision: CodecTypes['pg/int4@1']['output'];
       readonly createdAt: CodecTypes['pg/timestamptz-string@1']['output'];
-      readonly displayedVersion: CodecTypes['pg/int4@1']['output'];
       readonly folderId: CodecTypes['pg/int4@1']['output'] | null;
       readonly id: CodecTypes['pg/int4@1']['output'];
       readonly kind: 'TEXT' | 'FILE';
@@ -262,7 +262,6 @@ export type FieldOutputTypes = {
       readonly name: CodecTypes['pg/text@1']['output'];
       readonly originalName: CodecTypes['pg/text@1']['output'] | null;
       readonly ownerId: CodecTypes['pg/int4@1']['output'];
-      readonly revision: CodecTypes['pg/int4@1']['output'];
       readonly size: CodecTypes['pg/int4@1']['output'] | null;
       readonly storagePath: CodecTypes['pg/text@1']['output'] | null;
       readonly updatedAt: CodecTypes['pg/timestamptz-string@1']['output'];
@@ -279,11 +278,9 @@ export type FieldOutputTypes = {
       readonly createdAt: CodecTypes['pg/timestamptz-string@1']['output'];
       readonly documentId: CodecTypes['pg/int4@1']['output'];
       readonly id: CodecTypes['pg/int4@1']['output'];
-      readonly length: CodecTypes['pg/int4@1']['output'] | null;
-      readonly position: CodecTypes['pg/int4@1']['output'];
+      readonly opId: CodecTypes['pg/text@1']['output'];
+      readonly operation: CodecTypes['pg/json@1']['output'];
       readonly revision: CodecTypes['pg/int4@1']['output'];
-      readonly text: CodecTypes['pg/text@1']['output'] | null;
-      readonly type: 'INSERT' | 'DELETE';
     };
     readonly Folder: {
       readonly createdAt: CodecTypes['pg/timestamptz-string@1']['output'];
@@ -333,8 +330,8 @@ export type FieldInputTypes = {
   readonly public: {
     readonly Document: {
       readonly content: CodecTypes['pg/text@1']['input'] | null;
+      readonly contentRevision: CodecTypes['pg/int4@1']['input'];
       readonly createdAt: CodecTypes['pg/timestamptz-string@1']['input'];
-      readonly displayedVersion: CodecTypes['pg/int4@1']['input'];
       readonly folderId: CodecTypes['pg/int4@1']['input'] | null;
       readonly id: CodecTypes['pg/int4@1']['input'];
       readonly kind: 'TEXT' | 'FILE';
@@ -343,7 +340,6 @@ export type FieldInputTypes = {
       readonly name: CodecTypes['pg/text@1']['input'];
       readonly originalName: CodecTypes['pg/text@1']['input'] | null;
       readonly ownerId: CodecTypes['pg/int4@1']['input'];
-      readonly revision: CodecTypes['pg/int4@1']['input'];
       readonly size: CodecTypes['pg/int4@1']['input'] | null;
       readonly storagePath: CodecTypes['pg/text@1']['input'] | null;
       readonly updatedAt: CodecTypes['pg/timestamptz-string@1']['input'];
@@ -360,11 +356,9 @@ export type FieldInputTypes = {
       readonly createdAt: CodecTypes['pg/timestamptz-string@1']['input'];
       readonly documentId: CodecTypes['pg/int4@1']['input'];
       readonly id: CodecTypes['pg/int4@1']['input'];
-      readonly length: CodecTypes['pg/int4@1']['input'] | null;
-      readonly position: CodecTypes['pg/int4@1']['input'];
+      readonly opId: CodecTypes['pg/text@1']['input'];
+      readonly operation: CodecTypes['pg/json@1']['input'];
       readonly revision: CodecTypes['pg/int4@1']['input'];
-      readonly text: CodecTypes['pg/text@1']['input'] | null;
-      readonly type: 'INSERT' | 'DELETE';
     };
     readonly Folder: {
       readonly createdAt: CodecTypes['pg/timestamptz-string@1']['input'];
@@ -414,8 +408,8 @@ export type StorageColumnTypes = {
   readonly public: {
     readonly Document: {
       readonly content: CodecTypes['pg/text@1']['output'] | null;
+      readonly contentRevision: CodecTypes['pg/int4@1']['output'];
       readonly createdAt: CodecTypes['pg/timestamptz-string@1']['output'];
-      readonly displayedVersion: CodecTypes['pg/int4@1']['output'];
       readonly folderId: CodecTypes['pg/int4@1']['output'] | null;
       readonly id: CodecTypes['pg/int4@1']['output'];
       readonly kind: 'TEXT' | 'FILE';
@@ -424,7 +418,6 @@ export type StorageColumnTypes = {
       readonly name: CodecTypes['pg/text@1']['output'];
       readonly originalName: CodecTypes['pg/text@1']['output'] | null;
       readonly ownerId: CodecTypes['pg/int4@1']['output'];
-      readonly revision: CodecTypes['pg/int4@1']['output'];
       readonly size: CodecTypes['pg/int4@1']['output'] | null;
       readonly storagePath: CodecTypes['pg/text@1']['output'] | null;
       readonly updatedAt: CodecTypes['pg/timestamptz-string@1']['output'];
@@ -441,11 +434,9 @@ export type StorageColumnTypes = {
       readonly createdAt: CodecTypes['pg/timestamptz-string@1']['output'];
       readonly documentId: CodecTypes['pg/int4@1']['output'];
       readonly id: CodecTypes['pg/int4@1']['output'];
-      readonly length: CodecTypes['pg/int4@1']['output'] | null;
-      readonly position: CodecTypes['pg/int4@1']['output'];
+      readonly operation: CodecTypes['pg/json@1']['output'];
+      readonly opId: CodecTypes['pg/text@1']['output'];
       readonly revision: CodecTypes['pg/int4@1']['output'];
-      readonly text: CodecTypes['pg/text@1']['output'] | null;
-      readonly type: 'INSERT' | 'DELETE';
     };
     readonly Folder: {
       readonly createdAt: CodecTypes['pg/timestamptz-string@1']['output'];
@@ -495,8 +486,8 @@ export type StorageColumnInputTypes = {
   readonly public: {
     readonly Document: {
       readonly content: CodecTypes['pg/text@1']['input'] | null;
+      readonly contentRevision: CodecTypes['pg/int4@1']['input'];
       readonly createdAt: CodecTypes['pg/timestamptz-string@1']['input'];
-      readonly displayedVersion: CodecTypes['pg/int4@1']['input'];
       readonly folderId: CodecTypes['pg/int4@1']['input'] | null;
       readonly id: CodecTypes['pg/int4@1']['input'];
       readonly kind: 'TEXT' | 'FILE';
@@ -505,7 +496,6 @@ export type StorageColumnInputTypes = {
       readonly name: CodecTypes['pg/text@1']['input'];
       readonly originalName: CodecTypes['pg/text@1']['input'] | null;
       readonly ownerId: CodecTypes['pg/int4@1']['input'];
-      readonly revision: CodecTypes['pg/int4@1']['input'];
       readonly size: CodecTypes['pg/int4@1']['input'] | null;
       readonly storagePath: CodecTypes['pg/text@1']['input'] | null;
       readonly updatedAt: CodecTypes['pg/timestamptz-string@1']['input'];
@@ -522,11 +512,9 @@ export type StorageColumnInputTypes = {
       readonly createdAt: CodecTypes['pg/timestamptz-string@1']['input'];
       readonly documentId: CodecTypes['pg/int4@1']['input'];
       readonly id: CodecTypes['pg/int4@1']['input'];
-      readonly length: CodecTypes['pg/int4@1']['input'] | null;
-      readonly position: CodecTypes['pg/int4@1']['input'];
+      readonly operation: CodecTypes['pg/json@1']['input'];
+      readonly opId: CodecTypes['pg/text@1']['input'];
       readonly revision: CodecTypes['pg/int4@1']['input'];
-      readonly text: CodecTypes['pg/text@1']['input'] | null;
-      readonly type: 'INSERT' | 'DELETE';
     };
     readonly Folder: {
       readonly createdAt: CodecTypes['pg/timestamptz-string@1']['input'];
@@ -576,8 +564,8 @@ export type StorageColumnInputTypes = {
 export namespace Models {
   export type public_Document = {
     content: CodecTypes['pg/text@1']['output'] | null;
+    contentRevision: CodecTypes['pg/int4@1']['output'];
     createdAt: CodecTypes['pg/timestamptz-string@1']['output'];
-    displayedVersion: CodecTypes['pg/int4@1']['output'];
     folderId: CodecTypes['pg/int4@1']['output'] | null;
     id: CodecTypes['pg/int4@1']['output'];
     kind: 'TEXT' | 'FILE';
@@ -586,7 +574,6 @@ export namespace Models {
     name: CodecTypes['pg/text@1']['output'];
     originalName: CodecTypes['pg/text@1']['output'] | null;
     ownerId: CodecTypes['pg/int4@1']['output'];
-    revision: CodecTypes['pg/int4@1']['output'];
     size: CodecTypes['pg/int4@1']['output'] | null;
     storagePath: CodecTypes['pg/text@1']['output'] | null;
     updatedAt: CodecTypes['pg/timestamptz-string@1']['output'];
@@ -611,11 +598,9 @@ export namespace Models {
     createdAt: CodecTypes['pg/timestamptz-string@1']['output'];
     documentId: CodecTypes['pg/int4@1']['output'];
     id: CodecTypes['pg/int4@1']['output'];
-    length: CodecTypes['pg/int4@1']['output'] | null;
-    position: CodecTypes['pg/int4@1']['output'];
+    opId: CodecTypes['pg/text@1']['output'];
+    operation: CodecTypes['pg/json@1']['output'];
     revision: CodecTypes['pg/int4@1']['output'];
-    text: CodecTypes['pg/text@1']['output'] | null;
-    type: 'INSERT' | 'DELETE';
     author: public_User;
     document: public_Document;
     readonly [RelationKeys]?: 'author' | 'document';
@@ -712,13 +697,7 @@ type ContractBase = Omit<
                   readonly codecId: 'pg/text@1';
                   readonly nullable: true;
                 };
-                readonly createdAt: {
-                  readonly nativeType: 'timestamptz';
-                  readonly codecId: 'pg/timestamptz-string@1';
-                  readonly nullable: false;
-                  readonly default: { readonly kind: 'function'; readonly expression: 'now()' };
-                };
-                readonly displayedVersion: {
+                readonly contentRevision: {
                   readonly nativeType: 'int4';
                   readonly codecId: 'pg/int4@1';
                   readonly nullable: false;
@@ -726,6 +705,12 @@ type ContractBase = Omit<
                     readonly kind: 'literal';
                     readonly value: DefaultLiteralValue<'pg/int4@1', 0>;
                   };
+                };
+                readonly createdAt: {
+                  readonly nativeType: 'timestamptz';
+                  readonly codecId: 'pg/timestamptz-string@1';
+                  readonly nullable: false;
+                  readonly default: { readonly kind: 'function'; readonly expression: 'now()' };
                 };
                 readonly folderId: {
                   readonly nativeType: 'int4';
@@ -770,15 +755,6 @@ type ContractBase = Omit<
                   readonly nativeType: 'int4';
                   readonly codecId: 'pg/int4@1';
                   readonly nullable: false;
-                };
-                readonly revision: {
-                  readonly nativeType: 'int4';
-                  readonly codecId: 'pg/int4@1';
-                  readonly nullable: false;
-                  readonly default: {
-                    readonly kind: 'literal';
-                    readonly value: DefaultLiteralValue<'pg/int4@1', 0>;
-                  };
                 };
                 readonly size: {
                   readonly nativeType: 'int4';
@@ -980,14 +956,14 @@ type ContractBase = Omit<
                     readonly expression: 'autoincrement()';
                   };
                 };
-                readonly length: {
-                  readonly nativeType: 'int4';
-                  readonly codecId: 'pg/int4@1';
-                  readonly nullable: true;
+                readonly opId: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: false;
                 };
-                readonly position: {
-                  readonly nativeType: 'int4';
-                  readonly codecId: 'pg/int4@1';
+                readonly operation: {
+                  readonly nativeType: 'json';
+                  readonly codecId: 'pg/json@1';
                   readonly nullable: false;
                 };
                 readonly revision: {
@@ -995,19 +971,12 @@ type ContractBase = Omit<
                   readonly codecId: 'pg/int4@1';
                   readonly nullable: false;
                 };
-                readonly text: {
-                  readonly nativeType: 'text';
-                  readonly codecId: 'pg/text@1';
-                  readonly nullable: true;
-                };
-                readonly type: {
-                  readonly nativeType: 'text';
-                  readonly codecId: 'pg/text@1';
-                  readonly nullable: false;
-                };
               };
               primaryKey: { readonly columns: readonly ['id'] };
-              uniques: readonly [{ readonly columns: readonly ['documentId', 'revision'] }];
+              uniques: readonly [
+                { readonly columns: readonly ['opId'] },
+                { readonly columns: readonly ['documentId', 'revision'] },
+              ];
               indexes: readonly [
                 {
                   readonly name: 'DocumentOperation_authorId_idx_e47547ed';
@@ -1441,10 +1410,6 @@ type ContractBase = Omit<
               readonly kind: 'valueSet';
               readonly values: readonly ['EDITOR', 'VIEWER'];
             };
-            readonly OperationType: {
-              readonly kind: 'valueSet';
-              readonly values: readonly ['INSERT', 'DELETE'];
-            };
             readonly Role: {
               readonly kind: 'valueSet';
               readonly values: readonly ['USER', 'ADMIN'];
@@ -1484,16 +1449,16 @@ type ContractBase = Omit<
                 readonly nullable: true;
                 readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
               };
+              readonly contentRevision: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/int4@1' };
+              };
               readonly createdAt: {
                 readonly nullable: false;
                 readonly type: {
                   readonly kind: 'scalar';
                   readonly codecId: 'pg/timestamptz-string@1';
                 };
-              };
-              readonly displayedVersion: {
-                readonly nullable: false;
-                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/int4@1' };
               };
               readonly folderId: {
                 readonly nullable: true;
@@ -1524,10 +1489,6 @@ type ContractBase = Omit<
                 readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
               };
               readonly ownerId: {
-                readonly nullable: false;
-                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/int4@1' };
-              };
-              readonly revision: {
                 readonly nullable: false;
                 readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/int4@1' };
               };
@@ -1584,8 +1545,8 @@ type ContractBase = Omit<
               readonly namespaceId: 'public';
               readonly fields: {
                 readonly content: { readonly column: 'content' };
+                readonly contentRevision: { readonly column: 'contentRevision' };
                 readonly createdAt: { readonly column: 'createdAt' };
-                readonly displayedVersion: { readonly column: 'displayedVersion' };
                 readonly folderId: { readonly column: 'folderId' };
                 readonly id: { readonly column: 'id' };
                 readonly kind: { readonly column: 'kind' };
@@ -1594,7 +1555,6 @@ type ContractBase = Omit<
                 readonly name: { readonly column: 'name' };
                 readonly originalName: { readonly column: 'originalName' };
                 readonly ownerId: { readonly column: 'ownerId' };
-                readonly revision: { readonly column: 'revision' };
                 readonly size: { readonly column: 'size' };
                 readonly storagePath: { readonly column: 'storagePath' };
                 readonly updatedAt: { readonly column: 'updatedAt' };
@@ -1692,25 +1652,17 @@ type ContractBase = Omit<
                 readonly nullable: false;
                 readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/int4@1' };
               };
-              readonly length: {
-                readonly nullable: true;
-                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/int4@1' };
-              };
-              readonly position: {
+              readonly opId: {
                 readonly nullable: false;
-                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/int4@1' };
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
+              readonly operation: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/json@1' };
               };
               readonly revision: {
                 readonly nullable: false;
                 readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/int4@1' };
-              };
-              readonly text: {
-                readonly nullable: true;
-                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
-              };
-              readonly type: {
-                readonly nullable: false;
-                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
               };
             };
             readonly relations: {
@@ -1744,11 +1696,9 @@ type ContractBase = Omit<
                 readonly createdAt: { readonly column: 'createdAt' };
                 readonly documentId: { readonly column: 'documentId' };
                 readonly id: { readonly column: 'id' };
-                readonly length: { readonly column: 'length' };
-                readonly position: { readonly column: 'position' };
+                readonly opId: { readonly column: 'opId' };
+                readonly operation: { readonly column: 'operation' };
                 readonly revision: { readonly column: 'revision' };
-                readonly text: { readonly column: 'text' };
-                readonly type: { readonly column: 'type' };
               };
             };
           };
@@ -2086,13 +2036,6 @@ type ContractBase = Omit<
             readonly members: readonly [
               { readonly name: 'EDITOR'; readonly value: 'EDITOR' },
               { readonly name: 'VIEWER'; readonly value: 'VIEWER' },
-            ];
-          };
-          readonly OperationType: {
-            readonly codecId: 'pg/text@1';
-            readonly members: readonly [
-              { readonly name: 'INSERT'; readonly value: 'INSERT' },
-              { readonly name: 'DELETE'; readonly value: 'DELETE' },
             ];
           };
           readonly Role: {
