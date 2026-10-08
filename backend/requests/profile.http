@@ -103,8 +103,10 @@ Content-Type: application/json
 }
 
 # ============================== Missing session =============================
-# Last on purpose: an unknown token clears the session cookie for the requests that follow
 
 ### Missing session -> 401 UNAUTHENTICATED
+# Without no-cookie-jar, REST Client sends the jar session cookie FIRST and this fake one after it,
+# and the server reads the first colladoc_session (the real one) -> 200 instead of 401
+# @no-cookie-jar
 GET {{baseUrl}}/profile/{{register.response.body.user.id}} HTTP/1.1
 Cookie: colladoc_session=invalid

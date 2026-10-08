@@ -103,6 +103,9 @@ GET {{baseUrl}}/auth/session HTTP/1.1
 POST {{baseUrl}}/auth/logout HTTP/1.1
 
 ### Unknown session token -> 401 UNAUTHENTICATED, cookie cleared
+# Without no-cookie-jar, REST Client sends the jar session cookie FIRST and this fake one after it,
+# and the server reads the first colladoc_session (the real one) -> 200 instead of 401
+# @no-cookie-jar
 GET {{baseUrl}}/auth/session HTTP/1.1
 Cookie: colladoc_session=unknown-token
 
