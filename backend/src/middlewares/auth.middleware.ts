@@ -78,3 +78,11 @@ export function getAuthUser(req: Request): AuthUser {
 	if (!req.user) throw unauthenticated();
 	return req.user;
 }
+
+export function requireAdmin(req: Request, _res: Response, next: NextFunction) {
+	const user = getAuthUser(req);
+	if (user.role !== "ADMIN") {
+		throw new AppError("FORBIDDEN", "Admin access required");
+	}
+	next();
+}
