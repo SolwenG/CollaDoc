@@ -161,6 +161,5 @@ function copyPassword() {
 function closePasswordDialog() {
   showPasswordDialog.value = false;
   temporaryPassword.value = '';
-  void router.push('/admin');
 }
 </script>
