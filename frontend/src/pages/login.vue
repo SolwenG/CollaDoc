@@ -47,7 +47,7 @@ const loading = ref(false);
 async function onSubmit() {
   loading.value = true;
   try {
-    const result = await auth.login(username.value.trim().toLowerCase(), password.value);
+    const result = await auth.login(username.value, password.value);
 
     if (result === 'success') {
       await router.push('/');
@@ -76,7 +76,7 @@ async function onSubmit() {
     }
 
     if (result === 'mfa-required') {
-      // TODO : ouvrir la fenêtre de saisie du code (branche 2FA)
+      // TODO: open the code dialog (branch 10-front-ecrans-2fa)
       $q.notify({ type: 'info', message: 'Vérification en deux étapes requise.' });
       return;
     }

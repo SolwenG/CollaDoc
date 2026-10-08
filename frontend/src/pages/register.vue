@@ -21,7 +21,7 @@
       <q-input
         v-model="displayName"
         label="Nom d'affichage"
-        hint="Le nom que les autres verront, 2 à 50 caractères, en minuscules"
+        hint="Le nom que les autres verront, 2 à 50 caractères"
         outlined
         lazy-rules
         autocomplete="off"
@@ -29,8 +29,11 @@
           required,
           minLength(DISPLAY_NAME_MIN_LENGTH),
           maxLength(DISPLAY_NAME_MAX_LENGTH),
-          safeCharacters,
+          displayNameCharacters,
         ]"
+        :error="!!displayNameError"
+        :error-message="displayNameError"
+        @update:model-value="displayNameError = ''"
       />
       <q-input
         v-model="password"
@@ -45,6 +48,9 @@
           maxLength(PASSWORD_MAX_LENGTH),
           strongEnough,
         ]"
+        :error="!!passwordError"
+        :error-message="passwordError"
+        @update:model-value="passwordError = ''"
       />
       <div v-if="password">
         <q-linear-progress :value="(score + 1) / 5" :color="color" />
@@ -75,7 +81,7 @@ import { useQuasar } from 'quasar';
 import { useRouter } from 'vue-router';
 import AuthCard from '@/components/AuthCard.vue';
 import { usePasswordStrength } from '@/composables/usePasswordStrength';
-import { postJson } from '@/utils/api';
+import { postJson, readApiError } from '@/utils/api';
 import {
   DISPLAY_NAME_MIN_LENGTH,
   DISPLAY_NAME_MAX_LENGTH,
@@ -83,6 +89,7 @@ import {
   PASSWORD_MIN_LENGTH,
   USERNAME_MAX_LENGTH,
   USERNAME_MIN_LENGTH,
+  displayNameCharacters,
   maxLength,
   minLength,
   required,
@@ -97,12 +104,28 @@ const displayName = ref('');
 const password = ref('');
 const confirmPassword = ref('');
 const usernameError = ref('');
+const displayNameError = ref('');
+const passwordError = ref('');
 const loading = ref(false);
 
 const { score, label, color, strongEnough } = usePasswordStrength(password);
 
 const samePassword = (val: string) =>
   val === password.value || 'Les mots de passe ne correspondent pas';
+
+// details comes from z.flattenError on the back: { fieldErrors: { field: [messages] } }
+function showFieldErrors(details: unknown) {
+  const fieldErrors = (
+    details as { fieldErrors?: Record<string, string[] | undefined> } | undefined
+  )?.fieldErrors;
+  if (!fieldErrors) return false;
+
+  usernameError.value = fieldErrors.username?.[0] ?? '';
+  displayNameError.value = fieldErrors.displayName?.[0] ?? '';
+  passwordError.value = fieldErrors.password?.[0] ?? '';
+
+  return !!(usernameError.value || displayNameError.value || passwordError.value);
+}
 
 async function onSubmit() {
   loading.value = true;
@@ -119,8 +142,19 @@ async function onSubmit() {
       return;
     }
 
-    if (response.status === 409) {
+    const error = await readApiError(response);
+
+    if (error?.code === 'USERNAME_TAKEN') {
       usernameError.value = 'Cet identifiant est déjà utilisé.';
+      return;
+    }
+
+    if (error?.code === 'PASSWORD_TOO_SHORT' || error?.code === 'PASSWORD_TOO_LONG') {
+      passwordError.value = error.message;
+      return;
+    }
+
+    if (error?.code === 'VALIDATION_ERROR' && showFieldErrors(error.details)) {
       return;
     }
 

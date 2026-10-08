@@ -174,3 +174,17 @@ Content-Type: application/json
   "username": "newuser_01",
   "password": "wrong-password-for-rate-limit"
 }
+
+# ============================== /auth/session ==============================
+
+### Current user -> 200 { user } after a successful login (the client keeps the cookie), 401 otherwise
+GET {{baseUrl}}/auth/session HTTP/1.1
+
+### Unknown session token -> 401 UNAUTHENTICATED, cookie cleared
+GET {{baseUrl}}/auth/session HTTP/1.1
+Cookie: colladoc_session=unknown-token
+
+# ============================== /auth/logout ==============================
+
+### Logout -> 204, session deleted and cookie cleared; /auth/session then returns 401
+POST {{baseUrl}}/auth/logout HTTP/1.1
