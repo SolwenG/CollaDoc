@@ -1,4 +1,4 @@
-// Same limits as the back's validation schemas
+// Limites identiques à celles du schéma de validation du back
 export const USERNAME_MIN_LENGTH = 3;
 export const USERNAME_MAX_LENGTH = 32;
 export const DISPLAY_NAME_MIN_LENGTH = 2;
@@ -16,6 +16,8 @@ export const maxLength = (max: number) => (val: string) =>
 
 export const safeCharacters = (val: string) =>
   /^[a-z0-9_.-]+$/.test(val) || 'Minuscules, chiffres, point, tiret et underscore uniquement';
+
+export const sixDigits = (val: string) => /^\d{6}$/.test(val) || 'Le code contient 6 chiffres';
 
 // Letters (any alphabet, accents included), digits, spaces and - ' ’ . _
 export const displayNameCharacters = (val: string) =>

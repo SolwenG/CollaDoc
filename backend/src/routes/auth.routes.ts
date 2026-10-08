@@ -1,8 +1,8 @@
 import { Router } from "express";
 import {
-	getCurrentUser,
-	loginUser,
-	logoutUser,
+  getCurrentUser,
+  loginUser,
+  logoutUser,
 } from "../auth/auth.controller.ts";
 import { requireAuth } from "../middlewares/auth.middleware.ts";
 import { loginRateLimiters } from "../middlewares/rate-limit.middleware.ts";

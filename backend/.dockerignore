@@ -3,3 +3,5 @@ pnpm-lock.yaml
 .env
 Dockerfile
 .dockerignore
+**/*.test.ts
+vitest.config.ts

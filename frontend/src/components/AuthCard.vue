@@ -4,8 +4,7 @@
       <q-page class="flex flex-center q-pa-md">
         <q-card class="auth-card">
           <q-card-section>
-            <div class="text-h5">CollaDoc</div>
-            <div class="text-subtitle1">{{ title }}</div>
+            <div class="text-h5">{{ title }}</div>
           </q-card-section>
           <q-card-section>
             <slot />

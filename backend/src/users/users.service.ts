@@ -1,51 +1,51 @@
 import { db } from "../prisma/db.ts";
 
 type Register = {
-	username: string;
-	displayName: string;
-	passwordHash: string;
+  username: string;
+  displayName: string;
+  passwordHash: string;
 };
 
 export async function findByUsername(username: string) {
-	return db.orm.public.User.select("id").where({ username }).first();
+  return db.orm.public.User.select("id").where({ username }).first();
 }
 
 export async function createAccount({
-	username,
-	displayName,
-	passwordHash,
+  username,
+  displayName,
+  passwordHash,
 }: Register) {
-	return db.orm.public.User.select(
-		"id",
-		"username",
-		"displayName",
-		"role",
-		"createdAt",
-	).create({ username, displayName, passwordHash });
+  return db.orm.public.User.select(
+    "id",
+    "username",
+    "displayName",
+    "role",
+    "createdAt",
+  ).create({ username, displayName, passwordHash });
 }
 
 export async function findUserForLogin(username: string) {
-	return db.orm.public.User.select(
-		"id",
-		"username",
-		"displayName",
-		"role",
-		"passwordHash",
-		"blockedAt",
-		"totpEnabledAt",
-	)
-		.where({ username })
-		.first();
+  return db.orm.public.User.select(
+    "id",
+    "username",
+    "displayName",
+    "role",
+    "passwordHash",
+    "blockedAt",
+    "totpEnabledAt",
+  )
+    .where({ username })
+    .first();
 }
 
 export async function findUserForAuth(id: number) {
-	return db.orm.public.User.select("id", "role", "blockedAt")
-		.where({ id })
-		.first();
+  return db.orm.public.User.select("id", "role", "blockedAt")
+    .where({ id })
+    .first();
 }
 
 export async function findPublicUserById(id: number) {
-	return db.orm.public.User.select("id", "username", "displayName", "role")
-		.where({ id })
-		.first();
+  return db.orm.public.User.select("id", "username", "displayName", "role")
+    .where({ id })
+    .first();
 }

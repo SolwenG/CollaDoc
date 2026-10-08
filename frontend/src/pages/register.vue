@@ -66,11 +66,17 @@
         :rules="[required, samePassword]"
       />
 
-      <q-btn type="submit" color="primary" label="S'inscrire" :loading="loading" />
+      <q-btn
+        type="submit"
+        color="primary"
+        label="S'inscrire"
+        class="full-width"
+        :loading="loading"
+      />
     </q-form>
     <div class="q-mt-md">
       Déjà un compte ?
-      <router-link to="/login">Se connecter</router-link>
+      <router-link to="/login" class="text-primary text-bold">Se connecter</router-link>
     </div>
   </AuthCard>
 </template>
@@ -80,7 +86,7 @@ import { ref } from 'vue';
 import { useQuasar } from 'quasar';
 import { useRouter } from 'vue-router';
 import AuthCard from '@/components/AuthCard.vue';
-import { usePasswordStrength } from '@/composables/usePasswordStrength';
+import { usePasswordStrength } from '@/hooks/usePasswordStrength';
 import { postJson, readApiError } from '@/utils/api';
 import {
   DISPLAY_NAME_MIN_LENGTH,

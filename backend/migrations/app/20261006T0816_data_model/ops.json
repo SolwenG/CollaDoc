@@ -15,9 +15,7 @@
       {
         "description": "ensure table \"Post\" exists",
         "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
-        "params": [
-          "\"public\".\"Post\""
-        ]
+        "params": ["\"public\".\"Post\""]
       }
     ],
     "execute": [
@@ -30,9 +28,7 @@
       {
         "description": "verify table \"Post\" does not exist",
         "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
-        "params": [
-          "\"public\".\"Post\""
-        ]
+        "params": ["\"public\".\"Post\""]
       }
     ]
   },
@@ -53,11 +49,7 @@
       {
         "description": "ensure column \"name\" exists",
         "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
-        "params": [
-          "public",
-          "User",
-          "name"
-        ]
+        "params": ["public", "User", "name"]
       }
     ],
     "execute": [
@@ -70,11 +62,7 @@
       {
         "description": "verify column \"name\" does not exist",
         "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
-        "params": [
-          "public",
-          "User",
-          "name"
-        ]
+        "params": ["public", "User", "name"]
       }
     ]
   },
@@ -95,11 +83,7 @@
       {
         "description": "ensure constraint \"User_email_key\" exists",
         "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
-        "params": [
-          "User_email_key",
-          "public",
-          "\"public\".\"User\""
-        ]
+        "params": ["User_email_key", "public", "\"public\".\"User\""]
       }
     ],
     "execute": [
@@ -112,11 +96,7 @@
       {
         "description": "verify constraint \"User_email_key\" does not exist",
         "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
-        "params": [
-          "User_email_key",
-          "public",
-          "\"public\".\"User\""
-        ]
+        "params": ["User_email_key", "public", "\"public\".\"User\""]
       }
     ]
   },
@@ -137,11 +117,7 @@
       {
         "description": "ensure column \"email\" exists",
         "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
-        "params": [
-          "public",
-          "User",
-          "email"
-        ]
+        "params": ["public", "User", "email"]
       }
     ],
     "execute": [
@@ -154,11 +130,7 @@
       {
         "description": "verify column \"email\" does not exist",
         "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
-        "params": [
-          "public",
-          "User",
-          "email"
-        ]
+        "params": ["public", "User", "email"]
       }
     ]
   },
@@ -179,9 +151,7 @@
       {
         "description": "ensure table \"Document\" does not exist",
         "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
-        "params": [
-          "\"public\".\"Document\""
-        ]
+        "params": ["\"public\".\"Document\""]
       }
     ],
     "execute": [
@@ -195,9 +165,7 @@
       {
         "description": "verify table \"Document\" exists",
         "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
-        "params": [
-          "\"public\".\"Document\""
-        ]
+        "params": ["\"public\".\"Document\""]
       }
     ]
   },
@@ -218,9 +186,7 @@
       {
         "description": "ensure table \"DocumentMember\" does not exist",
         "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
-        "params": [
-          "\"public\".\"DocumentMember\""
-        ]
+        "params": ["\"public\".\"DocumentMember\""]
       }
     ],
     "execute": [
@@ -234,9 +200,7 @@
       {
         "description": "verify table \"DocumentMember\" exists",
         "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
-        "params": [
-          "\"public\".\"DocumentMember\""
-        ]
+        "params": ["\"public\".\"DocumentMember\""]
       }
     ]
   },
@@ -257,9 +221,7 @@
       {
         "description": "ensure table \"DocumentOperation\" does not exist",
         "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
-        "params": [
-          "\"public\".\"DocumentOperation\""
-        ]
+        "params": ["\"public\".\"DocumentOperation\""]
       }
     ],
     "execute": [
@@ -273,9 +235,7 @@
       {
         "description": "verify table \"DocumentOperation\" exists",
         "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
-        "params": [
-          "\"public\".\"DocumentOperation\""
-        ]
+        "params": ["\"public\".\"DocumentOperation\""]
       }
     ]
   },
@@ -296,9 +256,7 @@
       {
         "description": "ensure table \"Folder\" does not exist",
         "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
-        "params": [
-          "\"public\".\"Folder\""
-        ]
+        "params": ["\"public\".\"Folder\""]
       }
     ],
     "execute": [
@@ -312,9 +270,7 @@
       {
         "description": "verify table \"Folder\" exists",
         "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
-        "params": [
-          "\"public\".\"Folder\""
-        ]
+        "params": ["\"public\".\"Folder\""]
       }
     ]
   },
@@ -335,9 +291,7 @@
       {
         "description": "ensure table \"Message\" does not exist",
         "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
-        "params": [
-          "\"public\".\"Message\""
-        ]
+        "params": ["\"public\".\"Message\""]
       }
     ],
     "execute": [
@@ -351,9 +305,7 @@
       {
         "description": "verify table \"Message\" exists",
         "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
-        "params": [
-          "\"public\".\"Message\""
-        ]
+        "params": ["\"public\".\"Message\""]
       }
     ]
   },
@@ -374,9 +326,7 @@
       {
         "description": "ensure table \"Session\" does not exist",
         "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
-        "params": [
-          "\"public\".\"Session\""
-        ]
+        "params": ["\"public\".\"Session\""]
       }
     ],
     "execute": [
@@ -390,9 +340,7 @@
       {
         "description": "verify table \"Session\" exists",
         "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
-        "params": [
-          "\"public\".\"Session\""
-        ]
+        "params": ["\"public\".\"Session\""]
       }
     ]
   },
@@ -413,11 +361,7 @@
       {
         "description": "ensure column \"blockedAt\" is missing",
         "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
-        "params": [
-          "public",
-          "User",
-          "blockedAt"
-        ]
+        "params": ["public", "User", "blockedAt"]
       }
     ],
     "execute": [
@@ -430,11 +374,7 @@
       {
         "description": "verify column \"blockedAt\" exists",
         "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
-        "params": [
-          "public",
-          "User",
-          "blockedAt"
-        ]
+        "params": ["public", "User", "blockedAt"]
       }
     ]
   },
@@ -455,11 +395,7 @@
       {
         "description": "ensure column \"blockedById\" is missing",
         "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
-        "params": [
-          "public",
-          "User",
-          "blockedById"
-        ]
+        "params": ["public", "User", "blockedById"]
       }
     ],
     "execute": [
@@ -472,11 +408,7 @@
       {
         "description": "verify column \"blockedById\" exists",
         "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
-        "params": [
-          "public",
-          "User",
-          "blockedById"
-        ]
+        "params": ["public", "User", "blockedById"]
       }
     ]
   },
@@ -497,11 +429,7 @@
       {
         "description": "ensure column \"createdById\" is missing",
         "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
-        "params": [
-          "public",
-          "User",
-          "createdById"
-        ]
+        "params": ["public", "User", "createdById"]
       }
     ],
     "execute": [
@@ -514,11 +442,7 @@
       {
         "description": "verify column \"createdById\" exists",
         "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
-        "params": [
-          "public",
-          "User",
-          "createdById"
-        ]
+        "params": ["public", "User", "createdById"]
       }
     ]
   },
@@ -539,11 +463,7 @@
       {
         "description": "ensure column \"mustChangePassword\" is missing",
         "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
-        "params": [
-          "public",
-          "User",
-          "mustChangePassword"
-        ]
+        "params": ["public", "User", "mustChangePassword"]
       }
     ],
     "execute": [
@@ -556,11 +476,7 @@
       {
         "description": "verify column \"mustChangePassword\" exists",
         "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
-        "params": [
-          "public",
-          "User",
-          "mustChangePassword"
-        ]
+        "params": ["public", "User", "mustChangePassword"]
       }
     ]
   },
@@ -581,11 +497,7 @@
       {
         "description": "ensure column \"role\" is missing",
         "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
-        "params": [
-          "public",
-          "User",
-          "role"
-        ]
+        "params": ["public", "User", "role"]
       }
     ],
     "execute": [
@@ -598,11 +510,7 @@
       {
         "description": "verify column \"role\" exists",
         "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
-        "params": [
-          "public",
-          "User",
-          "role"
-        ]
+        "params": ["public", "User", "role"]
       }
     ]
   },
@@ -623,11 +531,7 @@
       {
         "description": "ensure column \"totpEnabledAt\" is missing",
         "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
-        "params": [
-          "public",
-          "User",
-          "totpEnabledAt"
-        ]
+        "params": ["public", "User", "totpEnabledAt"]
       }
     ],
     "execute": [
@@ -640,11 +544,7 @@
       {
         "description": "verify column \"totpEnabledAt\" exists",
         "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
-        "params": [
-          "public",
-          "User",
-          "totpEnabledAt"
-        ]
+        "params": ["public", "User", "totpEnabledAt"]
       }
     ]
   },
@@ -665,11 +565,7 @@
       {
         "description": "ensure column \"totpSecret\" is missing",
         "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
-        "params": [
-          "public",
-          "User",
-          "totpSecret"
-        ]
+        "params": ["public", "User", "totpSecret"]
       }
     ],
     "execute": [
@@ -682,11 +578,7 @@
       {
         "description": "verify column \"totpSecret\" exists",
         "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
-        "params": [
-          "public",
-          "User",
-          "totpSecret"
-        ]
+        "params": ["public", "User", "totpSecret"]
       }
     ]
   },
@@ -707,11 +599,7 @@
       {
         "description": "ensure column \"displayName\" is missing",
         "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
-        "params": [
-          "public",
-          "User",
-          "displayName"
-        ]
+        "params": ["public", "User", "displayName"]
       }
     ],
     "execute": [
@@ -724,11 +612,7 @@
       {
         "description": "verify column \"displayName\" exists",
         "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
-        "params": [
-          "public",
-          "User",
-          "displayName"
-        ]
+        "params": ["public", "User", "displayName"]
       }
     ]
   },
@@ -778,11 +662,7 @@
       {
         "description": "ensure column \"displayName\" exists",
         "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
-        "params": [
-          "public",
-          "User",
-          "displayName"
-        ]
+        "params": ["public", "User", "displayName"]
       },
       {
         "description": "ensure no NULL values in \"displayName\"",
@@ -800,12 +680,7 @@
       {
         "description": "verify column \"displayName\" is NOT NULL",
         "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3 AND \"is_nullable\" = $4)) AS \"result\"",
-        "params": [
-          "public",
-          "User",
-          "displayName",
-          "NO"
-        ]
+        "params": ["public", "User", "displayName", "NO"]
       }
     ]
   },
@@ -826,11 +701,7 @@
       {
         "description": "ensure column \"passwordHash\" is missing",
         "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
-        "params": [
-          "public",
-          "User",
-          "passwordHash"
-        ]
+        "params": ["public", "User", "passwordHash"]
       }
     ],
     "execute": [
@@ -843,11 +714,7 @@
       {
         "description": "verify column \"passwordHash\" exists",
         "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
-        "params": [
-          "public",
-          "User",
-          "passwordHash"
-        ]
+        "params": ["public", "User", "passwordHash"]
       }
     ]
   },
@@ -897,11 +764,7 @@
       {
         "description": "ensure column \"passwordHash\" exists",
         "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
-        "params": [
-          "public",
-          "User",
-          "passwordHash"
-        ]
+        "params": ["public", "User", "passwordHash"]
       },
       {
         "description": "ensure no NULL values in \"passwordHash\"",
@@ -919,12 +782,7 @@
       {
         "description": "verify column \"passwordHash\" is NOT NULL",
         "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3 AND \"is_nullable\" = $4)) AS \"result\"",
-        "params": [
-          "public",
-          "User",
-          "passwordHash",
-          "NO"
-        ]
+        "params": ["public", "User", "passwordHash", "NO"]
       }
     ]
   },
@@ -974,11 +832,7 @@
       {
         "description": "ensure column \"username\" exists",
         "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
-        "params": [
-          "public",
-          "User",
-          "username"
-        ]
+        "params": ["public", "User", "username"]
       },
       {
         "description": "ensure no NULL values in \"username\"",
@@ -996,12 +850,7 @@
       {
         "description": "verify column \"username\" is NOT NULL",
         "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3 AND \"is_nullable\" = $4)) AS \"result\"",
-        "params": [
-          "public",
-          "User",
-          "username",
-          "NO"
-        ]
+        "params": ["public", "User", "username", "NO"]
       }
     ]
   },
@@ -1106,11 +955,7 @@
       {
         "description": "ensure constraint \"Session_tokenHash_key\" does not exist",
         "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
-        "params": [
-          "Session_tokenHash_key",
-          "public",
-          "\"public\".\"Session\""
-        ]
+        "params": ["Session_tokenHash_key", "public", "\"public\".\"Session\""]
       }
     ],
     "execute": [
@@ -1123,11 +968,7 @@
       {
         "description": "verify constraint \"Session_tokenHash_key\" exists",
         "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
-        "params": [
-          "Session_tokenHash_key",
-          "public",
-          "\"public\".\"Session\""
-        ]
+        "params": ["Session_tokenHash_key", "public", "\"public\".\"Session\""]
       }
     ]
   },
@@ -1148,11 +989,7 @@
       {
         "description": "ensure constraint \"User_role_check_1954e8c0\" does not exist",
         "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
-        "params": [
-          "User_role_check_1954e8c0",
-          "public",
-          "\"public\".\"User\""
-        ]
+        "params": ["User_role_check_1954e8c0", "public", "\"public\".\"User\""]
       }
     ],
     "execute": [
@@ -1165,11 +1002,7 @@
       {
         "description": "verify constraint \"User_role_check_1954e8c0\" exists",
         "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
-        "params": [
-          "User_role_check_1954e8c0",
-          "public",
-          "\"public\".\"User\""
-        ]
+        "params": ["User_role_check_1954e8c0", "public", "\"public\".\"User\""]
       }
     ]
   },
@@ -1190,11 +1023,7 @@
       {
         "description": "ensure constraint \"User_username_key\" does not exist",
         "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
-        "params": [
-          "User_username_key",
-          "public",
-          "\"public\".\"User\""
-        ]
+        "params": ["User_username_key", "public", "\"public\".\"User\""]
       }
     ],
     "execute": [
@@ -1207,11 +1036,7 @@
       {
         "description": "verify constraint \"User_username_key\" exists",
         "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
-        "params": [
-          "User_username_key",
-          "public",
-          "\"public\".\"User\""
-        ]
+        "params": ["User_username_key", "public", "\"public\".\"User\""]
       }
     ]
   },
@@ -1232,9 +1057,7 @@
       {
         "description": "ensure index \"Document_folderId_idx_5985e562\" does not exist",
         "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
-        "params": [
-          "\"public\".\"Document_folderId_idx_5985e562\""
-        ]
+        "params": ["\"public\".\"Document_folderId_idx_5985e562\""]
       }
     ],
     "execute": [
@@ -1248,9 +1071,7 @@
       {
         "description": "verify index \"Document_folderId_idx_5985e562\" exists",
         "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
-        "params": [
-          "\"public\".\"Document_folderId_idx_5985e562\""
-        ]
+        "params": ["\"public\".\"Document_folderId_idx_5985e562\""]
       }
     ]
   },
@@ -1271,9 +1092,7 @@
       {
         "description": "ensure index \"Document_lastModifiedById_idx_f811679d\" does not exist",
         "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
-        "params": [
-          "\"public\".\"Document_lastModifiedById_idx_f811679d\""
-        ]
+        "params": ["\"public\".\"Document_lastModifiedById_idx_f811679d\""]
       }
     ],
     "execute": [
@@ -1287,9 +1106,7 @@
       {
         "description": "verify index \"Document_lastModifiedById_idx_f811679d\" exists",
         "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
-        "params": [
-          "\"public\".\"Document_lastModifiedById_idx_f811679d\""
-        ]
+        "params": ["\"public\".\"Document_lastModifiedById_idx_f811679d\""]
       }
     ]
   },
@@ -1310,9 +1127,7 @@
       {
         "description": "ensure index \"Document_ownerId_folderId_idx_e5008c91\" does not exist",
         "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
-        "params": [
-          "\"public\".\"Document_ownerId_folderId_idx_e5008c91\""
-        ]
+        "params": ["\"public\".\"Document_ownerId_folderId_idx_e5008c91\""]
       }
     ],
     "execute": [
@@ -1326,9 +1141,7 @@
       {
         "description": "verify index \"Document_ownerId_folderId_idx_e5008c91\" exists",
         "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
-        "params": [
-          "\"public\".\"Document_ownerId_folderId_idx_e5008c91\""
-        ]
+        "params": ["\"public\".\"Document_ownerId_folderId_idx_e5008c91\""]
       }
     ]
   },
@@ -1349,9 +1162,7 @@
       {
         "description": "ensure index \"Document_ownerId_idx_e2d0c1ef\" does not exist",
         "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
-        "params": [
-          "\"public\".\"Document_ownerId_idx_e2d0c1ef\""
-        ]
+        "params": ["\"public\".\"Document_ownerId_idx_e2d0c1ef\""]
       }
     ],
     "execute": [
@@ -1365,9 +1176,7 @@
       {
         "description": "verify index \"Document_ownerId_idx_e2d0c1ef\" exists",
         "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
-        "params": [
-          "\"public\".\"Document_ownerId_idx_e2d0c1ef\""
-        ]
+        "params": ["\"public\".\"Document_ownerId_idx_e2d0c1ef\""]
       }
     ]
   },
@@ -1388,9 +1197,7 @@
       {
         "description": "ensure index \"DocumentMember_documentId_idx_825ef746\" does not exist",
         "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
-        "params": [
-          "\"public\".\"DocumentMember_documentId_idx_825ef746\""
-        ]
+        "params": ["\"public\".\"DocumentMember_documentId_idx_825ef746\""]
       }
     ],
     "execute": [
@@ -1404,9 +1211,7 @@
       {
         "description": "verify index \"DocumentMember_documentId_idx_825ef746\" exists",
         "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
-        "params": [
-          "\"public\".\"DocumentMember_documentId_idx_825ef746\""
-        ]
+        "params": ["\"public\".\"DocumentMember_documentId_idx_825ef746\""]
       }
     ]
   },
@@ -1427,9 +1232,7 @@
       {
         "description": "ensure index \"DocumentMember_invitedById_idx_61689f37\" does not exist",
         "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
-        "params": [
-          "\"public\".\"DocumentMember_invitedById_idx_61689f37\""
-        ]
+        "params": ["\"public\".\"DocumentMember_invitedById_idx_61689f37\""]
       }
     ],
     "execute": [
@@ -1443,9 +1246,7 @@
       {
         "description": "verify index \"DocumentMember_invitedById_idx_61689f37\" exists",
         "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
-        "params": [
-          "\"public\".\"DocumentMember_invitedById_idx_61689f37\""
-        ]
+        "params": ["\"public\".\"DocumentMember_invitedById_idx_61689f37\""]
       }
     ]
   },
@@ -1466,9 +1267,7 @@
       {
         "description": "ensure index \"DocumentMember_userId_idx_a489d58a\" does not exist",
         "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
-        "params": [
-          "\"public\".\"DocumentMember_userId_idx_a489d58a\""
-        ]
+        "params": ["\"public\".\"DocumentMember_userId_idx_a489d58a\""]
       }
     ],
     "execute": [
@@ -1482,9 +1281,7 @@
       {
         "description": "verify index \"DocumentMember_userId_idx_a489d58a\" exists",
         "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
-        "params": [
-          "\"public\".\"DocumentMember_userId_idx_a489d58a\""
-        ]
+        "params": ["\"public\".\"DocumentMember_userId_idx_a489d58a\""]
       }
     ]
   },
@@ -1505,9 +1302,7 @@
       {
         "description": "ensure index \"DocumentOperation_authorId_idx_e47547ed\" does not exist",
         "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
-        "params": [
-          "\"public\".\"DocumentOperation_authorId_idx_e47547ed\""
-        ]
+        "params": ["\"public\".\"DocumentOperation_authorId_idx_e47547ed\""]
       }
     ],
     "execute": [
@@ -1521,9 +1316,7 @@
       {
         "description": "verify index \"DocumentOperation_authorId_idx_e47547ed\" exists",
         "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
-        "params": [
-          "\"public\".\"DocumentOperation_authorId_idx_e47547ed\""
-        ]
+        "params": ["\"public\".\"DocumentOperation_authorId_idx_e47547ed\""]
       }
     ]
   },
@@ -1544,9 +1337,7 @@
       {
         "description": "ensure index \"DocumentOperation_documentId_idx_825ef746\" does not exist",
         "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
-        "params": [
-          "\"public\".\"DocumentOperation_documentId_idx_825ef746\""
-        ]
+        "params": ["\"public\".\"DocumentOperation_documentId_idx_825ef746\""]
       }
     ],
     "execute": [
@@ -1560,9 +1351,7 @@
       {
         "description": "verify index \"DocumentOperation_documentId_idx_825ef746\" exists",
         "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
-        "params": [
-          "\"public\".\"DocumentOperation_documentId_idx_825ef746\""
-        ]
+        "params": ["\"public\".\"DocumentOperation_documentId_idx_825ef746\""]
       }
     ]
   },
@@ -1583,9 +1372,7 @@
       {
         "description": "ensure index \"Folder_ownerId_idx_e2d0c1ef\" does not exist",
         "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
-        "params": [
-          "\"public\".\"Folder_ownerId_idx_e2d0c1ef\""
-        ]
+        "params": ["\"public\".\"Folder_ownerId_idx_e2d0c1ef\""]
       }
     ],
     "execute": [
@@ -1599,9 +1386,7 @@
       {
         "description": "verify index \"Folder_ownerId_idx_e2d0c1ef\" exists",
         "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
-        "params": [
-          "\"public\".\"Folder_ownerId_idx_e2d0c1ef\""
-        ]
+        "params": ["\"public\".\"Folder_ownerId_idx_e2d0c1ef\""]
       }
     ]
   },
@@ -1622,9 +1407,7 @@
       {
         "description": "ensure index \"Folder_parentId_idx_6a68f597\" does not exist",
         "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
-        "params": [
-          "\"public\".\"Folder_parentId_idx_6a68f597\""
-        ]
+        "params": ["\"public\".\"Folder_parentId_idx_6a68f597\""]
       }
     ],
     "execute": [
@@ -1638,9 +1421,7 @@
       {
         "description": "verify index \"Folder_parentId_idx_6a68f597\" exists",
         "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
-        "params": [
-          "\"public\".\"Folder_parentId_idx_6a68f597\""
-        ]
+        "params": ["\"public\".\"Folder_parentId_idx_6a68f597\""]
       }
     ]
   },
@@ -1661,9 +1442,7 @@
       {
         "description": "ensure index \"Folder_root_name_unique_0d8a2683\" does not exist",
         "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
-        "params": [
-          "\"public\".\"Folder_root_name_unique_0d8a2683\""
-        ]
+        "params": ["\"public\".\"Folder_root_name_unique_0d8a2683\""]
       }
     ],
     "execute": [
@@ -1677,9 +1456,7 @@
       {
         "description": "verify index \"Folder_root_name_unique_0d8a2683\" exists",
         "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
-        "params": [
-          "\"public\".\"Folder_root_name_unique_0d8a2683\""
-        ]
+        "params": ["\"public\".\"Folder_root_name_unique_0d8a2683\""]
       }
     ]
   },
@@ -1700,9 +1477,7 @@
       {
         "description": "ensure index \"Message_authorId_idx_e47547ed\" does not exist",
         "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
-        "params": [
-          "\"public\".\"Message_authorId_idx_e47547ed\""
-        ]
+        "params": ["\"public\".\"Message_authorId_idx_e47547ed\""]
       }
     ],
     "execute": [
@@ -1716,9 +1491,7 @@
       {
         "description": "verify index \"Message_authorId_idx_e47547ed\" exists",
         "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
-        "params": [
-          "\"public\".\"Message_authorId_idx_e47547ed\""
-        ]
+        "params": ["\"public\".\"Message_authorId_idx_e47547ed\""]
       }
     ]
   },
@@ -1739,9 +1512,7 @@
       {
         "description": "ensure index \"Message_documentId_createdAt_idx_93015d6d\" does not exist",
         "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
-        "params": [
-          "\"public\".\"Message_documentId_createdAt_idx_93015d6d\""
-        ]
+        "params": ["\"public\".\"Message_documentId_createdAt_idx_93015d6d\""]
       }
     ],
     "execute": [
@@ -1755,9 +1526,7 @@
       {
         "description": "verify index \"Message_documentId_createdAt_idx_93015d6d\" exists",
         "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
-        "params": [
-          "\"public\".\"Message_documentId_createdAt_idx_93015d6d\""
-        ]
+        "params": ["\"public\".\"Message_documentId_createdAt_idx_93015d6d\""]
       }
     ]
   },
@@ -1778,9 +1547,7 @@
       {
         "description": "ensure index \"Message_documentId_idx_825ef746\" does not exist",
         "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
-        "params": [
-          "\"public\".\"Message_documentId_idx_825ef746\""
-        ]
+        "params": ["\"public\".\"Message_documentId_idx_825ef746\""]
       }
     ],
     "execute": [
@@ -1794,9 +1561,7 @@
       {
         "description": "verify index \"Message_documentId_idx_825ef746\" exists",
         "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
-        "params": [
-          "\"public\".\"Message_documentId_idx_825ef746\""
-        ]
+        "params": ["\"public\".\"Message_documentId_idx_825ef746\""]
       }
     ]
   },
@@ -1817,9 +1582,7 @@
       {
         "description": "ensure index \"Session_userId_idx_a489d58a\" does not exist",
         "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
-        "params": [
-          "\"public\".\"Session_userId_idx_a489d58a\""
-        ]
+        "params": ["\"public\".\"Session_userId_idx_a489d58a\""]
       }
     ],
     "execute": [
@@ -1833,9 +1596,7 @@
       {
         "description": "verify index \"Session_userId_idx_a489d58a\" exists",
         "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
-        "params": [
-          "\"public\".\"Session_userId_idx_a489d58a\""
-        ]
+        "params": ["\"public\".\"Session_userId_idx_a489d58a\""]
       }
     ]
   },
@@ -1856,9 +1617,7 @@
       {
         "description": "ensure index \"User_blockedById_idx_60a57bcc\" does not exist",
         "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
-        "params": [
-          "\"public\".\"User_blockedById_idx_60a57bcc\""
-        ]
+        "params": ["\"public\".\"User_blockedById_idx_60a57bcc\""]
       }
     ],
     "execute": [
@@ -1872,9 +1631,7 @@
       {
         "description": "verify index \"User_blockedById_idx_60a57bcc\" exists",
         "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
-        "params": [
-          "\"public\".\"User_blockedById_idx_60a57bcc\""
-        ]
+        "params": ["\"public\".\"User_blockedById_idx_60a57bcc\""]
       }
     ]
   },
@@ -1895,9 +1652,7 @@
       {
         "description": "ensure index \"User_createdById_idx_8bf640ed\" does not exist",
         "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
-        "params": [
-          "\"public\".\"User_createdById_idx_8bf640ed\""
-        ]
+        "params": ["\"public\".\"User_createdById_idx_8bf640ed\""]
       }
     ],
     "execute": [
@@ -1911,9 +1666,7 @@
       {
         "description": "verify index \"User_createdById_idx_8bf640ed\" exists",
         "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
-        "params": [
-          "\"public\".\"User_createdById_idx_8bf640ed\""
-        ]
+        "params": ["\"public\".\"User_createdById_idx_8bf640ed\""]
       }
     ]
   },
@@ -1934,11 +1687,7 @@
       {
         "description": "ensure FK \"Document_ownerId_fkey\" does not exist",
         "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
-        "params": [
-          "Document_ownerId_fkey",
-          "public",
-          "\"public\".\"Document\""
-        ]
+        "params": ["Document_ownerId_fkey", "public", "\"public\".\"Document\""]
       }
     ],
     "execute": [
@@ -1951,11 +1700,7 @@
       {
         "description": "verify FK \"Document_ownerId_fkey\" exists",
         "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
-        "params": [
-          "Document_ownerId_fkey",
-          "public",
-          "\"public\".\"Document\""
-        ]
+        "params": ["Document_ownerId_fkey", "public", "\"public\".\"Document\""]
       }
     ]
   },
@@ -2270,11 +2015,7 @@
       {
         "description": "ensure FK \"Folder_parentId_fkey\" does not exist",
         "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
-        "params": [
-          "Folder_parentId_fkey",
-          "public",
-          "\"public\".\"Folder\""
-        ]
+        "params": ["Folder_parentId_fkey", "public", "\"public\".\"Folder\""]
       }
     ],
     "execute": [
@@ -2287,11 +2028,7 @@
       {
         "description": "verify FK \"Folder_parentId_fkey\" exists",
         "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
-        "params": [
-          "Folder_parentId_fkey",
-          "public",
-          "\"public\".\"Folder\""
-        ]
+        "params": ["Folder_parentId_fkey", "public", "\"public\".\"Folder\""]
       }
     ]
   },
@@ -2312,11 +2049,7 @@
       {
         "description": "ensure FK \"Folder_ownerId_fkey\" does not exist",
         "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
-        "params": [
-          "Folder_ownerId_fkey",
-          "public",
-          "\"public\".\"Folder\""
-        ]
+        "params": ["Folder_ownerId_fkey", "public", "\"public\".\"Folder\""]
       }
     ],
     "execute": [
@@ -2329,11 +2062,7 @@
       {
         "description": "verify FK \"Folder_ownerId_fkey\" exists",
         "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
-        "params": [
-          "Folder_ownerId_fkey",
-          "public",
-          "\"public\".\"Folder\""
-        ]
+        "params": ["Folder_ownerId_fkey", "public", "\"public\".\"Folder\""]
       }
     ]
   },
@@ -2396,11 +2125,7 @@
       {
         "description": "ensure FK \"Message_authorId_fkey\" does not exist",
         "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
-        "params": [
-          "Message_authorId_fkey",
-          "public",
-          "\"public\".\"Message\""
-        ]
+        "params": ["Message_authorId_fkey", "public", "\"public\".\"Message\""]
       }
     ],
     "execute": [
@@ -2413,11 +2138,7 @@
       {
         "description": "verify FK \"Message_authorId_fkey\" exists",
         "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
-        "params": [
-          "Message_authorId_fkey",
-          "public",
-          "\"public\".\"Message\""
-        ]
+        "params": ["Message_authorId_fkey", "public", "\"public\".\"Message\""]
       }
     ]
   },
@@ -2438,11 +2159,7 @@
       {
         "description": "ensure FK \"Session_userId_fkey\" does not exist",
         "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
-        "params": [
-          "Session_userId_fkey",
-          "public",
-          "\"public\".\"Session\""
-        ]
+        "params": ["Session_userId_fkey", "public", "\"public\".\"Session\""]
       }
     ],
     "execute": [
@@ -2455,11 +2172,7 @@
       {
         "description": "verify FK \"Session_userId_fkey\" exists",
         "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
-        "params": [
-          "Session_userId_fkey",
-          "public",
-          "\"public\".\"Session\""
-        ]
+        "params": ["Session_userId_fkey", "public", "\"public\".\"Session\""]
       }
     ]
   },
@@ -2480,11 +2193,7 @@
       {
         "description": "ensure FK \"User_blockedById_fkey\" does not exist",
         "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
-        "params": [
-          "User_blockedById_fkey",
-          "public",
-          "\"public\".\"User\""
-        ]
+        "params": ["User_blockedById_fkey", "public", "\"public\".\"User\""]
       }
     ],
     "execute": [
@@ -2497,11 +2206,7 @@
       {
         "description": "verify FK \"User_blockedById_fkey\" exists",
         "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
-        "params": [
-          "User_blockedById_fkey",
-          "public",
-          "\"public\".\"User\""
-        ]
+        "params": ["User_blockedById_fkey", "public", "\"public\".\"User\""]
       }
     ]
   },
@@ -2522,11 +2227,7 @@
       {
         "description": "ensure FK \"User_createdById_fkey\" does not exist",
         "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
-        "params": [
-          "User_createdById_fkey",
-          "public",
-          "\"public\".\"User\""
-        ]
+        "params": ["User_createdById_fkey", "public", "\"public\".\"User\""]
       }
     ],
     "execute": [
@@ -2539,11 +2240,7 @@
       {
         "description": "verify FK \"User_createdById_fkey\" exists",
         "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
-        "params": [
-          "User_createdById_fkey",
-          "public",
-          "\"public\".\"User\""
-        ]
+        "params": ["User_createdById_fkey", "public", "\"public\".\"User\""]
       }
     ]
   }
