@@ -181,6 +181,10 @@ Content-Type: application/json
 ### Current user -> 200 { user }
 GET {{baseUrl}}/auth/session HTTP/1.1
 
+### Unknown session token -> 401 UNAUTHENTICATED, cookie cleared
+GET {{baseUrl}}/auth/session HTTP/1.1
+Cookie: colladoc_session=unknown-token
+
 # ============================== /auth/logout ================================
 
 ### Logout -> 204, Set-Cookie clears colladoc_session (Expires=Thu, 01 Jan 1970)
