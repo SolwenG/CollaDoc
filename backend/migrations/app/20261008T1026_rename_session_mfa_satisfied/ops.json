@@ -1,0 +1,46 @@
+[
+  {
+    "id": "renameColumn.Session.mfaVerified.mfaSatisfied",
+    "label": "Rename column \"mfaVerified\" to \"mfaSatisfied\" on \"Session\"",
+    "operationClass": "destructive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "mfaSatisfied",
+        "table": "Session"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"mfaVerified\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": ["public", "Session", "mfaVerified"]
+      },
+      {
+        "description": "ensure column \"mfaSatisfied\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": ["public", "Session", "mfaSatisfied"]
+      }
+    ],
+    "execute": [
+      {
+        "description": "rename column \"mfaVerified\" to \"mfaSatisfied\"",
+        "sql": "ALTER TABLE \"public\".\"Session\" RENAME COLUMN \"mfaVerified\" TO \"mfaSatisfied\""
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"mfaSatisfied\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": ["public", "Session", "mfaSatisfied"]
+      },
+      {
+        "description": "verify column \"mfaVerified\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": ["public", "Session", "mfaVerified"]
+      }
+    ]
+  }
+]

@@ -1,11 +1,13 @@
 import type { Request, Response } from "express";
 import { AppError } from "../errors/app-error.ts";
+import { getAuthUser } from "../middlewares/auth.middleware.ts";
+import { findPublicUserById } from "../users/users.service.ts";
 import { loginSchema } from "./auth.schema.ts";
-import { findSessionUser, login } from "./auth.service.ts";
+import { login } from "./auth.service.ts";
 import {
   clearSessionCookie,
   deleteSessionByToken,
-  SESSION_COOKIE_NAME,
+  readSessionToken,
   setSessionCookie,
 } from "./session.ts";
 
@@ -22,23 +24,22 @@ export async function loginUser(req: Request, res: Response) {
   return res.status(200).json({ user });
 }
 
-export async function getCurrentSession(req: Request, res: Response) {
-  const token: unknown = req.cookies?.[SESSION_COOKIE_NAME];
-  const user = typeof token === "string" ? await findSessionUser(token) : null;
+export async function getCurrentUser(req: Request, res: Response) {
+  const { id } = getAuthUser(req);
+  const user = await findPublicUserById(id);
 
+  // requireAuth just checked the user, so only a deletion in between gets here
   if (!user) {
-    clearSessionCookie(res);
-    throw new AppError("UNAUTHENTICATED", "Non authentifié");
+    throw new AppError("UNAUTHENTICATED", "Authentication required");
   }
 
   return res.status(200).json({ user });
 }
 
+// Idempotent: also succeeds without a cookie or with a dead session, the goal is to be logged out
 export async function logoutUser(req: Request, res: Response) {
-  const token: unknown = req.cookies?.[SESSION_COOKIE_NAME];
-  if (typeof token === "string") {
-    await deleteSessionByToken(token);
-  }
+  const token = readSessionToken(req);
+  if (token) await deleteSessionByToken(token);
 
   clearSessionCookie(res);
   return res.status(204).end();

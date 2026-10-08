@@ -1,8 +1,8 @@
 import { AppError } from "../errors/app-error.ts";
-import { findUserById, findUserForLogin } from "../users/users.service.ts";
+import { findUserForLogin } from "../users/users.service.ts";
 import type { LoginInput } from "./auth.schema.ts";
 import { hashPassword, verifyPassword } from "./password.ts";
-import { createSession, findSessionByToken } from "./session.ts";
+import { createSession } from "./session.ts";
 
 // Verified against when the username does not exist, so that an unknown
 // username takes as long to reject as a wrong password.
@@ -26,10 +26,10 @@ export async function login({ username, password }: LoginInput) {
     throw new AppError("ACCOUNT_BLOCKED", "This account is blocked");
   }
 
-  const mfaVerified = user.totpEnabledAt === null;
+  const mfaSatisfied = user.totpEnabledAt === null;
   const { token, expiresAt } = await createSession({
     userId: user.id,
-    mfaVerified,
+    mfaSatisfied,
   });
 
   return {
@@ -41,23 +41,6 @@ export async function login({ username, password }: LoginInput) {
     },
     token,
     expiresAt,
-    mfaRequired: !mfaVerified,
-  };
-}
-
-// Returns null for unknown, expired or MFA-pending sessions and for blocked users
-export async function findSessionUser(token: string) {
-  const session = await findSessionByToken(token);
-  if (!session || !session.mfaVerified) return null;
-  if (Date.parse(session.expiresAt) <= Date.now()) return null;
-
-  const user = await findUserById(session.userId);
-  if (!user || user.blockedAt !== null) return null;
-
-  return {
-    id: user.id,
-    username: user.username,
-    displayName: user.displayName,
-    role: user.role,
+    mfaRequired: !mfaSatisfied,
   };
 }
