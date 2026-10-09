@@ -1,13 +1,17 @@
 import { getJson } from './api'
 
-export interface DocumentMember {
+export interface DocumentParticipant {
     id: number
     username: string
     displayName: string
-    isOwner: boolean
+    role: 'OWNER' | 'EDITOR' | 'VIEWER'
 }
 
-export async function fetchDocumentMembers(documentId: number): Promise<DocumentMember[] | null> {
-    const response = await getJson<{ members: DocumentMember[] }>(`/documents/${documentId}/members`)
-    return response?.members ?? null
+export async function fetchDocumentParticipants(
+    documentId: number
+): Promise<DocumentParticipant[] | null> {
+    const response = await getJson<{ participants: DocumentParticipant[] }>(
+        `/documents/${documentId}/participants`
+    )
+    return response?.participants ?? null
 }

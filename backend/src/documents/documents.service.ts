@@ -52,6 +52,16 @@ export async function findAccessibleDocument(
     return access ? { document, access } : null
 }
 
+/** The owner first, then the members by join date, flattened for display */
+export async function listParticipants(document: DocumentForAccess) {
+    const [owner, members] = await Promise.all([
+        documentsRepository.findOwner(document.ownerId),
+        documentsRepository.findMembers(document.id),
+    ])
+    const participants = members.map(({ role, user }) => ({ ...user, role }))
+    return owner ? [{ ...owner, role: 'OWNER' as const }, ...participants] : participants
+}
+
 async function ownsFolder(ownerId: number, folderId: number | null) {
     if (folderId === null) return true
     return (await foldersRepository.findOwnedFolder(folderId, ownerId)) !== null

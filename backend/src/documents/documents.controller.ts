@@ -70,6 +70,14 @@ export async function getDocument(req: Request, res: Response) {
     return res.json({ ...details, access })
 }
 
+export async function getParticipants(req: Request, res: Response) {
+    const { document } = await findReadableDocument(req)
+
+    const participants = await documentsService.listParticipants(document)
+
+    return res.json({ participants })
+}
+
 export async function createTextDocument(req: Request, res: Response) {
     const { id: userId } = getAuthUser(req)
     const { name, folderId } = createTextDocumentSchema.parse(req.body)

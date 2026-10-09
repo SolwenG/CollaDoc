@@ -74,18 +74,17 @@
                         </q-item-section>
                         <q-item-section>
                             <q-item-label>{{ member.displayName }}</q-item-label>
-                            <q-item-label caption>@{{ member.username }}</q-item-label>
+                            <q-item-label caption>
+                                @{{ member.username }} · {{ ROLE_LABELS[member.role] }}
+                            </q-item-label>
                         </q-item-section>
-                        <q-item-section side>
-                            <CallButton
-                                :doc-id="Number(route.params.id)"
-                                :target-user-id="member.id"
-                            />
+                        <q-item-section v-if="member.id !== auth.user?.id" side>
+                            <CallButton :doc-id="documentId" :target-user-id="member.id" />
                         </q-item-section>
                     </q-item>
                     <q-item v-if="members.length === 0">
                         <q-item-section>
-                            <q-item-label caption>Chargement...</q-item-label>
+                            <q-item-label caption>{{ membersMessage }}</q-item-label>
                         </q-item-section>
                     </q-item>
                 </q-list>
@@ -95,15 +94,16 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, onMounted, watch } from 'vue'
-import { useRoute } from 'vue-router'
-import { copyToClipboard, useQuasar } from 'quasar'
-import { useCollaborativeDocument } from '@/hooks/useCollaborativeDocument'
-import ShareDialog from '@/components/ShareDialog.vue'
-import { fetchDocument, type DocumentDetails } from '@/utils/drive-api'
 import CallButton from '@/components/CallButton.vue'
 import CallDialog from '@/components/CallDialog.vue'
-import { fetchDocumentMembers, type DocumentMember } from '@/utils/document.ts'
+import ShareDialog from '@/components/ShareDialog.vue'
+import { useCollaborativeDocument } from '@/hooks/useCollaborativeDocument'
+import { useAuthStore } from '@/stores/auth'
+import { fetchDocumentParticipants, type DocumentParticipant } from '@/utils/document.ts'
+import { fetchDocument, type DocumentDetails } from '@/utils/drive-api'
+import { copyToClipboard, useQuasar } from 'quasar'
+import { computed, onMounted, ref, watch } from 'vue'
+import { useRoute } from 'vue-router'
 
 const STATUS = {
     connecting: { label: 'Connexion…', color: 'grey', icon: 'sync' },
@@ -116,11 +116,19 @@ const STATUS = {
     closed: { label: 'Fermé', color: 'negative', icon: 'block' },
 } as const
 
+const ROLE_LABELS: Record<DocumentParticipant['role'], string> = {
+    OWNER: 'Propriétaire',
+    EDITOR: 'Éditeur',
+    VIEWER: 'Lecteur',
+}
+
 const route = useRoute('/documents/[id]')
 const documentId = Number(route.params.id)
 const $q = useQuasar()
+const auth = useAuthStore()
 const textarea = ref<HTMLTextAreaElement | null>(null)
-const members = ref<DocumentMember[]>([])
+const members = ref<DocumentParticipant[]>([])
+const membersMessage = ref('Chargement…')
 const showShareDialog = ref(false)
 
 const { status, role, readonly, closedMessage, lostText, onInput, onBeforeInput, onKeydown } =
@@ -145,10 +153,9 @@ async function copyLostText() {
 }
 
 onMounted(async () => {
-    const docId = Number(route.params.id)
-    const data = await fetchDocumentMembers(docId)
-    console.log('Members data:', data)
+    const data = await fetchDocumentParticipants(documentId)
     if (data) members.value = data
+    else membersMessage.value = 'Impossible de charger les membres'
 })
 </script>
 
