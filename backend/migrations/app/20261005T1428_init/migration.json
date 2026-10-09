@@ -1,7 +1,7 @@
 {
-  "from": null,
-  "to": "91e7f9f035806fa2789a4d726ef7724cad434fd6b00014d47ebf12d6e6bb784e",
-  "providedInvariants": [],
-  "createdAt": "2026-10-05T14:28:58.744Z",
-  "migrationHash": "8bf1d87be90a41321249afc64f07a4b47c520daedba8e88bd17c0418daf3af50"
+    "from": null,
+    "to": "91e7f9f035806fa2789a4d726ef7724cad434fd6b00014d47ebf12d6e6bb784e",
+    "providedInvariants": [],
+    "createdAt": "2026-10-05T14:28:58.744Z",
+    "migrationHash": "8bf1d87be90a41321249afc64f07a4b47c520daedba8e88bd17c0418daf3af50"
 }
