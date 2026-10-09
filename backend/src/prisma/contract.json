@@ -28,6 +28,10 @@
             "model": "Session",
             "namespace": "public"
         },
+        "ShareLink": {
+            "model": "ShareLink",
+            "namespace": "public"
+        },
         "User": {
             "model": "User",
             "namespace": "public"
@@ -756,6 +760,128 @@
                             },
                             "namespaceId": "public",
                             "table": "Session"
+                        }
+                    },
+                    "ShareLink": {
+                        "fields": {
+                            "createdAt": {
+                                "nullable": false,
+                                "type": {
+                                    "codecId": "pg/timestamptz-string@1",
+                                    "kind": "scalar"
+                                }
+                            },
+                            "createdById": {
+                                "nullable": false,
+                                "type": {
+                                    "codecId": "pg/int4@1",
+                                    "kind": "scalar"
+                                }
+                            },
+                            "documentId": {
+                                "nullable": false,
+                                "type": {
+                                    "codecId": "pg/int4@1",
+                                    "kind": "scalar"
+                                }
+                            },
+                            "expiresAt": {
+                                "nullable": false,
+                                "type": {
+                                    "codecId": "pg/timestamptz-string@1",
+                                    "kind": "scalar"
+                                }
+                            },
+                            "id": {
+                                "nullable": false,
+                                "type": {
+                                    "codecId": "pg/int4@1",
+                                    "kind": "scalar"
+                                }
+                            },
+                            "revokedAt": {
+                                "nullable": true,
+                                "type": {
+                                    "codecId": "pg/timestamptz-string@1",
+                                    "kind": "scalar"
+                                }
+                            },
+                            "role": {
+                                "nullable": false,
+                                "type": {
+                                    "codecId": "pg/text@1",
+                                    "kind": "scalar"
+                                },
+                                "valueSet": {
+                                    "entityKind": "enum",
+                                    "entityName": "MemberRole",
+                                    "namespaceId": "public",
+                                    "plane": "domain"
+                                }
+                            },
+                            "tokenHash": {
+                                "nullable": false,
+                                "type": {
+                                    "codecId": "pg/text@1",
+                                    "kind": "scalar"
+                                }
+                            }
+                        },
+                        "relations": {
+                            "createdBy": {
+                                "cardinality": "N:1",
+                                "nullable": false,
+                                "on": {
+                                    "localFields": ["createdById"],
+                                    "targetFields": ["id"]
+                                },
+                                "to": {
+                                    "model": "User",
+                                    "namespace": "public"
+                                }
+                            },
+                            "document": {
+                                "cardinality": "N:1",
+                                "nullable": false,
+                                "on": {
+                                    "localFields": ["documentId"],
+                                    "targetFields": ["id"]
+                                },
+                                "to": {
+                                    "model": "Document",
+                                    "namespace": "public"
+                                }
+                            }
+                        },
+                        "storage": {
+                            "fields": {
+                                "createdAt": {
+                                    "column": "createdAt"
+                                },
+                                "createdById": {
+                                    "column": "createdById"
+                                },
+                                "documentId": {
+                                    "column": "documentId"
+                                },
+                                "expiresAt": {
+                                    "column": "expiresAt"
+                                },
+                                "id": {
+                                    "column": "id"
+                                },
+                                "revokedAt": {
+                                    "column": "revokedAt"
+                                },
+                                "role": {
+                                    "column": "role"
+                                },
+                                "tokenHash": {
+                                    "column": "tokenHash"
+                                }
+                            },
+                            "namespaceId": "public",
+                            "table": "ShareLink"
                         }
                     },
                     "User": {
@@ -1613,6 +1739,120 @@
                                 }
                             ]
                         },
+                        "ShareLink": {
+                            "checks": [
+                                {
+                                    "expression": "\"role\" IN ('EDITOR', 'VIEWER')",
+                                    "name": "ShareLink_role_check_6cfd078f",
+                                    "prefix": "ShareLink_role_check"
+                                }
+                            ],
+                            "columns": {
+                                "createdAt": {
+                                    "codecId": "pg/timestamptz-string@1",
+                                    "default": {
+                                        "expression": "now()",
+                                        "kind": "function"
+                                    },
+                                    "nativeType": "timestamptz",
+                                    "nullable": false
+                                },
+                                "createdById": {
+                                    "codecId": "pg/int4@1",
+                                    "nativeType": "int4",
+                                    "nullable": false
+                                },
+                                "documentId": {
+                                    "codecId": "pg/int4@1",
+                                    "nativeType": "int4",
+                                    "nullable": false
+                                },
+                                "expiresAt": {
+                                    "codecId": "pg/timestamptz-string@1",
+                                    "nativeType": "timestamptz",
+                                    "nullable": false
+                                },
+                                "id": {
+                                    "codecId": "pg/int4@1",
+                                    "default": {
+                                        "expression": "autoincrement()",
+                                        "kind": "function"
+                                    },
+                                    "nativeType": "int4",
+                                    "nullable": false
+                                },
+                                "revokedAt": {
+                                    "codecId": "pg/timestamptz-string@1",
+                                    "nativeType": "timestamptz",
+                                    "nullable": true
+                                },
+                                "role": {
+                                    "codecId": "pg/text@1",
+                                    "nativeType": "text",
+                                    "nullable": false,
+                                    "valueSet": {
+                                        "entityKind": "valueSet",
+                                        "entityName": "MemberRole",
+                                        "namespaceId": "public",
+                                        "plane": "storage"
+                                    }
+                                },
+                                "tokenHash": {
+                                    "codecId": "pg/text@1",
+                                    "nativeType": "text",
+                                    "nullable": false
+                                }
+                            },
+                            "foreignKeys": [
+                                {
+                                    "onDelete": "cascade",
+                                    "source": {
+                                        "columns": ["documentId"],
+                                        "namespaceId": "public",
+                                        "tableName": "ShareLink"
+                                    },
+                                    "target": {
+                                        "columns": ["id"],
+                                        "namespaceId": "public",
+                                        "tableName": "Document"
+                                    }
+                                },
+                                {
+                                    "source": {
+                                        "columns": ["createdById"],
+                                        "namespaceId": "public",
+                                        "tableName": "ShareLink"
+                                    },
+                                    "target": {
+                                        "columns": ["id"],
+                                        "namespaceId": "public",
+                                        "tableName": "User"
+                                    }
+                                }
+                            ],
+                            "indexes": [
+                                {
+                                    "columns": ["createdById"],
+                                    "name": "ShareLink_createdById_idx_8bf640ed",
+                                    "prefix": "ShareLink_createdById_idx",
+                                    "unique": false
+                                },
+                                {
+                                    "columns": ["documentId"],
+                                    "name": "ShareLink_documentId_idx_825ef746",
+                                    "prefix": "ShareLink_documentId_idx",
+                                    "unique": false
+                                }
+                            ],
+                            "primaryKey": {
+                                "columns": ["id"]
+                            },
+                            "uniques": [
+                                {
+                                    "columns": ["tokenHash"]
+                                }
+                            ]
+                        },
                         "User": {
                             "checks": [
                                 {
@@ -1798,7 +2038,7 @@
                 "kind": "postgres-schema"
             }
         },
-        "storageHash": "64e5a1146d5566ffad9e608d6b656b732d8169cfe180a40aa5bca74660973d6a"
+        "storageHash": "26532dda379663502b99447df447df1d67bada05a3693ed45e170db3055b1f93"
     },
     "execution": {
         "executionHash": "0b055b82a690d3f162aef43711a9fd620a4600d4c62ae34dac7dedd27bd43c38",

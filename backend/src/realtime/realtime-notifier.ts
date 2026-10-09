@@ -25,3 +25,7 @@ export function notifyDocumentDeleted(documentId: number): Promise<void> {
 export function notifyAccessRevoked(documentId: number, userId: number): Promise<void> {
     return notify(`/documents/${documentId}/members/${userId}/revoked`)
 }
+
+export function notifyRoleChanged(documentId: number, userId: number): Promise<void> {
+    return notify(`/documents/${documentId}/members/${userId}/role-changed`)
+}

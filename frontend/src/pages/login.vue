@@ -29,22 +29,29 @@
         </q-form>
         <div class="q-mt-md">
             Pas encore de compte ?
-            <router-link to="/register" class="text-primary text-bold">Créer un compte</router-link>
+            <router-link
+                :to="{ path: '/register', query: route.query }"
+                class="text-primary text-bold"
+            >
+                Créer un compte
+            </router-link>
         </div>
-        <TwoFactorDialog v-model="showTwoFactor" @verified="router.push('/')" />
+        <TwoFactorDialog v-model="showTwoFactor" @verified="goToRequestedPage" />
     </AuthCard>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { useQuasar } from 'quasar'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import AuthCard from '@/components/AuthCard.vue'
 import TwoFactorDialog from '@/components/TwoFactorDialog.vue'
 import { useAuthStore } from '@/stores/auth'
 import { required } from '@/utils/validation'
+import { safeRedirect } from '@/utils/redirect'
 
 const $q = useQuasar()
+const route = useRoute()
 const router = useRouter()
 const auth = useAuthStore()
 
@@ -53,13 +60,20 @@ const password = ref('')
 const loading = ref(false)
 const showTwoFactor = ref(false)
 
+// Set by the router guard when a page needed a login, e.g. an invitation link
+const redirect = computed(() => safeRedirect(route.query.redirect))
+
+async function goToRequestedPage() {
+    await router.push(redirect.value)
+}
+
 async function onSubmit() {
     loading.value = true
     try {
         const result = await auth.login(username.value.trim().toLowerCase(), password.value)
 
         if (result === 'success') {
-            await router.push('/')
+            await goToRequestedPage()
             return
         }
 

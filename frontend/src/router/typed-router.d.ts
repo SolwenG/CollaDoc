@@ -71,6 +71,13 @@ declare module 'vue-router/auto-routes' {
             { id: ParamValue<false> },
             never
         >
+        '/invite/[token]': RouteRecordInfo<
+            '/invite/[token]',
+            '/invite/:token',
+            { token: ParamValue<true> },
+            { token: ParamValue<false> },
+            never
+        >
         '/login': RouteRecordInfo<
             '/login',
             '/login',
@@ -134,6 +141,11 @@ declare module 'vue-router/auto-routes' {
             routes: '/folders/[id]'
             views: never
             pathParamNames: 'id'
+        }
+        'src/pages/invite/[token].vue': {
+            routes: '/invite/[token]'
+            views: never
+            pathParamNames: 'token'
         }
         'src/pages/login.vue': {
             routes: '/login'

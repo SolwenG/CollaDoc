@@ -1,0 +1,245 @@
+[
+  {
+    "id": "table.ShareLink",
+    "label": "Create table \"ShareLink\"",
+    "summary": "Creates table \"ShareLink\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "ShareLink"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"ShareLink\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"ShareLink\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"ShareLink\"",
+        "sql": "CREATE TABLE \"public\".\"ShareLink\" (\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"createdById\" int4 NOT NULL,\n  \"documentId\" int4 NOT NULL,\n  \"expiresAt\" timestamptz NOT NULL,\n  \"id\" SERIAL NOT NULL,\n  \"revokedAt\" timestamptz,\n  \"role\" text NOT NULL,\n  \"tokenHash\" text NOT NULL,\n  PRIMARY KEY (\"id\"),\n  CONSTRAINT \"ShareLink_role_check_6cfd078f\" CHECK (\"role\" IN ('EDITOR', 'VIEWER'))\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"ShareLink\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"ShareLink\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.ShareLink.ShareLink_tokenHash_key",
+    "label": "Add unique constraint on \"ShareLink\" (tokenHash)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "ShareLink_tokenHash_key",
+        "table": "ShareLink"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"ShareLink_tokenHash_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "ShareLink_tokenHash_key",
+          "public",
+          "\"public\".\"ShareLink\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"ShareLink_tokenHash_key\"",
+        "sql": "ALTER TABLE \"public\".\"ShareLink\" ADD CONSTRAINT \"ShareLink_tokenHash_key\" UNIQUE (\"tokenHash\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"ShareLink_tokenHash_key\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "ShareLink_tokenHash_key",
+          "public",
+          "\"public\".\"ShareLink\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.ShareLink.ShareLink_createdById_idx_8bf640ed",
+    "label": "Create index \"ShareLink_createdById_idx_8bf640ed\" on \"ShareLink\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "ShareLink_createdById_idx_8bf640ed",
+        "table": "ShareLink"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"ShareLink_createdById_idx_8bf640ed\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"ShareLink_createdById_idx_8bf640ed\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"ShareLink_createdById_idx_8bf640ed\"",
+        "sql": "CREATE INDEX \"ShareLink_createdById_idx_8bf640ed\" ON \"public\".\"ShareLink\" (\"createdById\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"ShareLink_createdById_idx_8bf640ed\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"ShareLink_createdById_idx_8bf640ed\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.ShareLink.ShareLink_documentId_idx_825ef746",
+    "label": "Create index \"ShareLink_documentId_idx_825ef746\" on \"ShareLink\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "ShareLink_documentId_idx_825ef746",
+        "table": "ShareLink"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"ShareLink_documentId_idx_825ef746\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"ShareLink_documentId_idx_825ef746\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"ShareLink_documentId_idx_825ef746\"",
+        "sql": "CREATE INDEX \"ShareLink_documentId_idx_825ef746\" ON \"public\".\"ShareLink\" (\"documentId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"ShareLink_documentId_idx_825ef746\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"ShareLink_documentId_idx_825ef746\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.ShareLink.ShareLink_documentId_fkey",
+    "label": "Add foreign key \"ShareLink_documentId_fkey\" on \"ShareLink\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "ShareLink_documentId_fkey",
+        "table": "ShareLink"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"ShareLink_documentId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "ShareLink_documentId_fkey",
+          "public",
+          "\"public\".\"ShareLink\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"ShareLink_documentId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"ShareLink\"\nADD CONSTRAINT \"ShareLink_documentId_fkey\"\nFOREIGN KEY (\"documentId\")\nREFERENCES \"public\".\"Document\" (\"id\")\nON DELETE CASCADE"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"ShareLink_documentId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "ShareLink_documentId_fkey",
+          "public",
+          "\"public\".\"ShareLink\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.ShareLink.ShareLink_createdById_fkey",
+    "label": "Add foreign key \"ShareLink_createdById_fkey\" on \"ShareLink\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "ShareLink_createdById_fkey",
+        "table": "ShareLink"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"ShareLink_createdById_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "ShareLink_createdById_fkey",
+          "public",
+          "\"public\".\"ShareLink\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"ShareLink_createdById_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"ShareLink\"\nADD CONSTRAINT \"ShareLink_createdById_fkey\"\nFOREIGN KEY (\"createdById\")\nREFERENCES \"public\".\"User\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"ShareLink_createdById_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "ShareLink_createdById_fkey",
+          "public",
+          "\"public\".\"ShareLink\""
+        ]
+      }
+    ]
+  }
+]

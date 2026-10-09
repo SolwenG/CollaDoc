@@ -25,6 +25,14 @@
             </q-chip>
             <q-space />
             <CallDialog />
+            <q-btn
+                v-if="role === 'OWNER'"
+                color="primary"
+                icon="person_add"
+                label="Inviter"
+                dense
+                @click="showShareDialog = true"
+            />
         </div>
 
         <q-banner v-if="closedMessage" class="bg-negative text-white q-mb-md" rounded>
@@ -40,6 +48,17 @@
             </template>
         </q-banner>
 
+        <textarea
+            ref="textarea"
+            class="editor col"
+            spellcheck="true"
+            :readonly="readonly"
+            @input="onInput"
+            @beforeinput="onBeforeInput"
+            @keydown="onKeydown"
+        />
+
+        <ShareDialog v-model="showShareDialog" :document-id="documentId" />
         <div class="row">
             <textarea
                 ref="textarea"
@@ -89,6 +108,7 @@ import { computed, ref, onMounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { copyToClipboard, useQuasar } from 'quasar'
 import { useCollaborativeDocument } from '@/hooks/useCollaborativeDocument'
+import ShareDialog from '@/components/ShareDialog.vue'
 import { fetchDocument, type DocumentDetails } from '@/utils/drive-api'
 import CallButton from '@/components/CallButton.vue'
 import CallDialog from '@/components/CallDialog.vue'
@@ -106,12 +126,14 @@ const STATUS = {
 } as const
 
 const route = useRoute('/documents/[id]')
+const documentId = Number(route.params.id)
 const $q = useQuasar()
 const textarea = ref<HTMLTextAreaElement | null>(null)
 const members = ref<DocumentMember[]>([])
+const showShareDialog = ref(false)
 
 const { status, role, readonly, closedMessage, lostText, onInput, onBeforeInput, onKeydown } =
-    useCollaborativeDocument(Number(route.params.id), textarea)
+    useCollaborativeDocument(documentId, textarea)
 
 const details = ref<DocumentDetails | null>(null)
 const isOwner = computed(() => details.value?.access === 'OWNER')
