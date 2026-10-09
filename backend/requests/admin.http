@@ -1,0 +1,141 @@
+# ================================== /admin ==================================
+# Replayable on a database that is not purged: each run registers a fresh admin and fresh
+# members ({{$timestamp}}), and later requests read them back from the named responses.
+# - Send the requests in order, from the top: "{{adminRegister.response...}}" only resolves once
+#   that request was sent in this VS Code session.
+# - REST Client keeps cookies in one jar shared by every .http file: this file logs in on its own.
+# - Run against the LOCAL backend (cd backend && npm start): the Docker image sets
+#   NODE_ENV=production, so the cookie is Secure and REST Client never sends it over http.
+# - Test users pile up in the dev database; clean them up with any SQL client when needed (one statement,
+#   so the members created by an admin go with it):
+#   DELETE FROM "User" WHERE "username" ~ '^(admin|member|new_admin)_[0-9]+$';
+
+@baseUrl = http://localhost:3000
+@password = correct-horse-battery
+
+# =========================== Prerequisite: admin ============================
+# Registration only creates USER accounts. Send "Create the future admin", promote it with any SQL client
+# (psql: docker compose exec db psql -U colladoc colladoc, or DBeaver and the like):
+#   UPDATE "User" SET "role" = 'ADMIN'
+#   WHERE "id" = (SELECT max("id") FROM "User" WHERE "username" LIKE 'admin\_%');
+# then send "Login as the admin".
+# ⚠️ Without this step every /admin request below answers 403 FORBIDDEN, and the member
+# requests answer 401 (the member is never created). Check: "Login as the admin" must
+# answer "role": "ADMIN". The role is read on every request: promoting after the login is enough.
+
+### Create the future admin -> 201
+# @name adminRegister
+POST {{baseUrl}}/users/register HTTP/1.1
+Content-Type: application/json
+
+{
+  "username": "admin_{{$timestamp}}",
+  "displayName": "Admin",
+  "password": "{{password}}"
+}
+
+### Login as the admin (⚠️ promote it in the database first) -> 200 { user } with role "ADMIN"
+# @name adminLogin
+POST {{baseUrl}}/auth/login HTTP/1.1
+Content-Type: application/json
+
+{
+  "username": "{{adminRegister.response.body.user.username}}",
+  "password": "{{password}}"
+}
+
+# ================================ List users ================================
+
+### List users -> 200 { users, page, pageSize, total }
+GET {{baseUrl}}/admin/users?page=1&pageSize=20 HTTP/1.1
+
+### Page size above max -> 400 VALIDATION_ERROR (max 100)
+GET {{baseUrl}}/admin/users?pageSize=500 HTTP/1.1
+
+# ================================ Create user ===============================
+
+### Create a user -> 201 { user, temporaryPassword }, displayName = trimmed lowercase username
+# mustChangePassword = true is stored but not part of the response: check it in the database
+# @name member
+POST {{baseUrl}}/admin/users HTTP/1.1
+Content-Type: application/json
+
+{
+  "username": "  Member_{{$timestamp}} ",
+  "role": "USER"
+}
+
+### Search users -> 200, case-insensitive match on username and displayName: total = 1
+GET {{baseUrl}}/admin/users?search={{member.response.body.user.username}} HTTP/1.1
+
+### Create an admin -> 201
+POST {{baseUrl}}/admin/users HTTP/1.1
+Content-Type: application/json
+
+{
+  "username": "new_admin_{{$timestamp}}",
+  "role": "ADMIN"
+}
+
+### Create with a taken username -> 409 USERNAME_TAKEN
+POST {{baseUrl}}/admin/users HTTP/1.1
+Content-Type: application/json
+
+{
+  "username": "{{member.response.body.user.username}}",
+  "role": "USER"
+}
+
+### Create with displayName or password -> 400, unrecognized key (both are set by the server)
+POST {{baseUrl}}/admin/users HTTP/1.1
+Content-Type: application/json
+
+{
+  "username": "someone_{{$timestamp}}",
+  "displayName": "Someone",
+  "password": "{{password}}"
+}
+
+# ============================= Block / unblock ==============================
+
+### Block a user -> 200, blockedAt and blockedBy set, sessions deleted
+POST {{baseUrl}}/admin/users/{{member.response.body.user.id}}/block HTTP/1.1
+
+### Block again -> 200, unchanged (original blockedAt kept)
+POST {{baseUrl}}/admin/users/{{member.response.body.user.id}}/block HTTP/1.1
+
+### Login as the blocked member -> 403 ACCOUNT_BLOCKED (a failed login keeps the admin cookie)
+POST {{baseUrl}}/auth/login HTTP/1.1
+Content-Type: application/json
+
+{
+  "username": "{{member.response.body.user.username}}",
+  "password": "{{member.response.body.temporaryPassword}}"
+}
+
+### Unblock a user -> 200, blockedAt and blockedBy back to null
+POST {{baseUrl}}/admin/users/{{member.response.body.user.id}}/unblock HTTP/1.1
+
+### Block own account -> 403 CANNOT_BLOCK_SELF
+POST {{baseUrl}}/admin/users/{{adminLogin.response.body.user.id}}/block HTTP/1.1
+
+### Unknown user -> 404 USER_NOT_FOUND
+POST {{baseUrl}}/admin/users/999999/block HTTP/1.1
+
+### Non-numeric id -> 400 VALIDATION_ERROR
+POST {{baseUrl}}/admin/users/abc/block HTTP/1.1
+
+# ================================= Non-admin ================================
+# Last on purpose: the cookie now belongs to the member, send "Login as the admin" again to replay
+
+### Login as the member with the temporary password -> 200 { user }
+POST {{baseUrl}}/auth/login HTTP/1.1
+Content-Type: application/json
+
+{
+  "username": "{{member.response.body.user.username}}",
+  "password": "{{member.response.body.temporaryPassword}}"
+}
+
+### List users as a member -> 403 FORBIDDEN
+GET {{baseUrl}}/admin/users HTTP/1.1

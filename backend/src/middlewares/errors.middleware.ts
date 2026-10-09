@@ -3,7 +3,7 @@ import { z } from "zod";
 import { AppError } from "../errors/app-error.ts";
 import type { ErrorCode } from "../errors/app-error.ts";
 
-// HTTP response format for every error returned by the API
+/** HTTP response format for every error returned by the API */
 type ErrorBody = {
   error: {
     code: ErrorCode;

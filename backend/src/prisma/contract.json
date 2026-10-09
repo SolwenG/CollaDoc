@@ -63,19 +63,6 @@
               }
             ]
           },
-          "OperationType": {
-            "codecId": "pg/text@1",
-            "members": [
-              {
-                "name": "INSERT",
-                "value": "INSERT"
-              },
-              {
-                "name": "DELETE",
-                "value": "DELETE"
-              }
-            ]
-          },
           "Role": {
             "codecId": "pg/text@1",
             "members": [
@@ -100,17 +87,17 @@
                   "kind": "scalar"
                 }
               },
+              "contentRevision": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/int4@1",
+                  "kind": "scalar"
+                }
+              },
               "createdAt": {
                 "nullable": false,
                 "type": {
                   "codecId": "pg/timestamptz-string@1",
-                  "kind": "scalar"
-                }
-              },
-              "displayedVersion": {
-                "nullable": false,
-                "type": {
-                  "codecId": "pg/int4@1",
                   "kind": "scalar"
                 }
               },
@@ -170,13 +157,6 @@
                 }
               },
               "ownerId": {
-                "nullable": false,
-                "type": {
-                  "codecId": "pg/int4@1",
-                  "kind": "scalar"
-                }
-              },
-              "revision": {
                 "nullable": false,
                 "type": {
                   "codecId": "pg/int4@1",
@@ -248,11 +228,11 @@
                 "content": {
                   "column": "content"
                 },
+                "contentRevision": {
+                  "column": "contentRevision"
+                },
                 "createdAt": {
                   "column": "createdAt"
-                },
-                "displayedVersion": {
-                  "column": "displayedVersion"
                 },
                 "folderId": {
                   "column": "folderId"
@@ -277,9 +257,6 @@
                 },
                 "ownerId": {
                   "column": "ownerId"
-                },
-                "revision": {
-                  "column": "revision"
                 },
                 "size": {
                   "column": "size"
@@ -429,17 +406,17 @@
                   "kind": "scalar"
                 }
               },
-              "length": {
-                "nullable": true,
+              "opId": {
+                "nullable": false,
                 "type": {
-                  "codecId": "pg/int4@1",
+                  "codecId": "pg/text@1",
                   "kind": "scalar"
                 }
               },
-              "position": {
+              "operation": {
                 "nullable": false,
                 "type": {
-                  "codecId": "pg/int4@1",
+                  "codecId": "pg/json@1",
                   "kind": "scalar"
                 }
               },
@@ -448,26 +425,6 @@
                 "type": {
                   "codecId": "pg/int4@1",
                   "kind": "scalar"
-                }
-              },
-              "text": {
-                "nullable": true,
-                "type": {
-                  "codecId": "pg/text@1",
-                  "kind": "scalar"
-                }
-              },
-              "type": {
-                "nullable": false,
-                "type": {
-                  "codecId": "pg/text@1",
-                  "kind": "scalar"
-                },
-                "valueSet": {
-                  "entityKind": "enum",
-                  "entityName": "OperationType",
-                  "namespaceId": "public",
-                  "plane": "domain"
                 }
               }
             },
@@ -511,20 +468,14 @@
                 "id": {
                   "column": "id"
                 },
-                "length": {
-                  "column": "length"
+                "opId": {
+                  "column": "opId"
                 },
-                "position": {
-                  "column": "position"
+                "operation": {
+                  "column": "operation"
                 },
                 "revision": {
                   "column": "revision"
-                },
-                "text": {
-                  "column": "text"
-                },
-                "type": {
-                  "column": "type"
                 }
               },
               "namespaceId": "public",
@@ -851,6 +802,20 @@
                   "kind": "scalar"
                 }
               },
+              "mfaFailedAttempts": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/int4@1",
+                  "kind": "scalar"
+                }
+              },
+              "mfaLockedUntil": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/timestamptz-string@1",
+                  "kind": "scalar"
+                }
+              },
               "mustChangePassword": {
                 "nullable": false,
                 "type": {
@@ -882,6 +847,13 @@
                 "nullable": true,
                 "type": {
                   "codecId": "pg/timestamptz-string@1",
+                  "kind": "scalar"
+                }
+              },
+              "totpLastUsedStep": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/int4@1",
                   "kind": "scalar"
                 }
               },
@@ -953,6 +925,12 @@
                 "id": {
                   "column": "id"
                 },
+                "mfaFailedAttempts": {
+                  "column": "mfaFailedAttempts"
+                },
+                "mfaLockedUntil": {
+                  "column": "mfaLockedUntil"
+                },
                 "mustChangePassword": {
                   "column": "mustChangePassword"
                 },
@@ -964,6 +942,9 @@
                 },
                 "totpEnabledAt": {
                   "column": "totpEnabledAt"
+                },
+                "totpLastUsedStep": {
+                  "column": "totpLastUsedStep"
                 },
                 "totpSecret": {
                   "column": "totpSecret"
@@ -1002,6 +983,15 @@
                   "nativeType": "text",
                   "nullable": true
                 },
+                "contentRevision": {
+                  "codecId": "pg/int4@1",
+                  "default": {
+                    "kind": "literal",
+                    "value": 0
+                  },
+                  "nativeType": "int4",
+                  "nullable": false
+                },
                 "createdAt": {
                   "codecId": "pg/timestamptz-string@1",
                   "default": {
@@ -1009,15 +999,6 @@
                     "kind": "function"
                   },
                   "nativeType": "timestamptz",
-                  "nullable": false
-                },
-                "displayedVersion": {
-                  "codecId": "pg/int4@1",
-                  "default": {
-                    "kind": "literal",
-                    "value": 0
-                  },
-                  "nativeType": "int4",
                   "nullable": false
                 },
                 "folderId": {
@@ -1067,15 +1048,6 @@
                 },
                 "ownerId": {
                   "codecId": "pg/int4@1",
-                  "nativeType": "int4",
-                  "nullable": false
-                },
-                "revision": {
-                  "codecId": "pg/int4@1",
-                  "default": {
-                    "kind": "literal",
-                    "value": 0
-                  },
                   "nativeType": "int4",
                   "nullable": false
                 },
@@ -1275,13 +1247,6 @@
               "uniques": []
             },
             "DocumentOperation": {
-              "checks": [
-                {
-                  "expression": "\"type\" IN ('INSERT', 'DELETE')",
-                  "name": "DocumentOperation_type_check_c40a7336",
-                  "prefix": "DocumentOperation_type_check"
-                }
-              ],
               "columns": {
                 "authorId": {
                   "codecId": "pg/int4@1",
@@ -1311,36 +1276,20 @@
                   "nativeType": "int4",
                   "nullable": false
                 },
-                "length": {
-                  "codecId": "pg/int4@1",
-                  "nativeType": "int4",
-                  "nullable": true
+                "opId": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": false
                 },
-                "position": {
-                  "codecId": "pg/int4@1",
-                  "nativeType": "int4",
+                "operation": {
+                  "codecId": "pg/json@1",
+                  "nativeType": "json",
                   "nullable": false
                 },
                 "revision": {
                   "codecId": "pg/int4@1",
                   "nativeType": "int4",
                   "nullable": false
-                },
-                "text": {
-                  "codecId": "pg/text@1",
-                  "nativeType": "text",
-                  "nullable": true
-                },
-                "type": {
-                  "codecId": "pg/text@1",
-                  "nativeType": "text",
-                  "nullable": false,
-                  "valueSet": {
-                    "entityKind": "valueSet",
-                    "entityName": "OperationType",
-                    "namespaceId": "public",
-                    "plane": "storage"
-                  }
                 }
               },
               "foreignKeys": [
@@ -1388,6 +1337,9 @@
                 "columns": ["id"]
               },
               "uniques": [
+                {
+                  "columns": ["opId"]
+                },
                 {
                   "columns": ["documentId", "revision"]
                 }
@@ -1708,6 +1660,20 @@
                   "nativeType": "int4",
                   "nullable": false
                 },
+                "mfaFailedAttempts": {
+                  "codecId": "pg/int4@1",
+                  "default": {
+                    "kind": "literal",
+                    "value": 0
+                  },
+                  "nativeType": "int4",
+                  "nullable": false
+                },
+                "mfaLockedUntil": {
+                  "codecId": "pg/timestamptz-string@1",
+                  "nativeType": "timestamptz",
+                  "nullable": true
+                },
                 "mustChangePassword": {
                   "codecId": "pg/bool@1",
                   "default": {
@@ -1740,6 +1706,11 @@
                 "totpEnabledAt": {
                   "codecId": "pg/timestamptz-string@1",
                   "nativeType": "timestamptz",
+                  "nullable": true
+                },
+                "totpLastUsedStep": {
+                  "codecId": "pg/int4@1",
+                  "nativeType": "int4",
                   "nullable": true
                 },
                 "totpSecret": {
@@ -1817,10 +1788,6 @@
               "kind": "valueSet",
               "values": ["EDITOR", "VIEWER"]
             },
-            "OperationType": {
-              "kind": "valueSet",
-              "values": ["INSERT", "DELETE"]
-            },
             "Role": {
               "kind": "valueSet",
               "values": ["USER", "ADMIN"]
@@ -1831,7 +1798,7 @@
         "kind": "postgres-schema"
       }
     },
-    "storageHash": "c9b8642a1f68e6bd61803df5ce9bef027963adf1d830ccca7dc970704bf05882"
+    "storageHash": "64e5a1146d5566ffad9e608d6b656b732d8169cfe180a40aa5bca74660973d6a"
   },
   "execution": {
     "executionHash": "0b055b82a690d3f162aef43711a9fd620a4600d4c62ae34dac7dedd27bd43c38",

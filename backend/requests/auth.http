@@ -1,0 +1,145 @@
+# ===================== /auth/login, /auth/session, /auth/logout =====================
+# Replayable on a database that is not purged: each run registers fresh users ({{$timestamp}}),
+# and later requests read them back from the named responses.
+# - Send the requests in order, from the top: "{{register.response...}}" only resolves once
+#   the "register" request was sent in this VS Code session.
+# - REST Client keeps cookies in one jar shared by every .http file: this file logs in on its own.
+# - Run against the LOCAL backend (cd backend && npm start): the Docker image sets
+#   NODE_ENV=production, so the cookie is Secure and REST Client never sends it over http.
+# - Login failures also count per IP (50 per 15 minutes, in memory): after a few runs in a row,
+#   restart the backend if every login answers 429.
+# - Test users pile up in the dev database; clean them up with any SQL client when needed
+#   (psql: docker compose exec db psql -U colladoc colladoc, or DBeaver and the like):
+#   DELETE FROM "User" WHERE "username" ~ '^(auth|blocked)_[0-9]+$';
+
+@baseUrl = http://localhost:3000
+@password = correct-horse-battery
+
+### Create the user of this run -> 201
+# @name register
+POST {{baseUrl}}/users/register HTTP/1.1
+Content-Type: application/json
+
+{
+  "username": "auth_{{$timestamp}}",
+  "displayName": "Auth User",
+  "password": "{{password}}"
+}
+
+### Create the user to block -> 201 (own login counter, so the failures above do not add up)
+# @name blockedUser
+POST {{baseUrl}}/users/register HTTP/1.1
+Content-Type: application/json
+
+{
+  "username": "blocked_{{$timestamp}}",
+  "displayName": "Blocked User",
+  "password": "{{password}}"
+}
+
+# ================================ /auth/login ================================
+
+### Login -> 200 { user } + Set-Cookie colladoc_session (HttpOnly, SameSite=Lax, Path=/)
+# Username is normalized like at registration: the surrounding spaces are trimmed
+POST {{baseUrl}}/auth/login HTTP/1.1
+Content-Type: application/json
+
+{
+  "username": "  {{register.response.body.user.username}} ",
+  "password": "{{password}}"
+}
+
+### Wrong password -> 401 INVALID_CREDENTIALS
+POST {{baseUrl}}/auth/login HTTP/1.1
+Content-Type: application/json
+
+{
+  "username": "{{register.response.body.user.username}}",
+  "password": "wrong-password-123"
+}
+
+### Unknown username -> 401 INVALID_CREDENTIALS, same body as a wrong password
+POST {{baseUrl}}/auth/login HTTP/1.1
+Content-Type: application/json
+
+{
+  "username": "nobody_{{$timestamp}}",
+  "password": "wrong-password-123"
+}
+
+### Unknown key -> 400 VALIDATION_ERROR
+POST {{baseUrl}}/auth/login HTTP/1.1
+Content-Type: application/json
+
+{
+  "username": "{{register.response.body.user.username}}",
+  "password": "{{password}}",
+  "role": "ADMIN"
+}
+
+### Empty password -> 400 VALIDATION_ERROR on password
+POST {{baseUrl}}/auth/login HTTP/1.1
+Content-Type: application/json
+
+{
+  "username": "{{register.response.body.user.username}}",
+  "password": ""
+}
+
+# ============================== /auth/session ===============================
+
+### Current user -> 200 { user }
+GET {{baseUrl}}/auth/session HTTP/1.1
+
+# ============================== /auth/logout ================================
+
+### Logout -> 204, Set-Cookie clears colladoc_session (Expires=Thu, 01 Jan 1970)
+POST {{baseUrl}}/auth/logout HTTP/1.1
+
+### Current user after logout -> 401 UNAUTHENTICATED
+GET {{baseUrl}}/auth/session HTTP/1.1
+
+### Logout again, already logged out -> 204 (idempotent)
+POST {{baseUrl}}/auth/logout HTTP/1.1
+
+### Unknown session token -> 401 UNAUTHENTICATED, cookie cleared
+# Without no-cookie-jar, REST Client sends the jar session cookie FIRST and this fake one after it,
+# and the server reads the first colladoc_session (the real one) -> 200 instead of 401
+# @no-cookie-jar
+GET {{baseUrl}}/auth/session HTTP/1.1
+Cookie: colladoc_session=unknown-token
+
+# ============================= Blocked account ==============================
+# Block the user created above first, with any SQL client (psql, DBeaver...):
+#   UPDATE "User" SET "blockedAt" = now()
+#   WHERE "id" = (SELECT max("id") FROM "User" WHERE "username" LIKE 'blocked\_%');
+
+### Blocked account + right password -> 403 ACCOUNT_BLOCKED
+POST {{baseUrl}}/auth/login HTTP/1.1
+Content-Type: application/json
+
+{
+  "username": "{{blockedUser.response.body.user.username}}",
+  "password": "{{password}}"
+}
+
+### Blocked account + wrong password -> 401 INVALID_CREDENTIALS, the block is not revealed
+POST {{baseUrl}}/auth/login HTTP/1.1
+Content-Type: application/json
+
+{
+  "username": "{{blockedUser.response.body.user.username}}",
+  "password": "wrong-password-123"
+}
+
+# ================================ Rate limit ================================
+
+### Rate limit -> run this 6 times: 401 x5, then 429 TOO_MANY_ATTEMPTS with Retry-After: 900
+# A username of its own for this run (it does not need to exist): the counter starts at 0
+POST {{baseUrl}}/auth/login HTTP/1.1
+Content-Type: application/json
+
+{
+  "username": "{{register.response.body.user.username}}_rl",
+  "password": "wrong-password-for-rate-limit"
+}

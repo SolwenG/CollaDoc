@@ -1,7 +1,8 @@
 import type { Request, Response } from "express";
-import { getAuthUser } from "../middlewares/auth.middleware.ts";
 import { generateTemporaryPassword, hashPassword } from "../auth/password.ts";
 import { AppError } from "../errors/app-error.ts";
+import { getAuthUser } from "../middlewares/auth.middleware.ts";
+import { notifySessionsChanged } from "../realtime/realtime-notifier.ts";
 import { createAccount, findByUsername } from "../users/users.service.ts";
 import {
   createUserSchema,
@@ -65,12 +66,12 @@ async function findTargetUser(req: Request, res: Response) {
 export async function blockUserAccount(req: Request, res: Response) {
   const { currentUser, target } = await findTargetUser(req, res);
 
-  // Already blocked: no-op, the original blockedAt is kept
   if (target.blockedAt !== null) {
     return res.json({ user: target });
   }
 
   await blockUser(target.id, currentUser.id);
+  await notifySessionsChanged(target.id);
   return res.json({ user: await findAdminUserView(target.id) });
 }
 

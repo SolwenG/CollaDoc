@@ -20,12 +20,6 @@ enum MemberRole {
   VIEWER = "VIEWER"
 }
 
-enum OperationType {
-  @@type("pg/text@1")
-  INSERT = "INSERT"
-  DELETE = "DELETE"
-}
-
 model User {
   id                 Int                @id @default(autoincrement())
   username           String             @unique // identifiant de connexion, non modifiable
@@ -35,6 +29,9 @@ model User {
   mustChangePassword Boolean            @default(false) // true pour un compte créé par un admin
   totpSecret         String? // chiffré en AES-GCM (clé dans .env)
   totpEnabledAt      TimestamptzString? // null = MFA désactivé
+  totpLastUsedStep   Int? // dernier pas TOTP de 30 s accepté : un code de ce pas ou d'avant est un rejeu
+  mfaFailedAttempts  Int                @default(0) // échecs MFA consécutifs (mot de passe du setup ou code)
+  mfaLockedUntil     TimestamptzString? // dans le futur = tentatives MFA refusées jusque-là
   blockedAt          TimestamptzString? // non null = connexion impossible
   blockedById        Int?
   blockedBy          User?              @relation("UserBlockedBy", fields: [blockedById], references: [id])
@@ -80,9 +77,8 @@ model Document {
   folderId         Int? // null = racine du propriétaire
   folder           Folder?           @relation(fields: [folderId], references: [id], onDelete: Cascade)
   // TEXT
-  content          String? // instantané du texte brut
-  revision         Int               @default(0)
-  displayedVersion Int               @default(0)
+  content          String? // Instantané du texte brut
+  contentRevision  Int               @default(0) // Révision à laquelle correspond content
   // FILE
   originalName     String?
   storagePath      String? // nom snapshotRevisionUUID sur le disque
@@ -116,10 +112,8 @@ model DocumentOperation {
   documentId Int
   document   Document          @relation(fields: [documentId], references: [id], onDelete: Cascade)
   revision   Int
-  type       OperationType
-  position   Int
-  text       String? // INSERT
-  length     Int? // DELETE
+  opId       String            @unique // UUID généré par le client, détecte les renvois après coupure
+  operation  Json // Step[] : voir shared/ot/operation.ts
   authorId   Int
   author     User              @relation(fields: [authorId], references: [id])
   createdAt  TimestamptzString @default(now())

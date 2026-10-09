@@ -34,7 +34,7 @@ import type {
 } from "@prisma/orm-postgres/contract/types";
 
 export type StorageHash =
-  StorageHashBase<"c9b8642a1f68e6bd61803df5ce9bef027963adf1d830ccca7dc970704bf05882">;
+  StorageHashBase<"64e5a1146d5566ffad9e608d6b656b732d8169cfe180a40aa5bca74660973d6a">;
 export type ExecutionHash =
   ExecutionHashBase<"0b055b82a690d3f162aef43711a9fd620a4600d4c62ae34dac7dedd27bd43c38">;
 export type ProfileHash =
@@ -540,8 +540,8 @@ export type FieldOutputTypes = {
   readonly public: {
     readonly Document: {
       readonly content: CodecTypes["pg/text@1"]["output"] | null;
+      readonly contentRevision: CodecTypes["pg/int4@1"]["output"];
       readonly createdAt: CodecTypes["pg/timestamptz-string@1"]["output"];
-      readonly displayedVersion: CodecTypes["pg/int4@1"]["output"];
       readonly folderId: CodecTypes["pg/int4@1"]["output"] | null;
       readonly id: CodecTypes["pg/int4@1"]["output"];
       readonly kind: "TEXT" | "FILE";
@@ -550,7 +550,6 @@ export type FieldOutputTypes = {
       readonly name: CodecTypes["pg/text@1"]["output"];
       readonly originalName: CodecTypes["pg/text@1"]["output"] | null;
       readonly ownerId: CodecTypes["pg/int4@1"]["output"];
-      readonly revision: CodecTypes["pg/int4@1"]["output"];
       readonly size: CodecTypes["pg/int4@1"]["output"] | null;
       readonly storagePath: CodecTypes["pg/text@1"]["output"] | null;
       readonly updatedAt: CodecTypes["pg/timestamptz-string@1"]["output"];
@@ -567,11 +566,9 @@ export type FieldOutputTypes = {
       readonly createdAt: CodecTypes["pg/timestamptz-string@1"]["output"];
       readonly documentId: CodecTypes["pg/int4@1"]["output"];
       readonly id: CodecTypes["pg/int4@1"]["output"];
-      readonly length: CodecTypes["pg/int4@1"]["output"] | null;
-      readonly position: CodecTypes["pg/int4@1"]["output"];
+      readonly opId: CodecTypes["pg/text@1"]["output"];
+      readonly operation: CodecTypes["pg/json@1"]["output"];
       readonly revision: CodecTypes["pg/int4@1"]["output"];
-      readonly text: CodecTypes["pg/text@1"]["output"] | null;
-      readonly type: "INSERT" | "DELETE";
     };
     readonly Folder: {
       readonly createdAt: CodecTypes["pg/timestamptz-string@1"]["output"];
@@ -605,11 +602,15 @@ export type FieldOutputTypes = {
       readonly createdById: CodecTypes["pg/int4@1"]["output"] | null;
       readonly displayName: CodecTypes["pg/text@1"]["output"];
       readonly id: CodecTypes["pg/int4@1"]["output"];
+      readonly mfaFailedAttempts: CodecTypes["pg/int4@1"]["output"];
+      readonly mfaLockedUntil:
+        CodecTypes["pg/timestamptz-string@1"]["output"] | null;
       readonly mustChangePassword: CodecTypes["pg/bool@1"]["output"];
       readonly passwordHash: CodecTypes["pg/text@1"]["output"];
       readonly role: "USER" | "ADMIN";
       readonly totpEnabledAt:
         CodecTypes["pg/timestamptz-string@1"]["output"] | null;
+      readonly totpLastUsedStep: CodecTypes["pg/int4@1"]["output"] | null;
       readonly totpSecret: CodecTypes["pg/text@1"]["output"] | null;
       readonly updatedAt: CodecTypes["pg/timestamptz-string@1"]["output"];
       readonly username: CodecTypes["pg/text@1"]["output"];
@@ -620,8 +621,8 @@ export type FieldInputTypes = {
   readonly public: {
     readonly Document: {
       readonly content: CodecTypes["pg/text@1"]["input"] | null;
+      readonly contentRevision: CodecTypes["pg/int4@1"]["input"];
       readonly createdAt: CodecTypes["pg/timestamptz-string@1"]["input"];
-      readonly displayedVersion: CodecTypes["pg/int4@1"]["input"];
       readonly folderId: CodecTypes["pg/int4@1"]["input"] | null;
       readonly id: CodecTypes["pg/int4@1"]["input"];
       readonly kind: "TEXT" | "FILE";
@@ -630,7 +631,6 @@ export type FieldInputTypes = {
       readonly name: CodecTypes["pg/text@1"]["input"];
       readonly originalName: CodecTypes["pg/text@1"]["input"] | null;
       readonly ownerId: CodecTypes["pg/int4@1"]["input"];
-      readonly revision: CodecTypes["pg/int4@1"]["input"];
       readonly size: CodecTypes["pg/int4@1"]["input"] | null;
       readonly storagePath: CodecTypes["pg/text@1"]["input"] | null;
       readonly updatedAt: CodecTypes["pg/timestamptz-string@1"]["input"];
@@ -647,11 +647,9 @@ export type FieldInputTypes = {
       readonly createdAt: CodecTypes["pg/timestamptz-string@1"]["input"];
       readonly documentId: CodecTypes["pg/int4@1"]["input"];
       readonly id: CodecTypes["pg/int4@1"]["input"];
-      readonly length: CodecTypes["pg/int4@1"]["input"] | null;
-      readonly position: CodecTypes["pg/int4@1"]["input"];
+      readonly opId: CodecTypes["pg/text@1"]["input"];
+      readonly operation: CodecTypes["pg/json@1"]["input"];
       readonly revision: CodecTypes["pg/int4@1"]["input"];
-      readonly text: CodecTypes["pg/text@1"]["input"] | null;
-      readonly type: "INSERT" | "DELETE";
     };
     readonly Folder: {
       readonly createdAt: CodecTypes["pg/timestamptz-string@1"]["input"];
@@ -684,11 +682,15 @@ export type FieldInputTypes = {
       readonly createdById: CodecTypes["pg/int4@1"]["input"] | null;
       readonly displayName: CodecTypes["pg/text@1"]["input"];
       readonly id: CodecTypes["pg/int4@1"]["input"];
+      readonly mfaFailedAttempts: CodecTypes["pg/int4@1"]["input"];
+      readonly mfaLockedUntil:
+        CodecTypes["pg/timestamptz-string@1"]["input"] | null;
       readonly mustChangePassword: CodecTypes["pg/bool@1"]["input"];
       readonly passwordHash: CodecTypes["pg/text@1"]["input"];
       readonly role: "USER" | "ADMIN";
       readonly totpEnabledAt:
         CodecTypes["pg/timestamptz-string@1"]["input"] | null;
+      readonly totpLastUsedStep: CodecTypes["pg/int4@1"]["input"] | null;
       readonly totpSecret: CodecTypes["pg/text@1"]["input"] | null;
       readonly updatedAt: CodecTypes["pg/timestamptz-string@1"]["input"];
       readonly username: CodecTypes["pg/text@1"]["input"];
@@ -699,8 +701,8 @@ export type StorageColumnTypes = {
   readonly public: {
     readonly Document: {
       readonly content: CodecTypes["pg/text@1"]["output"] | null;
+      readonly contentRevision: CodecTypes["pg/int4@1"]["output"];
       readonly createdAt: CodecTypes["pg/timestamptz-string@1"]["output"];
-      readonly displayedVersion: CodecTypes["pg/int4@1"]["output"];
       readonly folderId: CodecTypes["pg/int4@1"]["output"] | null;
       readonly id: CodecTypes["pg/int4@1"]["output"];
       readonly kind: "TEXT" | "FILE";
@@ -709,7 +711,6 @@ export type StorageColumnTypes = {
       readonly name: CodecTypes["pg/text@1"]["output"];
       readonly originalName: CodecTypes["pg/text@1"]["output"] | null;
       readonly ownerId: CodecTypes["pg/int4@1"]["output"];
-      readonly revision: CodecTypes["pg/int4@1"]["output"];
       readonly size: CodecTypes["pg/int4@1"]["output"] | null;
       readonly storagePath: CodecTypes["pg/text@1"]["output"] | null;
       readonly updatedAt: CodecTypes["pg/timestamptz-string@1"]["output"];
@@ -726,11 +727,9 @@ export type StorageColumnTypes = {
       readonly createdAt: CodecTypes["pg/timestamptz-string@1"]["output"];
       readonly documentId: CodecTypes["pg/int4@1"]["output"];
       readonly id: CodecTypes["pg/int4@1"]["output"];
-      readonly length: CodecTypes["pg/int4@1"]["output"] | null;
-      readonly position: CodecTypes["pg/int4@1"]["output"];
+      readonly operation: CodecTypes["pg/json@1"]["output"];
+      readonly opId: CodecTypes["pg/text@1"]["output"];
       readonly revision: CodecTypes["pg/int4@1"]["output"];
-      readonly text: CodecTypes["pg/text@1"]["output"] | null;
-      readonly type: "INSERT" | "DELETE";
     };
     readonly Folder: {
       readonly createdAt: CodecTypes["pg/timestamptz-string@1"]["output"];
@@ -764,11 +763,15 @@ export type StorageColumnTypes = {
       readonly createdById: CodecTypes["pg/int4@1"]["output"] | null;
       readonly displayName: CodecTypes["pg/text@1"]["output"];
       readonly id: CodecTypes["pg/int4@1"]["output"];
+      readonly mfaFailedAttempts: CodecTypes["pg/int4@1"]["output"];
+      readonly mfaLockedUntil:
+        CodecTypes["pg/timestamptz-string@1"]["output"] | null;
       readonly mustChangePassword: CodecTypes["pg/bool@1"]["output"];
       readonly passwordHash: CodecTypes["pg/text@1"]["output"];
       readonly role: "USER" | "ADMIN";
       readonly totpEnabledAt:
         CodecTypes["pg/timestamptz-string@1"]["output"] | null;
+      readonly totpLastUsedStep: CodecTypes["pg/int4@1"]["output"] | null;
       readonly totpSecret: CodecTypes["pg/text@1"]["output"] | null;
       readonly updatedAt: CodecTypes["pg/timestamptz-string@1"]["output"];
       readonly username: CodecTypes["pg/text@1"]["output"];
@@ -779,8 +782,8 @@ export type StorageColumnInputTypes = {
   readonly public: {
     readonly Document: {
       readonly content: CodecTypes["pg/text@1"]["input"] | null;
+      readonly contentRevision: CodecTypes["pg/int4@1"]["input"];
       readonly createdAt: CodecTypes["pg/timestamptz-string@1"]["input"];
-      readonly displayedVersion: CodecTypes["pg/int4@1"]["input"];
       readonly folderId: CodecTypes["pg/int4@1"]["input"] | null;
       readonly id: CodecTypes["pg/int4@1"]["input"];
       readonly kind: "TEXT" | "FILE";
@@ -789,7 +792,6 @@ export type StorageColumnInputTypes = {
       readonly name: CodecTypes["pg/text@1"]["input"];
       readonly originalName: CodecTypes["pg/text@1"]["input"] | null;
       readonly ownerId: CodecTypes["pg/int4@1"]["input"];
-      readonly revision: CodecTypes["pg/int4@1"]["input"];
       readonly size: CodecTypes["pg/int4@1"]["input"] | null;
       readonly storagePath: CodecTypes["pg/text@1"]["input"] | null;
       readonly updatedAt: CodecTypes["pg/timestamptz-string@1"]["input"];
@@ -806,11 +808,9 @@ export type StorageColumnInputTypes = {
       readonly createdAt: CodecTypes["pg/timestamptz-string@1"]["input"];
       readonly documentId: CodecTypes["pg/int4@1"]["input"];
       readonly id: CodecTypes["pg/int4@1"]["input"];
-      readonly length: CodecTypes["pg/int4@1"]["input"] | null;
-      readonly position: CodecTypes["pg/int4@1"]["input"];
+      readonly operation: CodecTypes["pg/json@1"]["input"];
+      readonly opId: CodecTypes["pg/text@1"]["input"];
       readonly revision: CodecTypes["pg/int4@1"]["input"];
-      readonly text: CodecTypes["pg/text@1"]["input"] | null;
-      readonly type: "INSERT" | "DELETE";
     };
     readonly Folder: {
       readonly createdAt: CodecTypes["pg/timestamptz-string@1"]["input"];
@@ -843,11 +843,15 @@ export type StorageColumnInputTypes = {
       readonly createdById: CodecTypes["pg/int4@1"]["input"] | null;
       readonly displayName: CodecTypes["pg/text@1"]["input"];
       readonly id: CodecTypes["pg/int4@1"]["input"];
+      readonly mfaFailedAttempts: CodecTypes["pg/int4@1"]["input"];
+      readonly mfaLockedUntil:
+        CodecTypes["pg/timestamptz-string@1"]["input"] | null;
       readonly mustChangePassword: CodecTypes["pg/bool@1"]["input"];
       readonly passwordHash: CodecTypes["pg/text@1"]["input"];
       readonly role: "USER" | "ADMIN";
       readonly totpEnabledAt:
         CodecTypes["pg/timestamptz-string@1"]["input"] | null;
+      readonly totpLastUsedStep: CodecTypes["pg/int4@1"]["input"] | null;
       readonly totpSecret: CodecTypes["pg/text@1"]["input"] | null;
       readonly updatedAt: CodecTypes["pg/timestamptz-string@1"]["input"];
       readonly username: CodecTypes["pg/text@1"]["input"];
@@ -858,8 +862,8 @@ export type StorageColumnInputTypes = {
 export namespace Models {
   export type public_Document = {
     content: CodecTypes["pg/text@1"]["output"] | null;
+    contentRevision: CodecTypes["pg/int4@1"]["output"];
     createdAt: CodecTypes["pg/timestamptz-string@1"]["output"];
-    displayedVersion: CodecTypes["pg/int4@1"]["output"];
     folderId: CodecTypes["pg/int4@1"]["output"] | null;
     id: CodecTypes["pg/int4@1"]["output"];
     kind: "TEXT" | "FILE";
@@ -868,7 +872,6 @@ export namespace Models {
     name: CodecTypes["pg/text@1"]["output"];
     originalName: CodecTypes["pg/text@1"]["output"] | null;
     ownerId: CodecTypes["pg/int4@1"]["output"];
-    revision: CodecTypes["pg/int4@1"]["output"];
     size: CodecTypes["pg/int4@1"]["output"] | null;
     storagePath: CodecTypes["pg/text@1"]["output"] | null;
     updatedAt: CodecTypes["pg/timestamptz-string@1"]["output"];
@@ -893,11 +896,9 @@ export namespace Models {
     createdAt: CodecTypes["pg/timestamptz-string@1"]["output"];
     documentId: CodecTypes["pg/int4@1"]["output"];
     id: CodecTypes["pg/int4@1"]["output"];
-    length: CodecTypes["pg/int4@1"]["output"] | null;
-    position: CodecTypes["pg/int4@1"]["output"];
+    opId: CodecTypes["pg/text@1"]["output"];
+    operation: CodecTypes["pg/json@1"]["output"];
     revision: CodecTypes["pg/int4@1"]["output"];
-    text: CodecTypes["pg/text@1"]["output"] | null;
-    type: "INSERT" | "DELETE";
     author: public_User;
     document: public_Document;
     readonly [RelationKeys]?: "author" | "document";
@@ -941,10 +942,13 @@ export namespace Models {
     createdById: CodecTypes["pg/int4@1"]["output"] | null;
     displayName: CodecTypes["pg/text@1"]["output"];
     id: CodecTypes["pg/int4@1"]["output"];
+    mfaFailedAttempts: CodecTypes["pg/int4@1"]["output"];
+    mfaLockedUntil: CodecTypes["pg/timestamptz-string@1"]["output"] | null;
     mustChangePassword: CodecTypes["pg/bool@1"]["output"];
     passwordHash: CodecTypes["pg/text@1"]["output"];
     role: "USER" | "ADMIN";
     totpEnabledAt: CodecTypes["pg/timestamptz-string@1"]["output"] | null;
+    totpLastUsedStep: CodecTypes["pg/int4@1"]["output"] | null;
     totpSecret: CodecTypes["pg/text@1"]["output"] | null;
     updatedAt: CodecTypes["pg/timestamptz-string@1"]["output"];
     username: CodecTypes["pg/text@1"]["output"];
@@ -991,6 +995,15 @@ type ContractBase = Omit<
                   readonly codecId: "pg/text@1";
                   readonly nullable: true;
                 };
+                readonly contentRevision: {
+                  readonly nativeType: "int4";
+                  readonly codecId: "pg/int4@1";
+                  readonly nullable: false;
+                  readonly default: {
+                    readonly kind: "literal";
+                    readonly value: DefaultLiteralValue<"pg/int4@1", 0>;
+                  };
+                };
                 readonly createdAt: {
                   readonly nativeType: "timestamptz";
                   readonly codecId: "pg/timestamptz-string@1";
@@ -998,15 +1011,6 @@ type ContractBase = Omit<
                   readonly default: {
                     readonly kind: "function";
                     readonly expression: "now()";
-                  };
-                };
-                readonly displayedVersion: {
-                  readonly nativeType: "int4";
-                  readonly codecId: "pg/int4@1";
-                  readonly nullable: false;
-                  readonly default: {
-                    readonly kind: "literal";
-                    readonly value: DefaultLiteralValue<"pg/int4@1", 0>;
                   };
                 };
                 readonly folderId: {
@@ -1052,15 +1056,6 @@ type ContractBase = Omit<
                   readonly nativeType: "int4";
                   readonly codecId: "pg/int4@1";
                   readonly nullable: false;
-                };
-                readonly revision: {
-                  readonly nativeType: "int4";
-                  readonly codecId: "pg/int4@1";
-                  readonly nullable: false;
-                  readonly default: {
-                    readonly kind: "literal";
-                    readonly value: DefaultLiteralValue<"pg/int4@1", 0>;
-                  };
                 };
                 readonly size: {
                   readonly nativeType: "int4";
@@ -1270,14 +1265,14 @@ type ContractBase = Omit<
                     readonly expression: "autoincrement()";
                   };
                 };
-                readonly length: {
-                  readonly nativeType: "int4";
-                  readonly codecId: "pg/int4@1";
-                  readonly nullable: true;
+                readonly opId: {
+                  readonly nativeType: "text";
+                  readonly codecId: "pg/text@1";
+                  readonly nullable: false;
                 };
-                readonly position: {
-                  readonly nativeType: "int4";
-                  readonly codecId: "pg/int4@1";
+                readonly operation: {
+                  readonly nativeType: "json";
+                  readonly codecId: "pg/json@1";
                   readonly nullable: false;
                 };
                 readonly revision: {
@@ -1285,19 +1280,10 @@ type ContractBase = Omit<
                   readonly codecId: "pg/int4@1";
                   readonly nullable: false;
                 };
-                readonly text: {
-                  readonly nativeType: "text";
-                  readonly codecId: "pg/text@1";
-                  readonly nullable: true;
-                };
-                readonly type: {
-                  readonly nativeType: "text";
-                  readonly codecId: "pg/text@1";
-                  readonly nullable: false;
-                };
               };
               primaryKey: { readonly columns: readonly ["id"] };
               uniques: readonly [
+                { readonly columns: readonly ["opId"] },
                 { readonly columns: readonly ["documentId", "revision"] },
               ];
               indexes: readonly [
@@ -1634,6 +1620,20 @@ type ContractBase = Omit<
                     readonly expression: "autoincrement()";
                   };
                 };
+                readonly mfaFailedAttempts: {
+                  readonly nativeType: "int4";
+                  readonly codecId: "pg/int4@1";
+                  readonly nullable: false;
+                  readonly default: {
+                    readonly kind: "literal";
+                    readonly value: DefaultLiteralValue<"pg/int4@1", 0>;
+                  };
+                };
+                readonly mfaLockedUntil: {
+                  readonly nativeType: "timestamptz";
+                  readonly codecId: "pg/timestamptz-string@1";
+                  readonly nullable: true;
+                };
                 readonly mustChangePassword: {
                   readonly nativeType: "bool";
                   readonly codecId: "pg/bool@1";
@@ -1660,6 +1660,11 @@ type ContractBase = Omit<
                 readonly totpEnabledAt: {
                   readonly nativeType: "timestamptz";
                   readonly codecId: "pg/timestamptz-string@1";
+                  readonly nullable: true;
+                };
+                readonly totpLastUsedStep: {
+                  readonly nativeType: "int4";
+                  readonly codecId: "pg/int4@1";
                   readonly nullable: true;
                 };
                 readonly totpSecret: {
@@ -1731,10 +1736,6 @@ type ContractBase = Omit<
               readonly kind: "valueSet";
               readonly values: readonly ["EDITOR", "VIEWER"];
             };
-            readonly OperationType: {
-              readonly kind: "valueSet";
-              readonly values: readonly ["INSERT", "DELETE"];
-            };
             readonly Role: {
               readonly kind: "valueSet";
               readonly values: readonly ["USER", "ADMIN"];
@@ -1792,18 +1793,18 @@ type ContractBase = Omit<
                   readonly codecId: "pg/text@1";
                 };
               };
+              readonly contentRevision: {
+                readonly nullable: false;
+                readonly type: {
+                  readonly kind: "scalar";
+                  readonly codecId: "pg/int4@1";
+                };
+              };
               readonly createdAt: {
                 readonly nullable: false;
                 readonly type: {
                   readonly kind: "scalar";
                   readonly codecId: "pg/timestamptz-string@1";
-                };
-              };
-              readonly displayedVersion: {
-                readonly nullable: false;
-                readonly type: {
-                  readonly kind: "scalar";
-                  readonly codecId: "pg/int4@1";
                 };
               };
               readonly folderId: {
@@ -1856,13 +1857,6 @@ type ContractBase = Omit<
                 };
               };
               readonly ownerId: {
-                readonly nullable: false;
-                readonly type: {
-                  readonly kind: "scalar";
-                  readonly codecId: "pg/int4@1";
-                };
-              };
-              readonly revision: {
                 readonly nullable: false;
                 readonly type: {
                   readonly kind: "scalar";
@@ -1934,10 +1928,10 @@ type ContractBase = Omit<
               readonly namespaceId: "public";
               readonly fields: {
                 readonly content: { readonly column: "content" };
-                readonly createdAt: { readonly column: "createdAt" };
-                readonly displayedVersion: {
-                  readonly column: "displayedVersion";
+                readonly contentRevision: {
+                  readonly column: "contentRevision";
                 };
+                readonly createdAt: { readonly column: "createdAt" };
                 readonly folderId: { readonly column: "folderId" };
                 readonly id: { readonly column: "id" };
                 readonly kind: { readonly column: "kind" };
@@ -1948,7 +1942,6 @@ type ContractBase = Omit<
                 readonly name: { readonly column: "name" };
                 readonly originalName: { readonly column: "originalName" };
                 readonly ownerId: { readonly column: "ownerId" };
-                readonly revision: { readonly column: "revision" };
                 readonly size: { readonly column: "size" };
                 readonly storagePath: { readonly column: "storagePath" };
                 readonly updatedAt: { readonly column: "updatedAt" };
@@ -2073,18 +2066,18 @@ type ContractBase = Omit<
                   readonly codecId: "pg/int4@1";
                 };
               };
-              readonly length: {
-                readonly nullable: true;
-                readonly type: {
-                  readonly kind: "scalar";
-                  readonly codecId: "pg/int4@1";
-                };
-              };
-              readonly position: {
+              readonly opId: {
                 readonly nullable: false;
                 readonly type: {
                   readonly kind: "scalar";
-                  readonly codecId: "pg/int4@1";
+                  readonly codecId: "pg/text@1";
+                };
+              };
+              readonly operation: {
+                readonly nullable: false;
+                readonly type: {
+                  readonly kind: "scalar";
+                  readonly codecId: "pg/json@1";
                 };
               };
               readonly revision: {
@@ -2092,20 +2085,6 @@ type ContractBase = Omit<
                 readonly type: {
                   readonly kind: "scalar";
                   readonly codecId: "pg/int4@1";
-                };
-              };
-              readonly text: {
-                readonly nullable: true;
-                readonly type: {
-                  readonly kind: "scalar";
-                  readonly codecId: "pg/text@1";
-                };
-              };
-              readonly type: {
-                readonly nullable: false;
-                readonly type: {
-                  readonly kind: "scalar";
-                  readonly codecId: "pg/text@1";
                 };
               };
             };
@@ -2143,11 +2122,9 @@ type ContractBase = Omit<
                 readonly createdAt: { readonly column: "createdAt" };
                 readonly documentId: { readonly column: "documentId" };
                 readonly id: { readonly column: "id" };
-                readonly length: { readonly column: "length" };
-                readonly position: { readonly column: "position" };
+                readonly opId: { readonly column: "opId" };
+                readonly operation: { readonly column: "operation" };
                 readonly revision: { readonly column: "revision" };
-                readonly text: { readonly column: "text" };
-                readonly type: { readonly column: "type" };
               };
             };
           };
@@ -2435,6 +2412,20 @@ type ContractBase = Omit<
                   readonly codecId: "pg/int4@1";
                 };
               };
+              readonly mfaFailedAttempts: {
+                readonly nullable: false;
+                readonly type: {
+                  readonly kind: "scalar";
+                  readonly codecId: "pg/int4@1";
+                };
+              };
+              readonly mfaLockedUntil: {
+                readonly nullable: true;
+                readonly type: {
+                  readonly kind: "scalar";
+                  readonly codecId: "pg/timestamptz-string@1";
+                };
+              };
               readonly mustChangePassword: {
                 readonly nullable: false;
                 readonly type: {
@@ -2461,6 +2452,13 @@ type ContractBase = Omit<
                 readonly type: {
                   readonly kind: "scalar";
                   readonly codecId: "pg/timestamptz-string@1";
+                };
+              };
+              readonly totpLastUsedStep: {
+                readonly nullable: true;
+                readonly type: {
+                  readonly kind: "scalar";
+                  readonly codecId: "pg/int4@1";
                 };
               };
               readonly totpSecret: {
@@ -2521,12 +2519,19 @@ type ContractBase = Omit<
                 readonly createdById: { readonly column: "createdById" };
                 readonly displayName: { readonly column: "displayName" };
                 readonly id: { readonly column: "id" };
+                readonly mfaFailedAttempts: {
+                  readonly column: "mfaFailedAttempts";
+                };
+                readonly mfaLockedUntil: { readonly column: "mfaLockedUntil" };
                 readonly mustChangePassword: {
                   readonly column: "mustChangePassword";
                 };
                 readonly passwordHash: { readonly column: "passwordHash" };
                 readonly role: { readonly column: "role" };
                 readonly totpEnabledAt: { readonly column: "totpEnabledAt" };
+                readonly totpLastUsedStep: {
+                  readonly column: "totpLastUsedStep";
+                };
                 readonly totpSecret: { readonly column: "totpSecret" };
                 readonly updatedAt: { readonly column: "updatedAt" };
                 readonly username: { readonly column: "username" };
@@ -2547,13 +2552,6 @@ type ContractBase = Omit<
             readonly members: readonly [
               { readonly name: "EDITOR"; readonly value: "EDITOR" },
               { readonly name: "VIEWER"; readonly value: "VIEWER" },
-            ];
-          };
-          readonly OperationType: {
-            readonly codecId: "pg/text@1";
-            readonly members: readonly [
-              { readonly name: "INSERT"; readonly value: "INSERT" },
-              { readonly name: "DELETE"; readonly value: "DELETE" },
             ];
           };
           readonly Role: {
