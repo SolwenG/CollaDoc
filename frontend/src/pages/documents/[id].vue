@@ -48,17 +48,8 @@
             </template>
         </q-banner>
 
-        <textarea
-            ref="textarea"
-            class="editor col"
-            spellcheck="true"
-            :readonly="readonly"
-            @input="onInput"
-            @beforeinput="onBeforeInput"
-            @keydown="onKeydown"
-        />
-
         <ShareDialog v-model="showShareDialog" :document-id="documentId" />
+
         <div class="row">
             <textarea
                 ref="textarea"
