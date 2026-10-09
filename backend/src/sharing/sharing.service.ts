@@ -3,7 +3,7 @@ import { AppError } from "../errors/app-error.ts";
 import { db } from "../prisma/db.ts";
 import type { CreateShareLinkInput } from "./sharing.schema.ts";
 
-export const SHARE_LINK_TTL_MS = 7 * 24 * 60 * 60 * 1000;
+export const SHARE_LINK_TTL_MS = 60 * 60 * 1000;
 
 type MemberRole = CreateShareLinkInput["role"];
 
@@ -33,6 +33,13 @@ function shareLinkNotFound(): AppError {
   return new AppError(
     "SHARE_LINK_NOT_FOUND",
     "Ce lien d'invitation n'existe pas",
+  );
+}
+
+function memberNotFound(): AppError {
+  return new AppError(
+    "MEMBER_NOT_FOUND",
+    "Cette personne n'est pas membre du document",
   );
 }
 
@@ -170,6 +177,26 @@ export async function listMembers(documentId: number) {
     .all();
 }
 
+export async function updateMemberRole(
+  documentId: number,
+  ownerId: number,
+  userId: number,
+  role: MemberRole,
+) {
+  if (userId === ownerId) {
+    throw new AppError(
+      "CANNOT_CHANGE_OWNER_ROLE",
+      "Le rôle du propriétaire ne peut pas être modifié",
+    );
+  }
+
+  const updated = await db.orm.public.DocumentMember.where({
+    documentId,
+    userId,
+  }).update({ role });
+  if (!updated) throw memberNotFound();
+}
+
 // A link still active lets the removed member back in: it has to be revoked as well
 export async function removeMember(
   documentId: number,
@@ -187,10 +214,5 @@ export async function removeMember(
     documentId,
     userId,
   }).delete();
-  if (!removed) {
-    throw new AppError(
-      "MEMBER_NOT_FOUND",
-      "Cette personne n'est pas membre du document",
-    );
-  }
+  if (!removed) throw memberNotFound();
 }

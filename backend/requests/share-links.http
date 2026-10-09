@@ -7,8 +7,8 @@
 #   replaces the cookie, so the requests below it run as that user.
 # - Run against the LOCAL backend (cd backend && npm start): the Docker image sets
 #   NODE_ENV=production, so the cookie is Secure and REST Client never sends it over http.
-#   Removing a member also notifies the realtime server; when it is not running, the backend logs
-#   "Realtime notification … failed" and still answers 204.
+#   Removing a member or changing their role also notifies the realtime server; when it is not
+#   running, the backend logs "Realtime notification … failed" and still answers 204.
 # - Test data piles up in the dev database; clean it up with any SQL client when needed
 #   (psql: docker compose exec db psql -U colladoc colladoc, or DBeaver and the like).
 #   Documents first: their links and members go with them (ON DELETE CASCADE):
@@ -19,7 +19,7 @@
 @baseUrl = http://localhost:3000
 @password = correct-horse-battery
 # Set after the "Prerequisite: document" SQL statement below
-@documentId = 1
+@documentId = 0
 
 # ================================== Users ===================================
 
@@ -62,7 +62,7 @@ Content-Type: application/json
 #   SELECT 'Shared doc', 'TEXT', max("id"), now() FROM "User" WHERE "username" LIKE 'share\_owner\_%'
 #   RETURNING "id";
 # then copy the returned id into @documentId at the top of this file.
-# ⚠️ With @documentId = 1 every request below answers 400 VALIDATION_ERROR.
+# ⚠️ With @documentId = 0 every request below answers 400 VALIDATION_ERROR.
 
 # ============================ Owner: share links ============================
 
@@ -79,7 +79,7 @@ Content-Type: application/json
 GET {{baseUrl}}/documents/{{documentId}}/share-links HTTP/1.1
 
 ### Create a VIEWER link -> 201 { shareLink: { id, role, expiresAt, createdAt, token } }
-# expiresAt = createdAt + 7 days; the token is never sent again
+# expiresAt = createdAt + 1 hour; the token is never sent again
 # @name viewerLink
 POST {{baseUrl}}/documents/{{documentId}}/share-links HTTP/1.1
 Content-Type: application/json
@@ -221,6 +221,14 @@ Content-Type: application/json
   "role": "EDITOR"
 }
 
+### Change a role as a member who is not the owner -> 403 FORBIDDEN
+PATCH {{baseUrl}}/documents/{{documentId}}/members/{{guestRegister.response.body.user.id}} HTTP/1.1
+Content-Type: application/json
+
+{
+  "role": "VIEWER"
+}
+
 # ======================== Outsider: no access, expiry =======================
 
 ### Login as the outsider -> 200 { user }
@@ -234,6 +242,14 @@ Content-Type: application/json
 
 ### List the members without any access -> 404 DOCUMENT_NOT_FOUND (its existence is not revealed)
 GET {{baseUrl}}/documents/{{documentId}}/members HTTP/1.1
+
+### Change a role without any access -> 404 DOCUMENT_NOT_FOUND
+PATCH {{baseUrl}}/documents/{{documentId}}/members/{{guestRegister.response.body.user.id}} HTTP/1.1
+Content-Type: application/json
+
+{
+  "role": "VIEWER"
+}
 
 # Expire the EDITOR link of this run with any SQL client before sending the next request:
 #   UPDATE "ShareLink" SET "expiresAt" = now() - interval '1 minute'
@@ -262,6 +278,55 @@ Content-Type: application/json
 ### List the members -> 200 { members: [{ role: "EDITOR", createdAt, user: { id, username, displayName } }] }
 GET {{baseUrl}}/documents/{{documentId}}/members HTTP/1.1
 
+### Demote the guest -> 204, their open editor turns read-only (realtime "document:role-changed")
+PATCH {{baseUrl}}/documents/{{documentId}}/members/{{guestRegister.response.body.user.id}} HTTP/1.1
+Content-Type: application/json
+
+{
+  "role": "VIEWER"
+}
+
+### List the members -> 200, the guest is now "VIEWER"
+GET {{baseUrl}}/documents/{{documentId}}/members HTTP/1.1
+
+### Promote the guest back -> 204, "EDITOR" again
+PATCH {{baseUrl}}/documents/{{documentId}}/members/{{guestRegister.response.body.user.id}} HTTP/1.1
+Content-Type: application/json
+
+{
+  "role": "EDITOR"
+}
+
+### Change the owner's role -> 403 CANNOT_CHANGE_OWNER_ROLE
+PATCH {{baseUrl}}/documents/{{documentId}}/members/{{ownerRegister.response.body.user.id}} HTTP/1.1
+Content-Type: application/json
+
+{
+  "role": "VIEWER"
+}
+
+### Change the role of someone who is not a member -> 404 MEMBER_NOT_FOUND
+PATCH {{baseUrl}}/documents/{{documentId}}/members/{{outsiderRegister.response.body.user.id}} HTTP/1.1
+Content-Type: application/json
+
+{
+  "role": "VIEWER"
+}
+
+### Change a role to OWNER -> 400 VALIDATION_ERROR (EDITOR or VIEWER only)
+PATCH {{baseUrl}}/documents/{{documentId}}/members/{{guestRegister.response.body.user.id}} HTTP/1.1
+Content-Type: application/json
+
+{
+  "role": "OWNER"
+}
+
+### Change a role without a role -> 400 VALIDATION_ERROR (no default, unlike link creation)
+PATCH {{baseUrl}}/documents/{{documentId}}/members/{{guestRegister.response.body.user.id}} HTTP/1.1
+Content-Type: application/json
+
+{}
+
 ### Remove the owner -> 403 CANNOT_REMOVE_OWNER
 DELETE {{baseUrl}}/documents/{{documentId}}/members/{{ownerRegister.response.body.user.id}} HTTP/1.1
 
@@ -272,6 +337,8 @@ DELETE {{baseUrl}}/documents/{{documentId}}/members/{{guestRegister.response.bod
 DELETE {{baseUrl}}/documents/{{documentId}}/members/{{guestRegister.response.body.user.id}} HTTP/1.1
 
 # ============== Known limit: a removed member comes back by link ============
+# The dialog no longer offers to revoke a link: until it expires (1 hour at most), a removed
+# member can come back with it. The revoke route still exists and is shown below.
 
 ### Login as the guest -> 200 { user }
 POST {{baseUrl}}/auth/login HTTP/1.1

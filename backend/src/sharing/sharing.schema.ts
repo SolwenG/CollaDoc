@@ -2,6 +2,8 @@ import * as z from "zod";
 
 const idSchema = z.coerce.number().int().positive();
 
+const memberRoleSchema = z.enum(["EDITOR", "VIEWER"]);
+
 export const documentParamsSchema = z.object({
   id: idSchema,
 });
@@ -18,7 +20,12 @@ export const memberParamsSchema = z.object({
 
 // VIEWER by default: without an explicit choice, grant the least rights
 export const createShareLinkSchema = z.strictObject({
-  role: z.enum(["EDITOR", "VIEWER"]).default("VIEWER"),
+  role: memberRoleSchema.default("VIEWER"),
+});
+
+// No default here: changing a role without saying which one is a mistake
+export const updateMemberRoleSchema = z.strictObject({
+  role: memberRoleSchema,
 });
 
 // A token is 43 characters long: the cap avoids hashing a huge string

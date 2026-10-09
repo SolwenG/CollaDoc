@@ -115,7 +115,7 @@ model ShareLink {
   role        MemberRole // rôle donné à qui accepte le lien
   createdById Int // devient invitedById du membre ajouté
   createdBy   User               @relation(fields: [createdById], references: [id])
-  expiresAt   TimestamptzString // createdAt + 7 jours
+  expiresAt   TimestamptzString // createdAt + 1 heure
   revokedAt   TimestamptzString? // non null = lien révoqué par le propriétaire
   createdAt   TimestamptzString  @default(now())
 

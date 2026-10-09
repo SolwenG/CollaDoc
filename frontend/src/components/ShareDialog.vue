@@ -45,27 +45,6 @@
       <q-separator />
 
       <q-card-section>
-        <div class="text-subtitle2 q-mb-sm">Liens actifs</div>
-        <div v-if="shareLinks.length === 0" class="text-grey-7">Aucun lien actif.</div>
-        <q-list v-else dense separator>
-          <q-item v-for="link in shareLinks" :key="link.id">
-            <q-item-section>
-              <q-item-label>{{ ROLE_LABELS[link.role] }}</q-item-label>
-              <q-item-label caption>
-                Créé le {{ formatDate(link.createdAt) }}, expire le
-                {{ formatDate(link.expiresAt) }}
-              </q-item-label>
-            </q-item-section>
-            <q-item-section side>
-              <q-btn flat dense color="negative" label="Révoquer" @click="onRevoke(link)" />
-            </q-item-section>
-          </q-item>
-        </q-list>
-      </q-card-section>
-
-      <q-separator />
-
-      <q-card-section>
         <div class="text-subtitle2 q-mb-sm">Membres</div>
         <div v-if="members.length === 0" class="text-grey-7">
           Personne n'a encore rejoint ce document.
@@ -74,19 +53,27 @@
           <q-item v-for="member in members" :key="member.user.id">
             <q-item-section>
               <q-item-label>{{ member.user.displayName }}</q-item-label>
-              <q-item-label caption>
-                @{{ member.user.username }} · {{ ROLE_LABELS[member.role] }}
-              </q-item-label>
+              <q-item-label caption>@{{ member.user.username }}</q-item-label>
+            </q-item-section>
+            <q-item-section side>
+              <!-- Pas de v-model : le menu affiche le rôle enregistré, rechargé après le PATCH -->
+              <q-select
+                :model-value="member.role"
+                :options="ROLE_OPTIONS"
+                emit-value
+                map-options
+                dense
+                options-dense
+                outlined
+                aria-label="Rôle"
+                @update:model-value="onChangeRole(member, $event)"
+              />
             </q-item-section>
             <q-item-section side>
               <q-btn flat dense color="negative" label="Retirer" @click="onRemove(member)" />
             </q-item-section>
           </q-item>
         </q-list>
-        <div class="text-caption text-grey-7 q-mt-sm">
-          Retirer un membre ne révoque pas les liens : avec un lien encore actif, il peut revenir.
-          Révoquez aussi le lien que vous lui avez envoyé.
-        </div>
       </q-card-section>
     </q-card>
   </q-dialog>
@@ -98,13 +85,12 @@ import { copyToClipboard, useQuasar } from 'quasar';
 import {
   createShareLink,
   fetchMembers,
-  fetchShareLinks,
   inviteUrl,
   removeMember,
-  revokeShareLink,
   sharingErrorMessage,
+  updateMemberRole,
 } from '@/utils/sharing';
-import type { CreatedShareLink, Member, MemberRole, Result, ShareLink } from '@/utils/sharing';
+import type { CreatedShareLink, Member, MemberRole, Result } from '@/utils/sharing';
 
 const open = defineModel<boolean>({ required: true });
 const props = defineProps<{ documentId: number }>();
@@ -123,7 +109,6 @@ const $q = useQuasar();
 
 const role = ref<MemberRole>('VIEWER');
 const createdLink = ref<CreatedShareLink | null>(null);
-const shareLinks = ref<ShareLink[]>([]);
 const members = ref<Member[]>([]);
 const errorMessage = ref('');
 const creating = ref(false);
@@ -152,15 +137,6 @@ async function run<T>(
   return false;
 }
 
-async function loadShareLinks() {
-  await run(
-    () => fetchShareLinks(props.documentId),
-    (data) => {
-      shareLinks.value = data;
-    },
-  );
-}
-
 async function loadMembers() {
   await run(
     () => fetchMembers(props.documentId),
@@ -176,20 +152,19 @@ watch(open, async (isOpen) => {
   role.value = 'VIEWER';
   createdLink.value = null;
   errorMessage.value = '';
-  await Promise.all([loadShareLinks(), loadMembers()]);
+  await loadMembers();
 });
 
 async function onCreate() {
   creating.value = true;
   errorMessage.value = '';
-  const created = await run(
+  await run(
     () => createShareLink(props.documentId, role.value),
     (link) => {
       createdLink.value = link;
     },
   );
   creating.value = false;
-  if (created) await loadShareLinks();
 }
 
 async function copyLink() {
@@ -201,13 +176,16 @@ async function copyLink() {
   }
 }
 
-async function onRevoke(link: ShareLink) {
+async function onChangeRole(member: Member, newRole: MemberRole) {
+  if (newRole === member.role) return;
   errorMessage.value = '';
-  if (!(await run(() => revokeShareLink(props.documentId, link.id)))) return;
+  if (!(await run(() => updateMemberRole(props.documentId, member.user.id, newRole)))) return;
 
-  // Le lien qu'on vient de créer ne marche plus : on ne l'affiche plus
-  if (createdLink.value?.id === link.id) createdLink.value = null;
-  await loadShareLinks();
+  $q.notify({
+    type: 'positive',
+    message: `Rôle de ${member.user.displayName} : ${ROLE_LABELS[newRole]}.`,
+  });
+  await loadMembers();
 }
 
 async function onRemove(member: Member) {
