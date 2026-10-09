@@ -4,9 +4,10 @@ FROM node:24-alpine
 WORKDIR /app/backend
 
 COPY backend/package.json backend/package-lock.json ./
+# npm links the "shared" dependency to ../shared, which must exist before installing
+COPY shared/ /app/shared/
 RUN npm ci --omit=dev
 
-COPY shared/ /app/shared/
 COPY backend/ ./
 
 ENV NODE_ENV=production
