@@ -37,6 +37,8 @@ node -e "console.log(require('node:crypto').randomBytes(32).toString('base64'))"
 
 > Même clé dans les deux : le backend local et celui de Docker partagent la même base, un secret chiffré par l'un doit pouvoir être déchiffré par l'autre.
 
+Renseigne aussi une `SHARE_LINK_SECRET` (clé qui signe les liens de partage), générée avec la même commande. Avec la même clé dans les deux fichiers, un lien créé par un backend reste valable pour l'autre.
+
 ### 2. Base de données
 
 ```bash

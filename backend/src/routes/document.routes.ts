@@ -6,6 +6,7 @@ import {
     deleteDocument,
     downloadFile,
     getDocument,
+    getParticipants,
     replaceFile,
     updateDocument,
     uploadFile,
@@ -19,6 +20,7 @@ router.post('/', createTextDocument)
 router.post('/files', uploadSingleFile, uploadFile)
 router.get('/:id', getDocument)
 router.get('/:id/file', downloadFile)
+router.get('/:id/participants', getParticipants)
 router.put('/:id/file', uploadSingleFile, replaceFile)
 router.patch('/:id', updateDocument)
 router.delete('/:id', deleteDocument)

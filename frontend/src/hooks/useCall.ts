@@ -11,6 +11,8 @@ const ICE_SERVERS: RTCConfiguration = {
     ],
 }
 
+const INVITE_TIMEOUT_MS = 10_000
+
 // ---- État partagé ----
 const status = ref<CallStatus>('idle')
 const incoming = ref<IncomingCall | null>(null)
@@ -87,18 +89,21 @@ async function startCall(documentId: number, targetUserId: number) {
         return
     }
     status.value = 'calling'
-    socket.emit(
-        'call:invite',
-        { documentId, targetUserId },
-        (res: { ok: boolean; callId?: string; error?: string }) => {
-            if (!res.ok) {
-                error.value = res.error ?? 'server_error'
-                cleanup()
-                return
+    // Without the timeout, a server that never answers leaves the caller stuck on 'calling'
+    socket
+        .timeout(INVITE_TIMEOUT_MS)
+        .emit(
+            'call:invite',
+            { documentId, targetUserId },
+            (err: Error | null, res?: { ok: boolean; callId?: string; error?: string }) => {
+                if (err || !res?.ok) {
+                    error.value = res?.error ?? 'server_error'
+                    cleanup()
+                    return
+                }
+                callId = res.callId!
             }
-            callId = res.callId!
-        }
-    )
+        )
 }
 
 async function acceptCall() {
@@ -190,6 +195,9 @@ function init() {
 
 export function useCall() {
     init()
+    // autoConnect is off: the socket opens here, once the user is logged in.
+    // Also reconnects after the server kicked it (logout), with the new session
+    if (!socket.active) socket.connect()
     return {
         status: readonly(status),
         incoming: readonly(incoming),

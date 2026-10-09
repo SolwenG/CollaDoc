@@ -9,6 +9,7 @@ import { getOpenDocument, listOpenDocuments, writeSnapshot } from './realtime/op
 import { authenticateSocket } from './realtime/socket-auth.ts'
 import type { CollabServer } from './realtime/socket.types.ts'
 import { userRoom } from './realtime/socket.types.ts'
+import { registerCallHandlers } from './sockets/call.ts'
 
 const SNAPSHOT_INTERVAL_MS = 10_000
 
@@ -24,6 +25,7 @@ io.use(authenticateSocket)
 io.on('connection', (socket) => {
     socket.join(userRoom(socket.data.userId))
     registerCollaborationHandlers(socket)
+    registerCallHandlers(io, socket)
 })
 
 function snapshotAll(): Promise<void[]> {

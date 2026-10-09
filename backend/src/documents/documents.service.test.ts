@@ -1,7 +1,11 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 vi.mock('../prisma/db.ts', () => ({ db: {} }))
-vi.mock('./documents.repository.ts', () => ({ replaceFile: vi.fn() }))
+vi.mock('./documents.repository.ts', () => ({
+    replaceFile: vi.fn(),
+    findOwner: vi.fn(),
+    findMembers: vi.fn(),
+}))
 vi.mock('./file-storage.ts', () => ({
     detectFileType: vi.fn(),
     saveFile: vi.fn(),
@@ -10,7 +14,7 @@ vi.mock('./file-storage.ts', () => ({
 
 const documentsRepository = await import('./documents.repository.ts')
 const fileStorage = await import('./file-storage.ts')
-const { replaceFile, resolveAccess } = await import('./documents.service.ts')
+const { listParticipants, replaceFile, resolveAccess } = await import('./documents.service.ts')
 
 describe('resolveAccess', () => {
     it('gives the owner full access', () => {
@@ -77,5 +81,33 @@ describe('replaceFile', () => {
 
         expect(result.status).toBe('unsupportedType')
         expect(fileStorage.saveFile).not.toHaveBeenCalled()
+    })
+})
+
+describe('listParticipants', () => {
+    const document = {
+        id: 7,
+        name: 'notes',
+        kind: 'TEXT',
+        ownerId: 1,
+        originalName: null,
+        mimeType: null,
+        storagePath: null,
+    } as const
+
+    it('puts the owner first, then the members with their role', async () => {
+        vi.mocked(documentsRepository.findOwner).mockResolvedValue({
+            id: 1,
+            username: 'alice',
+            displayName: 'Alice',
+        })
+        vi.mocked(documentsRepository.findMembers).mockResolvedValue([
+            { role: 'EDITOR', user: { id: 2, username: 'bob', displayName: 'Bob' } },
+        ] as never)
+
+        expect(await listParticipants(document)).toEqual([
+            { id: 1, username: 'alice', displayName: 'Alice', role: 'OWNER' },
+            { id: 2, username: 'bob', displayName: 'Bob', role: 'EDITOR' },
+        ])
     })
 })

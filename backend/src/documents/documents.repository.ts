@@ -56,6 +56,18 @@ export async function findMemberRole(documentId: number, userId: number) {
     return member?.role ?? null
 }
 
+export function findOwner(ownerId: number) {
+    return db.orm.public.User.select('id', 'username', 'displayName').where({ id: ownerId }).first()
+}
+
+export function findMembers(documentId: number) {
+    return db.orm.public.DocumentMember.select('role')
+        .where({ documentId })
+        .include('user', (user) => user.select('id', 'username', 'displayName'))
+        .orderBy((m) => m.createdAt.asc())
+        .all()
+}
+
 export async function createTextDocument(ownerId: number, name: string, folderId: number | null) {
     const { id } = await db.orm.public.Document.select('id').create({
         name,

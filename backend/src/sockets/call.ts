@@ -1,6 +1,7 @@
 import { randomUUID } from 'node:crypto'
 import type { Server, Socket } from 'socket.io'
 import { db } from '../prisma/db.ts'
+import { documentRoom, userRoom } from '../realtime/socket.types.ts'
 import type { Call, CallSignal } from 'shared/call/types'
 
 type Ack = (res: { ok: true; callId: string } | { ok: false; error: string }) => void
@@ -22,7 +23,7 @@ async function canAccessDocument(userId: number, documentId: number): Promise<bo
 
 // Présent = au moins un socket de cet utilisateur dans la room du document
 async function isPresentOnDocument(io: Server, userId: number, documentId: number) {
-    const sockets = await io.in(`doc:${documentId}`).fetchSockets()
+    const sockets = await io.in(documentRoom(documentId)).fetchSockets()
     return sockets.some((s) => s.data.userId === userId)
 }
 
@@ -38,8 +39,8 @@ function endCall(io: Server, call: Call, reason: string) {
     if (!calls.delete(call.id)) return // déjà terminé
     clearTimeout(call.timeout)
     // Les clients ignorent les callId qui ne les concernent pas
-    io.to(`user:${call.callerId}`)
-        .to(`user:${call.calleeId}`)
+    io.to(userRoom(call.callerId))
+        .to(userRoom(call.calleeId))
         .emit('call:ended', { callId: call.id, reason })
 }
 
@@ -82,7 +83,7 @@ export function registerCallHandlers(io: Server, socket: Socket) {
             call.timeout = setTimeout(() => endCall(io, call, 'timeout'), RING_TIMEOUT_MS)
             calls.set(call.id, call)
 
-            io.to(`user:${p.targetUserId}`).emit('call:incoming', {
+            io.to(userRoom(p.targetUserId)).emit('call:incoming', {
                 callId: call.id,
                 documentId: p.documentId,
                 from: {
@@ -105,7 +106,7 @@ export function registerCallHandlers(io: Server, socket: Socket) {
         // L'appelant est notifié sur l'onglet qui a lancé l'appel
         io.to(call.callerSocketId).emit('call:accepted', { callId: call.id })
         // Les autres onglets du destinataire ferment leur popup
-        socket.to(`user:${userId}`).emit('call:ended', {
+        socket.to(userRoom(userId)).emit('call:ended', {
             callId: call.id,
             reason: 'answered_elsewhere',
         })
