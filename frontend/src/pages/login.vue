@@ -33,7 +33,7 @@
                 >Créer un compte</router-link
             >
         </div>
-        <TwoFactorDialog v-model="showTwoFactor" />
+        <TwoFactorDialog v-model="showTwoFactor" @verified="router.push('/')" />
     </AuthCard>
 </template>
 
