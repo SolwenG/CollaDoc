@@ -29,6 +29,14 @@ DATABASE_URL="postgresql://colladoc:colladoc@localhost:5433/colladoc"
 > Depuis la machine hôte, Postgres est exposé sur le port **5433** (`DB_PORT`), pas 5432.
 > Dans le réseau Docker, le conteneur `backend` utilise `db:5432` (déjà configuré dans `docker-compose.yml`).
 
+Dans les **deux** fichiers, renseigne la **même** `TOTP_ENCRYPTION_KEY` (clé qui chiffre les secrets 2FA en base) :
+
+```bash
+node -e "console.log(require('node:crypto').randomBytes(32).toString('base64'))"
+```
+
+> Même clé dans les deux : le backend local et celui de Docker partagent la même base, un secret chiffré par l'un doit pouvoir être déchiffré par l'autre.
+
 ### 2. Base de données
 
 ```bash
@@ -50,3 +58,11 @@ docker compose up -d --build
 
 - frontend : http://localhost:8080
 - backend : http://localhost:3000
+
+## Tester l'API
+
+Les scénarios de requêtes sont dans [`backend/requests/`](backend/requests/), un fichier par domaine (`register`, `auth`, `mfa`, `profile`, `admin`), à lancer avec l'extension VS Code [REST Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client).
+
+- Chaque fichier se rejoue sans purger la base : il crée ses propres utilisateurs (`{{$timestamp}}`) et se connecte lui-même.
+- Envoie les requêtes dans l'ordre, depuis le haut du fichier : l'en-tête de chaque fichier liste ses prérequis (requête SQL éventuelle, à lancer avec `psql`, DBeaver ou tout autre client SQL ; nettoyage des utilisateurs de test).
+- Lance le backend **en local** (`docker compose stop backend`, puis `cd backend && npm start`) : l'image Docker tourne en `NODE_ENV=production`, le cookie de session y est `Secure` et REST Client ne le renvoie pas en http.

@@ -12,7 +12,6 @@ export async function registerUser(req: Request, res: Response) {
   const { username, displayName, password } = registerSchema.parse(req.body);
 
   const existingUser = await findByUsername(username);
-  console.log("existingUser =", existingUser);
   if (existingUser) {
     throw new AppError("USERNAME_TAKEN", "Username already taken");
   }

@@ -29,6 +29,9 @@ model User {
   mustChangePassword Boolean            @default(false) // true pour un compte créé par un admin
   totpSecret         String? // chiffré en AES-GCM (clé dans .env)
   totpEnabledAt      TimestamptzString? // null = MFA désactivé
+  totpLastUsedStep   Int? // dernier pas TOTP de 30 s accepté : un code de ce pas ou d'avant est un rejeu
+  mfaFailedAttempts  Int                @default(0) // échecs MFA consécutifs (mot de passe du setup ou code)
+  mfaLockedUntil     TimestamptzString? // dans le futur = tentatives MFA refusées jusque-là
   blockedAt          TimestamptzString? // non null = connexion impossible
   blockedById        Int?
   blockedBy          User?              @relation("UserBlockedBy", fields: [blockedById], references: [id])

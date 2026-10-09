@@ -4,7 +4,7 @@ import {
   changePassword,
   getProfile,
   updateDisplayName,
-} from "../users/profile.controller.ts";
+} from "../users/profiles/profile.controller.ts";
 
 const router = Router();
 

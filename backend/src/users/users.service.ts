@@ -4,9 +4,9 @@ type Register = {
   username: string;
   displayName: string;
   passwordHash: string;
-  role: "USER" | "ADMIN";
-  mustChangePassword: boolean;
-  createdById: number;
+  role?: "USER" | "ADMIN";
+  mustChangePassword?: boolean;
+  createdById?: number;
 };
 
 export async function findByUsername(username: string) {

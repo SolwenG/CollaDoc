@@ -24,6 +24,10 @@ export const displayNameSchema = z
       "Le nom affiché ne peut contenir que des lettres, des chiffres, des espaces et les caractères - ' . _",
   });
 
+export const profileParamsSchema = z.strictObject({
+  id: z.coerce.number().int().positive(),
+});
+
 export const updateProfileSchema = z.strictObject({
   displayName: displayNameSchema,
 });
