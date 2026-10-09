@@ -54,7 +54,8 @@ GET {{baseUrl}}/admin/users?pageSize=500 HTTP/1.1
 
 # ================================ Create user ===============================
 
-### Create a user -> 201 { user, temporaryPassword }, displayName = trimmed lowercase username, mustChangePassword = true
+### Create a user -> 201 { user, temporaryPassword }, displayName = trimmed lowercase username
+# mustChangePassword = true is stored but not part of the response: check it in the database
 # @name member
 POST {{baseUrl}}/admin/users HTTP/1.1
 Content-Type: application/json
