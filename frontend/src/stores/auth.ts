@@ -1,6 +1,6 @@
-import { computed, ref } from 'vue';
-import { defineStore } from 'pinia';
 import { apiFetch, postJson, readApiError, readJson } from '@/utils/api';
+import { defineStore } from 'pinia';
+import { computed, ref } from 'vue';
 
 export interface User {
   id: number;

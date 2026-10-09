@@ -150,5 +150,8 @@ vite.config.ts.timestamp-*
 # Turbo Repo
 .turbo
 
+# Files uploaded by users (backend UPLOAD_DIR)
+/backend/uploads/
+
 # Prisma CLAUDE agents skills and docs
 /backend/.claude/skills/prisma-*
