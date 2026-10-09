@@ -1,70 +1,70 @@
 [
-  {
-    "id": "dropColumn.Document.snapshotRevision",
-    "label": "Drop column \"snapshotRevision\" from \"Document\"",
-    "operationClass": "destructive",
-    "target": {
-      "id": "postgres",
-      "details": {
-        "schema": "public",
-        "objectType": "column",
-        "name": "snapshotRevision",
-        "table": "Document"
-      }
+    {
+        "id": "dropColumn.Document.snapshotRevision",
+        "label": "Drop column \"snapshotRevision\" from \"Document\"",
+        "operationClass": "destructive",
+        "target": {
+            "id": "postgres",
+            "details": {
+                "schema": "public",
+                "objectType": "column",
+                "name": "snapshotRevision",
+                "table": "Document"
+            }
+        },
+        "precheck": [
+            {
+                "description": "ensure column \"snapshotRevision\" exists",
+                "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+                "params": ["public", "Document", "snapshotRevision"]
+            }
+        ],
+        "execute": [
+            {
+                "description": "drop column \"snapshotRevision\"",
+                "sql": "ALTER TABLE \"public\".\"Document\" DROP COLUMN \"snapshotRevision\""
+            }
+        ],
+        "postcheck": [
+            {
+                "description": "verify column \"snapshotRevision\" does not exist",
+                "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+                "params": ["public", "Document", "snapshotRevision"]
+            }
+        ]
     },
-    "precheck": [
-      {
-        "description": "ensure column \"snapshotRevision\" exists",
-        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
-        "params": ["public", "Document", "snapshotRevision"]
-      }
-    ],
-    "execute": [
-      {
-        "description": "drop column \"snapshotRevision\"",
-        "sql": "ALTER TABLE \"public\".\"Document\" DROP COLUMN \"snapshotRevision\""
-      }
-    ],
-    "postcheck": [
-      {
-        "description": "verify column \"snapshotRevision\" does not exist",
-        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
-        "params": ["public", "Document", "snapshotRevision"]
-      }
-    ]
-  },
-  {
-    "id": "column.public.Document.displayedVersion",
-    "label": "Add column \"displayedVersion\" to \"Document\"",
-    "operationClass": "additive",
-    "target": {
-      "id": "postgres",
-      "details": {
-        "schema": "public",
-        "objectType": "column",
-        "name": "displayedVersion",
-        "table": "Document"
-      }
-    },
-    "precheck": [
-      {
-        "description": "ensure column \"displayedVersion\" is missing",
-        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
-        "params": ["public", "Document", "displayedVersion"]
-      }
-    ],
-    "execute": [
-      {
-        "description": "add column \"displayedVersion\"",
-        "sql": "ALTER TABLE \"public\".\"Document\" ADD COLUMN \"displayedVersion\" int4 DEFAULT 0 NOT NULL"
-      }
-    ],
-    "postcheck": [
-      {
-        "description": "verify column \"displayedVersion\" exists",
-        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
-        "params": ["public", "Document", "displayedVersion"]
-      }
-    ]
-  }
+    {
+        "id": "column.public.Document.displayedVersion",
+        "label": "Add column \"displayedVersion\" to \"Document\"",
+        "operationClass": "additive",
+        "target": {
+            "id": "postgres",
+            "details": {
+                "schema": "public",
+                "objectType": "column",
+                "name": "displayedVersion",
+                "table": "Document"
+            }
+        },
+        "precheck": [
+            {
+                "description": "ensure column \"displayedVersion\" is missing",
+                "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+                "params": ["public", "Document", "displayedVersion"]
+            }
+        ],
+        "execute": [
+            {
+                "description": "add column \"displayedVersion\"",
+                "sql": "ALTER TABLE \"public\".\"Document\" ADD COLUMN \"displayedVersion\" int4 DEFAULT 0 NOT NULL"
+            }
+        ],
+        "postcheck": [
+            {
+                "description": "verify column \"displayedVersion\" exists",
+                "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+                "params": ["public", "Document", "displayedVersion"]
+            }
+        ]
+    }
 ]

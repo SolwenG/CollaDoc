@@ -1,17 +1,17 @@
 {
-  "name": "colladoc",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "dev": "concurrently \"npm run --prefix backend start\" \"npm run --prefix frontend dev\"",
-    "format": "prettier --write .",
-    "backend:typecheck": "npm run --prefix backend typecheck"
-  },
-  "devDependencies": {
-    "concurrently": "^9.2.1",
-    "fast-check": "^4.10.2",
-    "prettier": "^3.9.9",
-    "zod": "^4.6.5"
-  }
+    "name": "colladoc",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "dev": "concurrently \"npm run --prefix backend start\" \"npm run --prefix frontend dev\"",
+        "format": "prettier --write .",
+        "backend:typecheck": "npm run --prefix backend typecheck"
+    },
+    "devDependencies": {
+        "concurrently": "^9.2.1",
+        "fast-check": "^4.10.2",
+        "prettier": "^3.9.9",
+        "zod": "^4.6.5"
+    }
 }

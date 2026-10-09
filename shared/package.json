@@ -1,5 +1,5 @@
 {
-  "name": "shared",
-  "private": true,
-  "type": "module"
+    "name": "shared",
+    "private": true,
+    "type": "module"
 }

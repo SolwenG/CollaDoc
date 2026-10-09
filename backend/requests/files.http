@@ -1,0 +1,140 @@
+# ========================== /folders and /documents ==========================
+# Replayable on a database that is not purged: each run registers a fresh user ({{$timestamp}}),
+# and later requests read it back from the named responses.
+# - Send the requests in order, from the top.
+# - Run against the LOCAL backend (cd backend && npm start), see profile.http for why.
+# - Uploads use a PNG of the repository (frontend/public/icons) as the sample file.
+# - Clean up with any SQL client when needed (owners are not cascaded, so content goes first):
+#   DELETE FROM "Folder" WHERE "ownerId" IN (SELECT id FROM "User" WHERE "username" ~ '^files_[0-9]+$');
+#   DELETE FROM "Document" WHERE "ownerId" IN (SELECT id FROM "User" WHERE "username" ~ '^files_[0-9]+$');
+#   DELETE FROM "User" WHERE "username" ~ '^files_[0-9]+$';
+
+@baseUrl = http://localhost:3000
+@password = correct-horse-battery
+
+### Create the user of this run -> 201
+# @name register
+POST {{baseUrl}}/users/register HTTP/1.1
+Content-Type: application/json
+
+{
+  "username": "files_{{$timestamp}}",
+  "displayName": "Files User",
+  "password": "{{password}}"
+}
+
+### Login -> 200 { user }
+POST {{baseUrl}}/auth/login HTTP/1.1
+Content-Type: application/json
+
+{
+  "username": "{{register.response.body.user.username}}",
+  "password": "{{password}}"
+}
+
+# ================================== Folders ==================================
+
+### Create a root folder -> 201 { folder }
+# @name projects
+POST {{baseUrl}}/folders HTTP/1.1
+Content-Type: application/json
+
+{ "name": "Projets" }
+
+### Create a sub-folder -> 201 { folder }
+# @name year
+POST {{baseUrl}}/folders HTTP/1.1
+Content-Type: application/json
+
+{ "name": "2026", "parentId": {{projects.response.body.folder.id}} }
+
+### Same name at the same place -> 409 FOLDER_NAME_TAKEN
+POST {{baseUrl}}/folders HTTP/1.1
+Content-Type: application/json
+
+{ "name": "Projets" }
+
+### Move a folder into its own sub-folder -> 400 FOLDER_MOVE_CYCLE
+PATCH {{baseUrl}}/folders/{{projects.response.body.folder.id}} HTTP/1.1
+Content-Type: application/json
+
+{ "parentId": {{year.response.body.folder.id}} }
+
+### Rename a folder -> 200 { folder }
+PATCH {{baseUrl}}/folders/{{year.response.body.folder.id}} HTTP/1.1
+Content-Type: application/json
+
+{ "name": "Année 2026" }
+
+# ================================= Documents =================================
+
+### Create an empty text document -> 201 { document }
+POST {{baseUrl}}/documents HTTP/1.1
+Content-Type: application/json
+
+{ "name": "Notes", "folderId": {{projects.response.body.folder.id}} }
+
+### Upload a file into the sub-folder -> 201 { document }
+# @name upload
+POST {{baseUrl}}/documents/files HTTP/1.1
+Content-Type: multipart/form-data; boundary=boundary
+
+--boundary
+Content-Disposition: form-data; name="folderId"
+
+{{year.response.body.folder.id}}
+--boundary
+Content-Disposition: form-data; name="file"; filename="icône.png"
+Content-Type: image/png
+
+< ../../frontend/public/icons/favicon-16x16.png
+--boundary--
+
+### Upload a text file disguised as a PDF -> 415 UNSUPPORTED_FILE_TYPE
+POST {{baseUrl}}/documents/files HTTP/1.1
+Content-Type: multipart/form-data; boundary=boundary
+
+--boundary
+Content-Disposition: form-data; name="file"; filename="fake.pdf"
+Content-Type: application/pdf
+
+<script>alert(1)</script>
+--boundary--
+
+### Document details -> 200 { document, access: "OWNER", path: [Projets, Année 2026] }
+GET {{baseUrl}}/documents/{{upload.response.body.document.id}} HTTP/1.1
+
+### Contents of the sub-folder -> 200 { folder, ancestors, folders, documents }
+GET {{baseUrl}}/folders/{{year.response.body.folder.id}} HTTP/1.1
+
+### Contents of the root -> 200 { folder: null, ancestors: [], ... }
+GET {{baseUrl}}/folders/root HTTP/1.1
+
+### Preview the file -> 200, Content-Disposition: inline
+GET {{baseUrl}}/documents/{{upload.response.body.document.id}}/file HTTP/1.1
+
+### Download the file -> 200, Content-Disposition: attachment
+GET {{baseUrl}}/documents/{{upload.response.body.document.id}}/file?download=1 HTTP/1.1
+
+### Replace the file -> 200 { document }, named after the new file
+PUT {{baseUrl}}/documents/{{upload.response.body.document.id}}/file HTTP/1.1
+Content-Type: multipart/form-data; boundary=boundary
+
+--boundary
+Content-Disposition: form-data; name="file"; filename="favicon-32.png"
+Content-Type: image/png
+
+< ../../frontend/public/icons/favicon-32x32.png
+--boundary--
+
+### Rename and move the file to the root -> 200 { document }
+PATCH {{baseUrl}}/documents/{{upload.response.body.document.id}} HTTP/1.1
+Content-Type: application/json
+
+{ "name": "Logo", "folderId": null }
+
+### Delete the root folder, its sub-folder and their documents -> 204
+DELETE {{baseUrl}}/folders/{{projects.response.body.folder.id}} HTTP/1.1
+
+### Delete the file -> 204
+DELETE {{baseUrl}}/documents/{{upload.response.body.document.id}} HTTP/1.1
