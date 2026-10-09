@@ -12,11 +12,24 @@ export interface User {
 export type LoginResult =
   'success' | 'mfa-required' | 'invalid' | 'blocked' | 'rate-limited' | 'error';
 
+export type MfaError = 'invalid-code' | 'locked' | 'expired' | 'error';
+
 const LOGIN_ERRORS: Record<string, LoginResult> = {
   INVALID_CREDENTIALS: 'invalid',
   ACCOUNT_BLOCKED: 'blocked',
   TOO_MANY_ATTEMPTS: 'rate-limited',
 };
+
+const MFA_ERRORS: Record<string, MfaError> = {
+  INVALID_MFA_CODE: 'invalid-code',
+  TOO_MANY_ATTEMPTS: 'locked',
+  UNAUTHENTICATED: 'expired',
+};
+
+async function toMfaError(response: Response): Promise<MfaError> {
+  const error = await readApiError(response);
+  return (error && MFA_ERRORS[error.code]) ?? 'error';
+}
 
 export const useAuthStore = defineStore('auth', () => {
   const user = ref<User | null>(null);
@@ -68,5 +81,28 @@ export const useAuthStore = defineStore('auth', () => {
     user.value = null;
   }
 
-  return { user, initialized, isLoggedIn, isAdmin, login, logout, fetchCurrentUser, forgetUser };
+  async function verifyMfa(code: string): Promise<'success' | MfaError> {
+    const response = await postJson('/auth/mfa/verify', { code });
+    if (response.ok) {
+      const body = await readJson<{ user?: User }>(response);
+      if (body?.user) {
+        user.value = body.user;
+        return 'success';
+      }
+      return 'error';
+    }
+    return toMfaError(response);
+  }
+
+  return {
+    user,
+    initialized,
+    isLoggedIn,
+    isAdmin,
+    login,
+    logout,
+    fetchCurrentUser,
+    forgetUser,
+    verifyMfa,
+  };
 });

@@ -31,7 +31,7 @@
       Pas encore de compte ?
       <router-link to="/register" class="text-primary text-bold">Créer un compte</router-link>
     </div>
-    <TwoFactorDialog v-model="showTwoFactor" />
+    <TwoFactorDialog v-model="showTwoFactor" @verified="router.push('/')" />
   </AuthCard>
 </template>
 
