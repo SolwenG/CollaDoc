@@ -146,11 +146,25 @@ export async function acceptShareLink(token: string, userId: number): Promise<Ac
 }
 
 export async function listMembers(documentId: number) {
-    return db.orm.public.DocumentMember.select('role', 'createdAt')
+    const document = await db.orm.public.Document.select('ownerId')
+        .where({ id: documentId })
+        .first()
+    if (!document) throw documentNotFound()
+
+    const owner = await db.orm.public.User.select('id', 'username', 'displayName')
+        .where({ id: document.ownerId })
+        .first()
+
+    const members = db.orm.public.DocumentMember.select('role', 'createdAt')
         .where({ documentId })
         .include('user', (user) => user.select('id', 'username', 'displayName'))
         .orderBy((m) => m.createdAt.asc())
         .all()
+
+    return [
+        { ...owner, role: 'OWNER', isOwner: true },
+        ...members.map((m) => ({ ...m.user, role: m.role, isOwner: false })),
+    ]
 }
 
 export async function updateMemberRole(

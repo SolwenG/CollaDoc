@@ -147,6 +147,7 @@ async function copyLostText() {
 onMounted(async () => {
     const docId = Number(route.params.id)
     const data = await fetchDocumentMembers(docId)
+    console.log('Members data:', data)
     if (data) members.value = data
 })
 </script>
