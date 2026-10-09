@@ -20,30 +20,32 @@ cp .env.example .env                  # utilisé par docker compose (identifiant
 cp backend/.env.example backend/.env  # utilisé par Prisma et le backend lancés en local
 ```
 
-Dans `backend/.env`, `DATABASE_URL` doit correspondre aux valeurs du `.env` racine. Avec les valeurs par défaut :
+Dans les **deux** fichiers `.env`, renseigne la **même** :
+- `TOTP_ENCRYPTION_KEY`
+- `INTERNAL_SECRET`
+- `SHARE_LINK_SECRET`
 
-```env
-DATABASE_URL="postgresql://colladoc:colladoc@localhost:5433/colladoc"
-```
-
-> Depuis la machine hôte, Postgres est exposé sur le port **5433** (`DB_PORT`), pas 5432.
-> Dans le réseau Docker, le conteneur `backend` utilise `db:5432` (déjà configuré dans `docker-compose.yml`).
-
-Dans les **deux** fichiers, renseigne la **même** `TOTP_ENCRYPTION_KEY` (clé qui chiffre les secrets 2FA en base) :
+Pour `SHARE_LINK_SECRET` et `TOTP_ENCRYPTION_KEY`, utilise :
 
 ```bash
 node -e "console.log(require('node:crypto').randomBytes(32).toString('base64'))"
 ```
+pour la générer.
+
+Pour `INTERNAL_SECRET`, fais :
+
+```bash
+openssl rand -hex 32
+```
 
 > Même clé dans les deux : le backend local et celui de Docker partagent la même base, un secret chiffré par l'un doit pouvoir être déchiffré par l'autre.
-
-Renseigne aussi une `SHARE_LINK_SECRET` (clé qui signe les liens de partage), générée avec la même commande. Avec la même clé dans les deux fichiers, un lien créé par un backend reste valable pour l'autre.
 
 ### 2. Base de données
 
 ```bash
 docker compose up -d db               # démarre Postgres seul
 cd backend
+npm ci
 npx prisma db migrate --advance-ref db   # applique toutes les migrations
 npx prisma db verify                  # vérifie que la base correspond au contrat
 ```
@@ -55,15 +57,15 @@ npx prisma db verify                  # vérifie que la base correspond au contr
 Tout dans Docker :
 
 ```bash
-docker compose up -d --build
+docker compose down
+docker compose up <-d> --build
 ```
 
 - frontend : http://localhost:8080
-- backend : http://localhost:3000
 
 ## Tester l'API
 
-Les scénarios de requêtes sont dans [`backend/requests/`](backend/requests/), un fichier par domaine (`register`, `auth`, `mfa`, `profile`, `admin`), à lancer avec l'extension VS Code [REST Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client).
+Les scénarios de requêtes sont dans [`backend/requests/`](backend/requests/), un fichier par domaine (`register`, `auth`, `mfa`, `profile`, `admin`, ...), à lancer avec l'extension VS Code [REST Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client).
 
 - Chaque fichier se rejoue sans purger la base : il crée ses propres utilisateurs (`{{$timestamp}}`) et se connecte lui-même.
 - Envoie les requêtes dans l'ordre, depuis le haut du fichier : l'en-tête de chaque fichier liste ses prérequis (requête SQL éventuelle, à lancer avec `psql`, DBeaver ou tout autre client SQL ; nettoyage des utilisateurs de test).
