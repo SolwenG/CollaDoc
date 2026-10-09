@@ -28,6 +28,13 @@ export interface FolderContents {
   documents: DocumentView[];
 }
 
+export interface DocumentDetails {
+  document: DocumentView;
+  access: 'OWNER' | 'EDITOR' | 'VIEWER';
+  // Folders from the root down to the document, only for its owner
+  path: { id: number; name: string }[];
+}
+
 // Either the body of a successful response, or the message to show to the user
 export type ApiResult<T> = { ok: true; data: T } | { ok: false; message: string };
 
@@ -84,6 +91,10 @@ export function updateFolder(id: number, changes: { name?: string; parentId?: nu
 
 export function deleteFolder(id: number) {
   return send<void>(`/folders/${id}`, 'DELETE');
+}
+
+export function fetchDocument(id: number) {
+  return send<DocumentDetails>(`/documents/${id}`, 'GET');
 }
 
 export function createTextDocument(name: string, folderId: number | null) {

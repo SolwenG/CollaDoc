@@ -64,6 +64,15 @@ async function sendDocumentView(res: Response, status: number, id: number) {
 	return res.status(status).json({ document });
 }
 
+export async function getDocument(req: Request, res: Response) {
+	const { document, access } = await findReadableDocument(req);
+
+	const details = await documentsService.getDocumentDetails(document, access);
+	if (!details) throw documentNotFound();
+
+	return res.json({ ...details, access });
+}
+
 export async function createTextDocument(req: Request, res: Response) {
 	const { id: userId } = getAuthUser(req);
 	const { name, folderId } = createTextDocumentSchema.parse(req.body);
@@ -107,8 +116,14 @@ export async function replaceFile(req: Request, res: Response) {
 		throw new AppError("NOT_A_FILE", "Ce document n'est pas un fichier");
 	}
 	const file = getUploadedFile(req);
+	const name = itemNameSchema.parse(file.originalName);
 
-	const result = await documentsService.replaceFile(document, userId, file);
+	const result = await documentsService.replaceFile(
+		document,
+		userId,
+		name,
+		file,
+	);
 	if (result.status === "unsupportedType") throw unsupportedFileType();
 
 	return sendDocumentView(res, 200, document.id);

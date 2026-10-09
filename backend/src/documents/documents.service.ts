@@ -25,6 +25,22 @@ export async function getDocumentView(documentId: number) {
 	return row ? toDocumentView(row) : null;
 }
 
+export async function getDocumentDetails(
+	document: DocumentForAccess,
+	access: DocumentRole,
+) {
+	const view = await getDocumentView(document.id);
+	if (!view) return null;
+	if (access !== "OWNER")
+		return { document: { ...view, folderId: null }, path: [] };
+
+	const path =
+		view.folderId === null
+			? []
+			: await foldersRepository.findFolderPath(view.folderId, document.ownerId);
+	return { document: view, path };
+}
+
 export async function findAccessibleDocument(
 	documentId: number,
 	userId: number,
@@ -94,9 +110,11 @@ export async function uploadFile(
 	}
 }
 
+/** The document takes the name of the new file */
 export async function replaceFile(
 	document: DocumentForAccess,
 	userId: number,
+	name: string,
 	file: UploadedFile,
 ) {
 	const mimeType = await fileStorage.detectFileType(file.buffer);
@@ -106,6 +124,7 @@ export async function replaceFile(
 	try {
 		await documentsRepository.replaceFile(
 			document.id,
+			name,
 			{
 				originalName: file.originalName,
 				storagePath,

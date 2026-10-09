@@ -101,6 +101,9 @@ Content-Type: application/pdf
 <script>alert(1)</script>
 --boundary--
 
+### Document details -> 200 { document, access: "OWNER", path: [Projets, Année 2026] }
+GET {{baseUrl}}/documents/{{upload.response.body.document.id}} HTTP/1.1
+
 ### Contents of the sub-folder -> 200 { folder, ancestors, folders, documents }
 GET {{baseUrl}}/folders/{{year.response.body.folder.id}} HTTP/1.1
 
@@ -113,7 +116,7 @@ GET {{baseUrl}}/documents/{{upload.response.body.document.id}}/file HTTP/1.1
 ### Download the file -> 200, Content-Disposition: attachment
 GET {{baseUrl}}/documents/{{upload.response.body.document.id}}/file?download=1 HTTP/1.1
 
-### Replace the file -> 200 { document }, name kept, originalName updated
+### Replace the file -> 200 { document }, named after the new file
 PUT {{baseUrl}}/documents/{{upload.response.body.document.id}}/file HTTP/1.1
 Content-Type: multipart/form-data; boundary=boundary
 

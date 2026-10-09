@@ -57,7 +57,7 @@ describe("replaceFile", () => {
       order.push(`remove ${path}`);
     });
 
-    await replaceFile(document, 1, upload);
+    await replaceFile(document, 1, "photo.png", upload);
 
     expect(order).toEqual(["database", "remove old-file"]);
   });
@@ -67,7 +67,9 @@ describe("replaceFile", () => {
       new Error("db down"),
     );
 
-    await expect(replaceFile(document, 1, upload)).rejects.toThrow("db down");
+    await expect(replaceFile(document, 1, "photo.png", upload)).rejects.toThrow(
+      "db down",
+    );
 
     expect(fileStorage.removeFile).toHaveBeenCalledExactlyOnceWith("new-file");
   });
@@ -75,7 +77,7 @@ describe("replaceFile", () => {
   it("writes nothing when the real type is not allowed", async () => {
     vi.mocked(fileStorage.detectFileType).mockResolvedValue(null);
 
-    const result = await replaceFile(document, 1, upload);
+    const result = await replaceFile(document, 1, "photo.png", upload);
 
     expect(result.status).toBe("unsupportedType");
     expect(fileStorage.saveFile).not.toHaveBeenCalled();

@@ -1,7 +1,19 @@
 <template>
   <q-page padding class="column">
+    <q-breadcrumbs class="q-mb-sm">
+      <q-breadcrumbs-el v-if="isOwner" label="Mes documents" icon="home" to="/" />
+      <q-breadcrumbs-el v-else label="Accueil" icon="home" to="/" />
+      <q-breadcrumbs-el
+        v-for="folder in details?.path ?? []"
+        :key="folder.id"
+        :label="folder.name"
+        :to="`/folders/${folder.id}`"
+      />
+      <q-breadcrumbs-el :label="details?.document.name ?? '…'" />
+    </q-breadcrumbs>
+
     <div class="row items-center q-mb-md q-gutter-sm">
-      <h1 class="text-h5 q-my-none">Document</h1>
+      <h1 class="text-h5 q-my-none ellipsis">{{ details?.document.name ?? 'Document' }}</h1>
       <q-space />
       <q-chip v-if="role === 'VIEWER'" icon="visibility" dense>Lecture seule</q-chip>
       <q-chip :color="STATUS[status].color" text-color="white" :icon="STATUS[status].icon" dense>
@@ -35,10 +47,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import { copyToClipboard, useQuasar } from 'quasar';
 import { useCollaborativeDocument } from '@/composables/useCollaborativeDocument';
+import { fetchDocument, type DocumentDetails } from '@/utils/drive-api';
 
 const STATUS = {
   connecting: { label: 'Connexion…', color: 'grey', icon: 'sync' },
@@ -53,6 +66,18 @@ const textarea = ref<HTMLTextAreaElement | null>(null);
 
 const { status, role, readonly, closedMessage, lostText, onInput, onBeforeInput, onKeydown } =
   useCollaborativeDocument(Number(route.params.id), textarea);
+
+const details = ref<DocumentDetails | null>(null);
+const isOwner = computed(() => details.value?.access === 'OWNER');
+
+watch(
+  () => route.params.id,
+  async (id) => {
+    const result = await fetchDocument(Number(id));
+    details.value = result.ok ? result.data : null;
+  },
+  { immediate: true },
+);
 
 async function copyLostText() {
   if (lostText.value === null) return;

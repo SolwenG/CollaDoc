@@ -106,10 +106,12 @@ export async function createFileDocument(
 
 export async function replaceFile(
   documentId: number,
+  name: string,
   file: StoredFile,
   lastModifiedById: number,
 ) {
   await db.orm.public.Document.where({ id: documentId }).updateAll({
+    name,
     ...file,
     lastModifiedById,
   });

@@ -5,6 +5,7 @@ import {
   createTextDocument,
   deleteDocument,
   downloadFile,
+  getDocument,
   replaceFile,
   updateDocument,
   uploadFile,
@@ -16,6 +17,7 @@ router.use(requireAuth);
 
 router.post("/", createTextDocument);
 router.post("/files", uploadSingleFile, uploadFile);
+router.get("/:id", getDocument);
 router.get("/:id/file", downloadFile);
 router.put("/:id/file", uploadSingleFile, replaceFile);
 router.patch("/:id", updateDocument);
