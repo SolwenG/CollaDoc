@@ -1,0 +1,336 @@
+# ======================== /documents/:id/share-links, /share-links ========================
+# Replayable on a database that is not purged: each run registers a fresh owner, guest and
+# outsider ({{$timestamp}}), and later requests read them back from the named responses.
+# - Send the requests in order, from the top: "{{ownerRegister.response...}}" only resolves once
+#   that request was sent in this VS Code session.
+# - REST Client keeps cookies in one jar shared by every .http file: each "Login as …" request
+#   replaces the cookie, so the requests below it run as that user.
+# - Run against the LOCAL backend (cd backend && npm start): the Docker image sets
+#   NODE_ENV=production, so the cookie is Secure and REST Client never sends it over http.
+#   Removing a member also notifies the realtime server; when it is not running, the backend logs
+#   "Realtime notification … failed" and still answers 204.
+# - Test data piles up in the dev database; clean it up with any SQL client when needed
+#   (psql: docker compose exec db psql -U colladoc colladoc, or DBeaver and the like).
+#   Documents first: their links and members go with them (ON DELETE CASCADE):
+#   DELETE FROM "Document" WHERE "ownerId" IN
+#     (SELECT "id" FROM "User" WHERE "username" ~ '^share_(owner|guest|out)_[0-9]+$');
+#   DELETE FROM "User" WHERE "username" ~ '^share_(owner|guest|out)_[0-9]+$';
+
+@baseUrl = http://localhost:3000
+@password = correct-horse-battery
+# Set after the "Prerequisite: document" SQL statement below
+@documentId = 1
+
+# ================================== Users ===================================
+
+### Create the owner -> 201
+# @name ownerRegister
+POST {{baseUrl}}/users/register HTTP/1.1
+Content-Type: application/json
+
+{
+  "username": "share_owner_{{$timestamp}}",
+  "displayName": "Share Owner",
+  "password": "{{password}}"
+}
+
+### Create the guest -> 201
+# @name guestRegister
+POST {{baseUrl}}/users/register HTTP/1.1
+Content-Type: application/json
+
+{
+  "username": "share_guest_{{$timestamp}}",
+  "displayName": "Share Guest",
+  "password": "{{password}}"
+}
+
+### Create the outsider -> 201
+# @name outsiderRegister
+POST {{baseUrl}}/users/register HTTP/1.1
+Content-Type: application/json
+
+{
+  "username": "share_out_{{$timestamp}}",
+  "displayName": "Share Outsider",
+  "password": "{{password}}"
+}
+
+# ========================= Prerequisite: document ==========================
+# No route creates a document yet. Insert one for the owner of this run with any SQL client:
+#   INSERT INTO "Document" ("name", "kind", "ownerId", "updatedAt")
+#   SELECT 'Shared doc', 'TEXT', max("id"), now() FROM "User" WHERE "username" LIKE 'share\_owner\_%'
+#   RETURNING "id";
+# then copy the returned id into @documentId at the top of this file.
+# ⚠️ With @documentId = 1 every request below answers 400 VALIDATION_ERROR.
+
+# ============================ Owner: share links ============================
+
+### Login as the owner -> 200 { user }
+POST {{baseUrl}}/auth/login HTTP/1.1
+Content-Type: application/json
+
+{
+  "username": "{{ownerRegister.response.body.user.username}}",
+  "password": "{{password}}"
+}
+
+### List the links, none yet -> 200 { shareLinks: [] }
+GET {{baseUrl}}/documents/{{documentId}}/share-links HTTP/1.1
+
+### Create a VIEWER link -> 201 { shareLink: { id, role, expiresAt, createdAt, token } }
+# expiresAt = createdAt + 7 days; the token is never sent again
+# @name viewerLink
+POST {{baseUrl}}/documents/{{documentId}}/share-links HTTP/1.1
+Content-Type: application/json
+
+{
+  "role": "VIEWER"
+}
+
+### Create an EDITOR link -> 201
+# @name editorLink
+POST {{baseUrl}}/documents/{{documentId}}/share-links HTTP/1.1
+Content-Type: application/json
+
+{
+  "role": "EDITOR"
+}
+
+### Create a link without a role -> 201, role "VIEWER" (least rights by default)
+# @name defaultLink
+POST {{baseUrl}}/documents/{{documentId}}/share-links HTTP/1.1
+Content-Type: application/json
+
+{}
+
+### Create an OWNER link -> 400 VALIDATION_ERROR (EDITOR or VIEWER only)
+POST {{baseUrl}}/documents/{{documentId}}/share-links HTTP/1.1
+Content-Type: application/json
+
+{
+  "role": "OWNER"
+}
+
+### Create a link on a document that does not exist -> 404 DOCUMENT_NOT_FOUND
+POST {{baseUrl}}/documents/999999999/share-links HTTP/1.1
+Content-Type: application/json
+
+{
+  "role": "VIEWER"
+}
+
+### Revoke the default link -> 204
+POST {{baseUrl}}/documents/{{documentId}}/share-links/{{defaultLink.response.body.shareLink.id}}/revoke HTTP/1.1
+
+### Revoke it again -> 204, nothing left to do
+POST {{baseUrl}}/documents/{{documentId}}/share-links/{{defaultLink.response.body.shareLink.id}}/revoke HTTP/1.1
+
+### Revoke a link that does not exist -> 404 SHARE_LINK_NOT_FOUND
+POST {{baseUrl}}/documents/{{documentId}}/share-links/999999999/revoke HTTP/1.1
+
+### List the links -> 200, the EDITOR and VIEWER links only (revoked one left out), newest first
+GET {{baseUrl}}/documents/{{documentId}}/share-links HTTP/1.1
+
+### The owner accepts their own link -> 200 { documentId, role: "OWNER", outcome: "owner" }
+POST {{baseUrl}}/share-links/accept HTTP/1.1
+Content-Type: application/json
+
+{
+  "token": "{{viewerLink.response.body.shareLink.token}}"
+}
+
+### List the members, none yet -> 200 { members: [] }
+GET {{baseUrl}}/documents/{{documentId}}/members HTTP/1.1
+
+# ============================== Guest: accept ===============================
+
+### Login as the guest -> 200 { user }
+POST {{baseUrl}}/auth/login HTTP/1.1
+Content-Type: application/json
+
+{
+  "username": "{{guestRegister.response.body.user.username}}",
+  "password": "{{password}}"
+}
+
+### Accept the VIEWER link -> 200 { role: "VIEWER", outcome: "joined" }
+POST {{baseUrl}}/share-links/accept HTTP/1.1
+Content-Type: application/json
+
+{
+  "token": "{{viewerLink.response.body.shareLink.token}}"
+}
+
+### Accept it again -> 200 { role: "VIEWER", outcome: "unchanged" }, the link is reusable
+POST {{baseUrl}}/share-links/accept HTTP/1.1
+Content-Type: application/json
+
+{
+  "token": "{{viewerLink.response.body.shareLink.token}}"
+}
+
+### Accept the EDITOR link -> 200 { role: "EDITOR", outcome: "upgraded" }
+POST {{baseUrl}}/share-links/accept HTTP/1.1
+Content-Type: application/json
+
+{
+  "token": "{{editorLink.response.body.shareLink.token}}"
+}
+
+### Accept the VIEWER link once EDITOR -> 200 { role: "EDITOR", outcome: "unchanged" }, never demoted
+POST {{baseUrl}}/share-links/accept HTTP/1.1
+Content-Type: application/json
+
+{
+  "token": "{{viewerLink.response.body.shareLink.token}}"
+}
+
+### Accept the revoked link -> 410 SHARE_LINK_REVOKED
+POST {{baseUrl}}/share-links/accept HTTP/1.1
+Content-Type: application/json
+
+{
+  "token": "{{defaultLink.response.body.shareLink.token}}"
+}
+
+### Accept an unknown token -> 404 SHARE_LINK_NOT_FOUND
+# Rate limit: failed accepts are counted per user, the 21st within 15 minutes answers
+# 429 TOO_MANY_ATTEMPTS (send this one repeatedly to check, then wait or restart the backend)
+POST {{baseUrl}}/share-links/accept HTTP/1.1
+Content-Type: application/json
+
+{
+  "token": "not-a-real-token"
+}
+
+### Accept without a token -> 400 VALIDATION_ERROR
+POST {{baseUrl}}/share-links/accept HTTP/1.1
+Content-Type: application/json
+
+{}
+
+### List the members as a member who is not the owner -> 403 FORBIDDEN
+GET {{baseUrl}}/documents/{{documentId}}/members HTTP/1.1
+
+### Create a link as a member who is not the owner -> 403 FORBIDDEN
+POST {{baseUrl}}/documents/{{documentId}}/share-links HTTP/1.1
+Content-Type: application/json
+
+{
+  "role": "EDITOR"
+}
+
+# ======================== Outsider: no access, expiry =======================
+
+### Login as the outsider -> 200 { user }
+POST {{baseUrl}}/auth/login HTTP/1.1
+Content-Type: application/json
+
+{
+  "username": "{{outsiderRegister.response.body.user.username}}",
+  "password": "{{password}}"
+}
+
+### List the members without any access -> 404 DOCUMENT_NOT_FOUND (its existence is not revealed)
+GET {{baseUrl}}/documents/{{documentId}}/members HTTP/1.1
+
+# Expire the EDITOR link of this run with any SQL client before sending the next request:
+#   UPDATE "ShareLink" SET "expiresAt" = now() - interval '1 minute'
+#   WHERE "id" = {{editorLink.response.body.shareLink.id}};
+# (REST Client does not fill the id in comments: read it from the "editorLink" response)
+
+### Accept the expired link -> 410 SHARE_LINK_EXPIRED
+POST {{baseUrl}}/share-links/accept HTTP/1.1
+Content-Type: application/json
+
+{
+  "token": "{{editorLink.response.body.shareLink.token}}"
+}
+
+# ============================= Owner: members ===============================
+
+### Login as the owner -> 200 { user }
+POST {{baseUrl}}/auth/login HTTP/1.1
+Content-Type: application/json
+
+{
+  "username": "{{ownerRegister.response.body.user.username}}",
+  "password": "{{password}}"
+}
+
+### List the members -> 200 { members: [{ role: "EDITOR", createdAt, user: { id, username, displayName } }] }
+GET {{baseUrl}}/documents/{{documentId}}/members HTTP/1.1
+
+### Remove the owner -> 403 CANNOT_REMOVE_OWNER
+DELETE {{baseUrl}}/documents/{{documentId}}/members/{{ownerRegister.response.body.user.id}} HTTP/1.1
+
+### Remove the guest -> 204
+DELETE {{baseUrl}}/documents/{{documentId}}/members/{{guestRegister.response.body.user.id}} HTTP/1.1
+
+### Remove the guest again -> 404 MEMBER_NOT_FOUND
+DELETE {{baseUrl}}/documents/{{documentId}}/members/{{guestRegister.response.body.user.id}} HTTP/1.1
+
+# ============== Known limit: a removed member comes back by link ============
+
+### Login as the guest -> 200 { user }
+POST {{baseUrl}}/auth/login HTTP/1.1
+Content-Type: application/json
+
+{
+  "username": "{{guestRegister.response.body.user.username}}",
+  "password": "{{password}}"
+}
+
+### Accept the VIEWER link still active -> 200 { outcome: "joined" }: the removed guest is back
+POST {{baseUrl}}/share-links/accept HTTP/1.1
+Content-Type: application/json
+
+{
+  "token": "{{viewerLink.response.body.shareLink.token}}"
+}
+
+### Login as the owner -> 200 { user }
+POST {{baseUrl}}/auth/login HTTP/1.1
+Content-Type: application/json
+
+{
+  "username": "{{ownerRegister.response.body.user.username}}",
+  "password": "{{password}}"
+}
+
+### Remove the guest -> 204
+DELETE {{baseUrl}}/documents/{{documentId}}/members/{{guestRegister.response.body.user.id}} HTTP/1.1
+
+### Revoke the VIEWER link as well -> 204
+POST {{baseUrl}}/documents/{{documentId}}/share-links/{{viewerLink.response.body.shareLink.id}}/revoke HTTP/1.1
+
+### Login as the guest -> 200 { user }
+POST {{baseUrl}}/auth/login HTTP/1.1
+Content-Type: application/json
+
+{
+  "username": "{{guestRegister.response.body.user.username}}",
+  "password": "{{password}}"
+}
+
+### Accept the VIEWER link once revoked -> 410 SHARE_LINK_REVOKED: removed for good
+POST {{baseUrl}}/share-links/accept HTTP/1.1
+Content-Type: application/json
+
+{
+  "token": "{{viewerLink.response.body.shareLink.token}}"
+}
+
+# ============================== Not logged in ===============================
+
+### Logout -> 204
+POST {{baseUrl}}/auth/logout HTTP/1.1
+
+### Accept without a session -> 401 UNAUTHENTICATED
+POST {{baseUrl}}/share-links/accept HTTP/1.1
+Content-Type: application/json
+
+{
+  "token": "{{editorLink.response.body.shareLink.token}}"
+}
