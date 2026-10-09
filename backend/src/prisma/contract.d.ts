@@ -34,7 +34,7 @@ import type {
 } from "@prisma/orm-postgres/contract/types";
 
 export type StorageHash =
-  StorageHashBase<"26532dda379663502b99447df447df1d67bada05a3693ed45e170db3055b1f93">;
+  StorageHashBase<"64e5a1146d5566ffad9e608d6b656b732d8169cfe180a40aa5bca74660973d6a">;
 export type ExecutionHash =
   ExecutionHashBase<"0b055b82a690d3f162aef43711a9fd620a4600d4c62ae34dac7dedd27bd43c38">;
 export type ProfileHash =
@@ -594,17 +594,6 @@ export type FieldOutputTypes = {
       readonly tokenHash: CodecTypes["pg/text@1"]["output"];
       readonly userId: CodecTypes["pg/int4@1"]["output"];
     };
-    readonly ShareLink: {
-      readonly createdAt: CodecTypes["pg/timestamptz-string@1"]["output"];
-      readonly createdById: CodecTypes["pg/int4@1"]["output"];
-      readonly documentId: CodecTypes["pg/int4@1"]["output"];
-      readonly expiresAt: CodecTypes["pg/timestamptz-string@1"]["output"];
-      readonly id: CodecTypes["pg/int4@1"]["output"];
-      readonly revokedAt:
-        CodecTypes["pg/timestamptz-string@1"]["output"] | null;
-      readonly role: "EDITOR" | "VIEWER";
-      readonly tokenHash: CodecTypes["pg/text@1"]["output"];
-    };
     readonly User: {
       readonly blockedAt:
         CodecTypes["pg/timestamptz-string@1"]["output"] | null;
@@ -686,16 +675,6 @@ export type FieldInputTypes = {
       readonly tokenHash: CodecTypes["pg/text@1"]["input"];
       readonly userId: CodecTypes["pg/int4@1"]["input"];
     };
-    readonly ShareLink: {
-      readonly createdAt: CodecTypes["pg/timestamptz-string@1"]["input"];
-      readonly createdById: CodecTypes["pg/int4@1"]["input"];
-      readonly documentId: CodecTypes["pg/int4@1"]["input"];
-      readonly expiresAt: CodecTypes["pg/timestamptz-string@1"]["input"];
-      readonly id: CodecTypes["pg/int4@1"]["input"];
-      readonly revokedAt: CodecTypes["pg/timestamptz-string@1"]["input"] | null;
-      readonly role: "EDITOR" | "VIEWER";
-      readonly tokenHash: CodecTypes["pg/text@1"]["input"];
-    };
     readonly User: {
       readonly blockedAt: CodecTypes["pg/timestamptz-string@1"]["input"] | null;
       readonly blockedById: CodecTypes["pg/int4@1"]["input"] | null;
@@ -775,17 +754,6 @@ export type StorageColumnTypes = {
       readonly mfaSatisfied: CodecTypes["pg/bool@1"]["output"];
       readonly tokenHash: CodecTypes["pg/text@1"]["output"];
       readonly userId: CodecTypes["pg/int4@1"]["output"];
-    };
-    readonly ShareLink: {
-      readonly createdAt: CodecTypes["pg/timestamptz-string@1"]["output"];
-      readonly createdById: CodecTypes["pg/int4@1"]["output"];
-      readonly documentId: CodecTypes["pg/int4@1"]["output"];
-      readonly expiresAt: CodecTypes["pg/timestamptz-string@1"]["output"];
-      readonly id: CodecTypes["pg/int4@1"]["output"];
-      readonly revokedAt:
-        CodecTypes["pg/timestamptz-string@1"]["output"] | null;
-      readonly role: "EDITOR" | "VIEWER";
-      readonly tokenHash: CodecTypes["pg/text@1"]["output"];
     };
     readonly User: {
       readonly blockedAt:
@@ -867,16 +835,6 @@ export type StorageColumnInputTypes = {
       readonly mfaSatisfied: CodecTypes["pg/bool@1"]["input"];
       readonly tokenHash: CodecTypes["pg/text@1"]["input"];
       readonly userId: CodecTypes["pg/int4@1"]["input"];
-    };
-    readonly ShareLink: {
-      readonly createdAt: CodecTypes["pg/timestamptz-string@1"]["input"];
-      readonly createdById: CodecTypes["pg/int4@1"]["input"];
-      readonly documentId: CodecTypes["pg/int4@1"]["input"];
-      readonly expiresAt: CodecTypes["pg/timestamptz-string@1"]["input"];
-      readonly id: CodecTypes["pg/int4@1"]["input"];
-      readonly revokedAt: CodecTypes["pg/timestamptz-string@1"]["input"] | null;
-      readonly role: "EDITOR" | "VIEWER";
-      readonly tokenHash: CodecTypes["pg/text@1"]["input"];
     };
     readonly User: {
       readonly blockedAt: CodecTypes["pg/timestamptz-string@1"]["input"] | null;
@@ -977,19 +935,6 @@ export namespace Models {
     user: public_User;
     readonly [RelationKeys]?: "user";
   };
-  export type public_ShareLink = {
-    createdAt: CodecTypes["pg/timestamptz-string@1"]["output"];
-    createdById: CodecTypes["pg/int4@1"]["output"];
-    documentId: CodecTypes["pg/int4@1"]["output"];
-    expiresAt: CodecTypes["pg/timestamptz-string@1"]["output"];
-    id: CodecTypes["pg/int4@1"]["output"];
-    revokedAt: CodecTypes["pg/timestamptz-string@1"]["output"] | null;
-    role: "EDITOR" | "VIEWER";
-    tokenHash: CodecTypes["pg/text@1"]["output"];
-    createdBy: public_User;
-    document: public_Document;
-    readonly [RelationKeys]?: "createdBy" | "document";
-  };
   export type public_User = {
     blockedAt: CodecTypes["pg/timestamptz-string@1"]["output"] | null;
     blockedById: CodecTypes["pg/int4@1"]["output"] | null;
@@ -1021,7 +966,6 @@ export declare const models: {
     Folder: Models.public_Folder;
     Message: Models.public_Message;
     Session: Models.public_Session;
-    ShareLink: Models.public_ShareLink;
     User: Models.public_User;
   };
 };
@@ -1636,100 +1580,6 @@ type ContractBase = Omit<
                 },
               ];
             };
-            readonly ShareLink: {
-              columns: {
-                readonly createdAt: {
-                  readonly nativeType: "timestamptz";
-                  readonly codecId: "pg/timestamptz-string@1";
-                  readonly nullable: false;
-                  readonly default: {
-                    readonly kind: "function";
-                    readonly expression: "now()";
-                  };
-                };
-                readonly createdById: {
-                  readonly nativeType: "int4";
-                  readonly codecId: "pg/int4@1";
-                  readonly nullable: false;
-                };
-                readonly documentId: {
-                  readonly nativeType: "int4";
-                  readonly codecId: "pg/int4@1";
-                  readonly nullable: false;
-                };
-                readonly expiresAt: {
-                  readonly nativeType: "timestamptz";
-                  readonly codecId: "pg/timestamptz-string@1";
-                  readonly nullable: false;
-                };
-                readonly id: {
-                  readonly nativeType: "int4";
-                  readonly codecId: "pg/int4@1";
-                  readonly nullable: false;
-                  readonly default: {
-                    readonly kind: "function";
-                    readonly expression: "autoincrement()";
-                  };
-                };
-                readonly revokedAt: {
-                  readonly nativeType: "timestamptz";
-                  readonly codecId: "pg/timestamptz-string@1";
-                  readonly nullable: true;
-                };
-                readonly role: {
-                  readonly nativeType: "text";
-                  readonly codecId: "pg/text@1";
-                  readonly nullable: false;
-                };
-                readonly tokenHash: {
-                  readonly nativeType: "text";
-                  readonly codecId: "pg/text@1";
-                  readonly nullable: false;
-                };
-              };
-              primaryKey: { readonly columns: readonly ["id"] };
-              uniques: readonly [{ readonly columns: readonly ["tokenHash"] }];
-              indexes: readonly [
-                {
-                  readonly name: "ShareLink_createdById_idx_8bf640ed";
-                  readonly prefix: "ShareLink_createdById_idx";
-                  readonly columns: readonly ["createdById"];
-                  readonly unique: false;
-                },
-                {
-                  readonly name: "ShareLink_documentId_idx_825ef746";
-                  readonly prefix: "ShareLink_documentId_idx";
-                  readonly columns: readonly ["documentId"];
-                  readonly unique: false;
-                },
-              ];
-              foreignKeys: readonly [
-                {
-                  readonly source: {
-                    readonly namespaceId: "public" & NamespaceId;
-                    readonly tableName: "ShareLink";
-                    readonly columns: readonly ["documentId"];
-                  };
-                  readonly target: {
-                    readonly namespaceId: "public" & NamespaceId;
-                    readonly tableName: "Document";
-                    readonly columns: readonly ["id"];
-                  };
-                },
-                {
-                  readonly source: {
-                    readonly namespaceId: "public" & NamespaceId;
-                    readonly tableName: "ShareLink";
-                    readonly columns: readonly ["createdById"];
-                  };
-                  readonly target: {
-                    readonly namespaceId: "public" & NamespaceId;
-                    readonly tableName: "User";
-                    readonly columns: readonly ["id"];
-                  };
-                },
-              ];
-            };
             readonly User: {
               columns: {
                 readonly blockedAt: {
@@ -1924,10 +1774,6 @@ type ContractBase = Omit<
     readonly Session: {
       readonly namespace: "public" & NamespaceId;
       readonly model: "Session";
-    };
-    readonly ShareLink: {
-      readonly namespace: "public" & NamespaceId;
-      readonly model: "ShareLink";
     };
     readonly User: {
       readonly namespace: "public" & NamespaceId;
@@ -2519,106 +2365,6 @@ type ContractBase = Omit<
                 readonly mfaSatisfied: { readonly column: "mfaSatisfied" };
                 readonly tokenHash: { readonly column: "tokenHash" };
                 readonly userId: { readonly column: "userId" };
-              };
-            };
-          };
-          readonly ShareLink: {
-            readonly fields: {
-              readonly createdAt: {
-                readonly nullable: false;
-                readonly type: {
-                  readonly kind: "scalar";
-                  readonly codecId: "pg/timestamptz-string@1";
-                };
-              };
-              readonly createdById: {
-                readonly nullable: false;
-                readonly type: {
-                  readonly kind: "scalar";
-                  readonly codecId: "pg/int4@1";
-                };
-              };
-              readonly documentId: {
-                readonly nullable: false;
-                readonly type: {
-                  readonly kind: "scalar";
-                  readonly codecId: "pg/int4@1";
-                };
-              };
-              readonly expiresAt: {
-                readonly nullable: false;
-                readonly type: {
-                  readonly kind: "scalar";
-                  readonly codecId: "pg/timestamptz-string@1";
-                };
-              };
-              readonly id: {
-                readonly nullable: false;
-                readonly type: {
-                  readonly kind: "scalar";
-                  readonly codecId: "pg/int4@1";
-                };
-              };
-              readonly revokedAt: {
-                readonly nullable: true;
-                readonly type: {
-                  readonly kind: "scalar";
-                  readonly codecId: "pg/timestamptz-string@1";
-                };
-              };
-              readonly role: {
-                readonly nullable: false;
-                readonly type: {
-                  readonly kind: "scalar";
-                  readonly codecId: "pg/text@1";
-                };
-              };
-              readonly tokenHash: {
-                readonly nullable: false;
-                readonly type: {
-                  readonly kind: "scalar";
-                  readonly codecId: "pg/text@1";
-                };
-              };
-            };
-            readonly relations: {
-              readonly createdBy: {
-                readonly to: {
-                  readonly namespace: "public" & NamespaceId;
-                  readonly model: "User";
-                };
-                readonly cardinality: "N:1";
-                readonly nullable: false;
-                readonly on: {
-                  readonly localFields: readonly ["createdById"];
-                  readonly targetFields: readonly ["id"];
-                };
-              };
-              readonly document: {
-                readonly to: {
-                  readonly namespace: "public" & NamespaceId;
-                  readonly model: "Document";
-                };
-                readonly cardinality: "N:1";
-                readonly nullable: false;
-                readonly on: {
-                  readonly localFields: readonly ["documentId"];
-                  readonly targetFields: readonly ["id"];
-                };
-              };
-            };
-            readonly storage: {
-              readonly table: "ShareLink";
-              readonly namespaceId: "public";
-              readonly fields: {
-                readonly createdAt: { readonly column: "createdAt" };
-                readonly createdById: { readonly column: "createdById" };
-                readonly documentId: { readonly column: "documentId" };
-                readonly expiresAt: { readonly column: "expiresAt" };
-                readonly id: { readonly column: "id" };
-                readonly revokedAt: { readonly column: "revokedAt" };
-                readonly role: { readonly column: "role" };
-                readonly tokenHash: { readonly column: "tokenHash" };
               };
             };
           };

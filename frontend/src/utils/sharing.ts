@@ -2,15 +2,10 @@ import { apiFetch, postJson, readApiError, readJson } from '@/utils/api';
 
 export type MemberRole = 'EDITOR' | 'VIEWER';
 
-export interface ShareLink {
-  id: number;
+// Signed by the back, which stores nothing: the token alone carries the link
+export interface CreatedShareLink {
   role: MemberRole;
   expiresAt: string;
-  createdAt: string;
-}
-
-// Only the creation answer carries the token: the back keeps its hash alone
-export interface CreatedShareLink extends ShareLink {
   token: string;
 }
 
@@ -33,7 +28,6 @@ const ERROR_MESSAGES: Record<string, string> = {
   SHARE_LINK_NOT_FOUND: "Ce lien d'invitation n'existe pas.",
   SHARE_LINK_EXPIRED:
     "Ce lien d'invitation a expiré. Demandez-en un nouveau au propriétaire du document.",
-  SHARE_LINK_REVOKED: "Ce lien d'invitation a été révoqué par le propriétaire du document.",
   VALIDATION_ERROR: "Ce lien d'invitation n'est pas valide.",
   TOO_MANY_ATTEMPTS: 'Trop de liens invalides. Réessayez dans quelques minutes.',
   DOCUMENT_NOT_FOUND: 'Document introuvable.',

@@ -11,7 +11,7 @@
 #   running, the backend logs "Realtime notification … failed" and still answers 204.
 # - Test data piles up in the dev database; clean it up with any SQL client when needed
 #   (psql: docker compose exec db psql -U colladoc colladoc, or DBeaver and the like).
-#   Documents first: their links and members go with them (ON DELETE CASCADE):
+#   Documents first: their members go with them (ON DELETE CASCADE):
 #   DELETE FROM "Document" WHERE "ownerId" IN
 #     (SELECT "id" FROM "User" WHERE "username" ~ '^share_(owner|guest|out)_[0-9]+$');
 #   DELETE FROM "User" WHERE "username" ~ '^share_(owner|guest|out)_[0-9]+$';
@@ -20,6 +20,8 @@
 @password = correct-horse-battery
 # Set after the "Prerequisite: document" SQL statement below
 @documentId = 0
+# Set before the "Accept the expired link" request below (links are not stored: no SQL can expire one)
+@expiredToken = not-generated-yet
 
 # ================================== Users ===================================
 
@@ -75,11 +77,8 @@ Content-Type: application/json
   "password": "{{password}}"
 }
 
-### List the links, none yet -> 200 { shareLinks: [] }
-GET {{baseUrl}}/documents/{{documentId}}/share-links HTTP/1.1
-
-### Create a VIEWER link -> 201 { shareLink: { id, role, expiresAt, createdAt, token } }
-# expiresAt = createdAt + 1 hour; the token is never sent again
+### Create a VIEWER link -> 201 { shareLink: { role, expiresAt, token } }
+# expiresAt = now + 1 hour; the token is signed by the backend, nothing is stored
 # @name viewerLink
 POST {{baseUrl}}/documents/{{documentId}}/share-links HTTP/1.1
 Content-Type: application/json
@@ -98,7 +97,6 @@ Content-Type: application/json
 }
 
 ### Create a link without a role -> 201, role "VIEWER" (least rights by default)
-# @name defaultLink
 POST {{baseUrl}}/documents/{{documentId}}/share-links HTTP/1.1
 Content-Type: application/json
 
@@ -119,18 +117,6 @@ Content-Type: application/json
 {
   "role": "VIEWER"
 }
-
-### Revoke the default link -> 204
-POST {{baseUrl}}/documents/{{documentId}}/share-links/{{defaultLink.response.body.shareLink.id}}/revoke HTTP/1.1
-
-### Revoke it again -> 204, nothing left to do
-POST {{baseUrl}}/documents/{{documentId}}/share-links/{{defaultLink.response.body.shareLink.id}}/revoke HTTP/1.1
-
-### Revoke a link that does not exist -> 404 SHARE_LINK_NOT_FOUND
-POST {{baseUrl}}/documents/{{documentId}}/share-links/999999999/revoke HTTP/1.1
-
-### List the links -> 200, the EDITOR and VIEWER links only (revoked one left out), newest first
-GET {{baseUrl}}/documents/{{documentId}}/share-links HTTP/1.1
 
 ### The owner accepts their own link -> 200 { documentId, role: "OWNER", outcome: "owner" }
 POST {{baseUrl}}/share-links/accept HTTP/1.1
@@ -186,14 +172,6 @@ Content-Type: application/json
   "token": "{{viewerLink.response.body.shareLink.token}}"
 }
 
-### Accept the revoked link -> 410 SHARE_LINK_REVOKED
-POST {{baseUrl}}/share-links/accept HTTP/1.1
-Content-Type: application/json
-
-{
-  "token": "{{defaultLink.response.body.shareLink.token}}"
-}
-
 ### Accept an unknown token -> 404 SHARE_LINK_NOT_FOUND
 # Rate limit: failed accepts are counted per user, the 21st within 15 minutes answers
 # 429 TOO_MANY_ATTEMPTS (send this one repeatedly to check, then wait or restart the backend)
@@ -202,6 +180,14 @@ Content-Type: application/json
 
 {
   "token": "not-a-real-token"
+}
+
+### Accept a token with a forged signature -> 404 SHARE_LINK_NOT_FOUND
+POST {{baseUrl}}/share-links/accept HTTP/1.1
+Content-Type: application/json
+
+{
+  "token": "{{editorLink.response.body.shareLink.token}}x"
 }
 
 ### Accept without a token -> 400 VALIDATION_ERROR
@@ -251,17 +237,16 @@ Content-Type: application/json
   "role": "VIEWER"
 }
 
-# Expire the EDITOR link of this run with any SQL client before sending the next request:
-#   UPDATE "ShareLink" SET "expiresAt" = now() - interval '1 minute'
-#   WHERE "id" = {{editorLink.response.body.shareLink.id}};
-# (REST Client does not fill the id in comments: read it from the "editorLink" response)
+# Sign an already expired EDITOR link with the backend key, from the backend folder:
+#   node --env-file=.env -e 'const c = require("node:crypto"); const d = Buffer.from(JSON.stringify({ documentId: 1, role: "EDITOR", createdById: 1, expiresAt: Date.now() - 60000 })).toString("base64url"); console.log(d + "." + c.createHmac("sha256", Buffer.from(process.env.SHARE_LINK_SECRET, "base64")).update(d).digest("base64url"))'
+# then copy the output into @expiredToken at the top of this file.
 
 ### Accept the expired link -> 410 SHARE_LINK_EXPIRED
 POST {{baseUrl}}/share-links/accept HTTP/1.1
 Content-Type: application/json
 
 {
-  "token": "{{editorLink.response.body.shareLink.token}}"
+  "token": "{{expiredToken}}"
 }
 
 # ============================= Owner: members ===============================
@@ -337,8 +322,8 @@ DELETE {{baseUrl}}/documents/{{documentId}}/members/{{guestRegister.response.bod
 DELETE {{baseUrl}}/documents/{{documentId}}/members/{{guestRegister.response.body.user.id}} HTTP/1.1
 
 # ============== Known limit: a removed member comes back by link ============
-# The dialog no longer offers to revoke a link: until it expires (1 hour at most), a removed
-# member can come back with it. The revoke route still exists and is shown below.
+# Links cannot be revoked: until it expires (1 hour at most), a removed member can come back
+# with it.
 
 ### Login as the guest -> 200 { user }
 POST {{baseUrl}}/auth/login HTTP/1.1
@@ -350,38 +335,6 @@ Content-Type: application/json
 }
 
 ### Accept the VIEWER link still active -> 200 { outcome: "joined" }: the removed guest is back
-POST {{baseUrl}}/share-links/accept HTTP/1.1
-Content-Type: application/json
-
-{
-  "token": "{{viewerLink.response.body.shareLink.token}}"
-}
-
-### Login as the owner -> 200 { user }
-POST {{baseUrl}}/auth/login HTTP/1.1
-Content-Type: application/json
-
-{
-  "username": "{{ownerRegister.response.body.user.username}}",
-  "password": "{{password}}"
-}
-
-### Remove the guest -> 204
-DELETE {{baseUrl}}/documents/{{documentId}}/members/{{guestRegister.response.body.user.id}} HTTP/1.1
-
-### Revoke the VIEWER link as well -> 204
-POST {{baseUrl}}/documents/{{documentId}}/share-links/{{viewerLink.response.body.shareLink.id}}/revoke HTTP/1.1
-
-### Login as the guest -> 200 { user }
-POST {{baseUrl}}/auth/login HTTP/1.1
-Content-Type: application/json
-
-{
-  "username": "{{guestRegister.response.body.user.username}}",
-  "password": "{{password}}"
-}
-
-### Accept the VIEWER link once revoked -> 410 SHARE_LINK_REVOKED: removed for good
 POST {{baseUrl}}/share-links/accept HTTP/1.1
 Content-Type: application/json
 

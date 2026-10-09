@@ -8,11 +8,6 @@ export const documentParamsSchema = z.object({
   id: idSchema,
 });
 
-export const shareLinkParamsSchema = z.object({
-  id: idSchema,
-  linkId: idSchema,
-});
-
 export const memberParamsSchema = z.object({
   id: idSchema,
   userId: idSchema,
@@ -28,9 +23,9 @@ export const updateMemberRoleSchema = z.strictObject({
   role: memberRoleSchema,
 });
 
-// A token is 43 characters long: the cap avoids hashing a huge string
+// A token is about 150 characters long: the cap avoids signing a huge string
 export const acceptShareLinkSchema = z.strictObject({
-  token: z.string().min(1).max(100),
+  token: z.string().min(1).max(300),
 });
 
 export type CreateShareLinkInput = z.infer<typeof createShareLinkSchema>;
