@@ -1,4 +1,4 @@
-const API_PREFIX = '/api';
+export const API_PREFIX = '/api';
 
 // Same format as every error returned by the back (errors.middleware.ts)
 export interface ApiError {
