@@ -1,5 +1,13 @@
 {
     "name": "shared",
     "private": true,
-    "type": "module"
+    "type": "module",
+    "exports": {
+        "./call/types": "./call/types.ts",
+        "./files": "./files.ts",
+        "./ot/index": "./ot/index.ts",
+        "./ot/operation": "./ot/operation.ts",
+        "./ot/client": "./ot/client.ts",
+        "./ot/protocol": "./ot/protocol.ts"
+    }
 }

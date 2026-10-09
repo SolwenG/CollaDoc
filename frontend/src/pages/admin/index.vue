@@ -72,7 +72,8 @@
                                 </q-chip>
                             </q-item-label>
                             <q-item-label v-if="user.blockedAt" caption class="text-negative">
-                                Bloqué le {{ new Date(user.blockedAt).toLocaleString() }}
+                                Bloqué le
+                                {{ new Date(user.blockedAt).toLocaleString() }}
                                 <span v-if="user.blockedBy">
                                     par {{ user.blockedBy.displayName }}</span
                                 >

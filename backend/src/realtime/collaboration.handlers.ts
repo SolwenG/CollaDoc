@@ -1,10 +1,5 @@
-import type {
-    JoinResponse,
-    Operation,
-    OperationMessage,
-    RejectReason,
-} from '../../../shared/ot/index.ts'
-import { apply, baseLength, targetLength, transform } from '../../../shared/ot/index.ts'
+import type { JoinResponse, Operation, OperationMessage, RejectReason } from 'shared/ot/index'
+import { apply, baseLength, targetLength, transform } from 'shared/ot/index'
 import {
     MAX_DOCUMENT_LENGTH,
     joinSchema,

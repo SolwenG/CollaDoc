@@ -1,4 +1,4 @@
-import type { DocumentRole, Operation } from '../../../shared/ot/index.ts'
+import type { DocumentRole, Operation } from 'shared/ot/index'
 import { db } from '../prisma/db.ts'
 
 // Operations older than this many revisions before the snapshot are purged

@@ -172,7 +172,11 @@
             {
                 "description": "ensure FK \"Post_authorId_fkey\" does not exist",
                 "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
-                "params": ["Post_authorId_fkey", "public", "\"public\".\"Post\""]
+                "params": [
+                    "Post_authorId_fkey",
+                    "public",
+                    "\"public\".\"Post\""
+                ]
             }
         ],
         "execute": [
@@ -185,7 +189,11 @@
             {
                 "description": "verify FK \"Post_authorId_fkey\" exists",
                 "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
-                "params": ["Post_authorId_fkey", "public", "\"public\".\"Post\""]
+                "params": [
+                    "Post_authorId_fkey",
+                    "public",
+                    "\"public\".\"Post\""
+                ]
             }
         ]
     }

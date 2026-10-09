@@ -1,4 +1,4 @@
-import { apply } from '../../../shared/ot/index.ts'
+import { apply } from 'shared/ot/index'
 import { findOperationsAfter, findSnapshot, saveSnapshot } from './collaboration.service.ts'
 
 // A snapshot is written after this many operations, even if users stay connected

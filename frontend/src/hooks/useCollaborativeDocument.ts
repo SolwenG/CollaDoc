@@ -6,8 +6,8 @@ import type {
     OutgoingOperation,
     ServerOperation,
     ServerToClientEvents,
-} from '@shared/ot/index.ts'
-import { CollabClient, apply, diff, transformIndex } from '@shared/ot/index.ts'
+} from '@shared/ot'
+import { CollabClient, apply, diff, transformIndex } from '@shared/ot'
 import type { Socket } from 'socket.io-client'
 import { io } from 'socket.io-client'
 import type { Ref } from 'vue'

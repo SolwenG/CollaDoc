@@ -2,8 +2,8 @@ import { randomUUID } from 'node:crypto'
 import { mkdir, unlink, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import { fileTypeFromBuffer } from 'file-type'
-import type { AllowedFileType } from '../../../shared/files.ts'
-import { isAllowedFileType } from '../../../shared/files.ts'
+import type { AllowedFileType } from 'shared/files'
+import { isAllowedFileType } from 'shared/files'
 
 const uploadDir = path.resolve(process.env['UPLOAD_DIR'] ?? 'uploads')
 

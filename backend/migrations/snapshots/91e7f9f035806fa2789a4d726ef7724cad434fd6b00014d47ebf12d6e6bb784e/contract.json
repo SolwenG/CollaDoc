@@ -32,11 +32,17 @@
                         "fields": {
                             "authorId": {
                                 "nullable": false,
-                                "type": { "codecId": "pg/int4@1", "kind": "scalar" }
+                                "type": {
+                                    "codecId": "pg/int4@1",
+                                    "kind": "scalar"
+                                }
                             },
                             "content": {
                                 "nullable": true,
-                                "type": { "codecId": "pg/text@1", "kind": "scalar" }
+                                "type": {
+                                    "codecId": "pg/text@1",
+                                    "kind": "scalar"
+                                }
                             },
                             "createdAt": {
                                 "nullable": false,
@@ -47,11 +53,17 @@
                             },
                             "id": {
                                 "nullable": false,
-                                "type": { "codecId": "pg/int4@1", "kind": "scalar" }
+                                "type": {
+                                    "codecId": "pg/int4@1",
+                                    "kind": "scalar"
+                                }
                             },
                             "title": {
                                 "nullable": false,
-                                "type": { "codecId": "pg/text@1", "kind": "scalar" }
+                                "type": {
+                                    "codecId": "pg/text@1",
+                                    "kind": "scalar"
+                                }
                             },
                             "updatedAt": {
                                 "nullable": false,
@@ -65,7 +77,10 @@
                             "author": {
                                 "cardinality": "N:1",
                                 "nullable": false,
-                                "on": { "localFields": ["authorId"], "targetFields": ["id"] },
+                                "on": {
+                                    "localFields": ["authorId"],
+                                    "targetFields": ["id"]
+                                },
                                 "to": { "model": "User", "namespace": "public" }
                             }
                         },
@@ -93,15 +108,24 @@
                             },
                             "email": {
                                 "nullable": false,
-                                "type": { "codecId": "pg/text@1", "kind": "scalar" }
+                                "type": {
+                                    "codecId": "pg/text@1",
+                                    "kind": "scalar"
+                                }
                             },
                             "id": {
                                 "nullable": false,
-                                "type": { "codecId": "pg/int4@1", "kind": "scalar" }
+                                "type": {
+                                    "codecId": "pg/int4@1",
+                                    "kind": "scalar"
+                                }
                             },
                             "name": {
                                 "nullable": true,
-                                "type": { "codecId": "pg/text@1", "kind": "scalar" }
+                                "type": {
+                                    "codecId": "pg/text@1",
+                                    "kind": "scalar"
+                                }
                             },
                             "updatedAt": {
                                 "nullable": false,
@@ -112,13 +136,19 @@
                             },
                             "username": {
                                 "nullable": true,
-                                "type": { "codecId": "pg/text@1", "kind": "scalar" }
+                                "type": {
+                                    "codecId": "pg/text@1",
+                                    "kind": "scalar"
+                                }
                             }
                         },
                         "relations": {
                             "posts": {
                                 "cardinality": "1:N",
-                                "on": { "localFields": ["id"], "targetFields": ["authorId"] },
+                                "on": {
+                                    "localFields": ["id"],
+                                    "targetFields": ["authorId"]
+                                },
                                 "to": { "model": "Post", "namespace": "public" }
                             }
                         },
@@ -191,7 +221,10 @@
                                 },
                                 "createdAt": {
                                     "codecId": "pg/timestamptz-string@1",
-                                    "default": { "expression": "now()", "kind": "function" },
+                                    "default": {
+                                        "expression": "now()",
+                                        "kind": "function"
+                                    },
                                     "nativeType": "timestamptz",
                                     "nullable": false
                                 },
@@ -244,7 +277,10 @@
                             "columns": {
                                 "createdAt": {
                                     "codecId": "pg/timestamptz-string@1",
-                                    "default": { "expression": "now()", "kind": "function" },
+                                    "default": {
+                                        "expression": "now()",
+                                        "kind": "function"
+                                    },
                                     "nativeType": "timestamptz",
                                     "nullable": false
                                 },

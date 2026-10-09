@@ -57,7 +57,10 @@ export type RoleChangedMessage = {
 }
 
 export interface ClientToServerEvents {
-    'document:join': (request: JoinRequest, reply: (response: JoinResponse) => void) => void
+    'document:join': (
+        request: JoinRequest,
+        reply: (response: JoinResponse) => void
+    ) => void
     'document:leave': (request: { documentId: number }) => void
     operation: (message: OperationMessage) => void
 }

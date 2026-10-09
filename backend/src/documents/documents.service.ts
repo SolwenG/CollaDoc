@@ -1,4 +1,4 @@
-import type { DocumentRole } from '../../../shared/ot/index.ts'
+import type { DocumentRole } from 'shared/ot/index'
 import * as foldersRepository from '../folders/folders.repository.ts'
 import type { DocumentForAccess, DocumentRow } from './documents.repository.ts'
 import * as documentsRepository from './documents.repository.ts'

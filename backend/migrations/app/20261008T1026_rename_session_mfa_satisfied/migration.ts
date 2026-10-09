@@ -45,7 +45,8 @@ export default class M extends Migration<Start, End> {
                 ],
                 execute: [
                     {
-                        description: 'rename column "mfaVerified" to "mfaSatisfied"',
+                        description:
+                            'rename column "mfaVerified" to "mfaSatisfied"',
                         sql: 'ALTER TABLE "public"."Session" RENAME COLUMN "mfaVerified" TO "mfaSatisfied"',
                     },
                 ],
@@ -56,7 +57,8 @@ export default class M extends Migration<Start, End> {
                         params: ['public', 'Session', 'mfaSatisfied'],
                     },
                     {
-                        description: 'verify column "mfaVerified" does not exist',
+                        description:
+                            'verify column "mfaVerified" does not exist',
                         sql: COLUMN_MISSING_SQL,
                         params: ['public', 'Session', 'mfaVerified'],
                     },

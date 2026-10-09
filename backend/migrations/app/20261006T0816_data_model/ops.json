@@ -913,9 +913,13 @@
             {
                 "description": "ensure constraint \"Folder_ownerId_parentId_name_key\" does not exist",
                 "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
-                "params": ["Folder_ownerId_parentId_name_key", "public", "\"public\".\"Folder\""]
-            }
-        ],
+                "params": [
+                    "Folder_ownerId_parentId_name_key",
+                    "public",
+                    "\"public\".\"Folder\""]
+                }
+            ],
+
         "execute": [
             {
                 "description": "add unique constraint \"Folder_ownerId_parentId_name_key\"",
@@ -926,11 +930,15 @@
             {
                 "description": "verify constraint \"Folder_ownerId_parentId_name_key\" exists",
                 "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
-                "params": ["Folder_ownerId_parentId_name_key", "public", "\"public\".\"Folder\""]
-            }
-        ]
-    },
+                "params": [
+                    "Folder_ownerId_parentId_name_key",
+                    "public",
+                    "\"public\".\"Folder\""]
+                }
+            ]
+        },
     {
+
         "id": "unique.Session.Session_tokenHash_key",
         "label": "Add unique constraint on \"Session\" (tokenHash)",
         "operationClass": "additive",
@@ -947,7 +955,11 @@
             {
                 "description": "ensure constraint \"Session_tokenHash_key\" does not exist",
                 "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
-                "params": ["Session_tokenHash_key", "public", "\"public\".\"Session\""]
+                "params": [
+                    "Session_tokenHash_key",
+                    "public",
+                    "\"public\".\"Session\""
+                ]
             }
         ],
         "execute": [
@@ -960,11 +972,15 @@
             {
                 "description": "verify constraint \"Session_tokenHash_key\" exists",
                 "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
-                "params": ["Session_tokenHash_key", "public", "\"public\".\"Session\""]
+                "params": [
+                    "Session_tokenHash_key",
+                    "public",
+                    "\"public\".\"Session\""
+                ]
             }
         ]
     },
-    {
+        {
         "id": "checkConstraint.User.User_role_check_1954e8c0",
         "label": "Add check constraint \"User_role_check_1954e8c0\" on \"User\"",
         "operationClass": "additive",
@@ -981,7 +997,11 @@
             {
                 "description": "ensure constraint \"User_role_check_1954e8c0\" does not exist",
                 "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
-                "params": ["User_role_check_1954e8c0", "public", "\"public\".\"User\""]
+                "params": [
+                    "User_role_check_1954e8c0",
+                    "public",
+                    "\"public\".\"User\""
+                ]
             }
         ],
         "execute": [
@@ -994,7 +1014,11 @@
             {
                 "description": "verify constraint \"User_role_check_1954e8c0\" exists",
                 "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
-                "params": ["User_role_check_1954e8c0", "public", "\"public\".\"User\""]
+                "params": [
+                    "User_role_check_1954e8c0",
+                    "public",
+                    "\"public\".\"User\""
+                ]
             }
         ]
     },
@@ -1084,7 +1108,9 @@
             {
                 "description": "ensure index \"Document_lastModifiedById_idx_f811679d\" does not exist",
                 "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
-                "params": ["\"public\".\"Document_lastModifiedById_idx_f811679d\""]
+                "params": [
+                    "\"public\".\"Document_lastModifiedById_idx_f811679d\""
+                ]
             }
         ],
         "execute": [
@@ -1098,7 +1124,9 @@
             {
                 "description": "verify index \"Document_lastModifiedById_idx_f811679d\" exists",
                 "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
-                "params": ["\"public\".\"Document_lastModifiedById_idx_f811679d\""]
+                "params": [
+                    "\"public\".\"Document_lastModifiedById_idx_f811679d\""
+                ]
             }
         ]
     },
@@ -1119,7 +1147,9 @@
             {
                 "description": "ensure index \"Document_ownerId_folderId_idx_e5008c91\" does not exist",
                 "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
-                "params": ["\"public\".\"Document_ownerId_folderId_idx_e5008c91\""]
+                "params": [
+                    "\"public\".\"Document_ownerId_folderId_idx_e5008c91\""
+                ]
             }
         ],
         "execute": [
@@ -1133,11 +1163,13 @@
             {
                 "description": "verify index \"Document_ownerId_folderId_idx_e5008c91\" exists",
                 "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
-                "params": ["\"public\".\"Document_ownerId_folderId_idx_e5008c91\""]
+                "params": [
+                    "\"public\".\"Document_ownerId_folderId_idx_e5008c91\""
+                ]
             }
         ]
     },
-    {
+        {
         "id": "index.Document.Document_ownerId_idx_e2d0c1ef",
         "label": "Create index \"Document_ownerId_idx_e2d0c1ef\" on \"Document\"",
         "operationClass": "additive",
@@ -1189,7 +1221,9 @@
             {
                 "description": "ensure index \"DocumentMember_documentId_idx_825ef746\" does not exist",
                 "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
-                "params": ["\"public\".\"DocumentMember_documentId_idx_825ef746\""]
+                "params": [
+                    "\"public\".\"DocumentMember_documentId_idx_825ef746\""
+                ]
             }
         ],
         "execute": [
@@ -1203,7 +1237,9 @@
             {
                 "description": "verify index \"DocumentMember_documentId_idx_825ef746\" exists",
                 "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
-                "params": ["\"public\".\"DocumentMember_documentId_idx_825ef746\""]
+                "params": [
+                    "\"public\".\"DocumentMember_documentId_idx_825ef746\""
+                ]
             }
         ]
     },
@@ -1224,7 +1260,9 @@
             {
                 "description": "ensure index \"DocumentMember_invitedById_idx_61689f37\" does not exist",
                 "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
-                "params": ["\"public\".\"DocumentMember_invitedById_idx_61689f37\""]
+                "params": [
+                    "\"public\".\"DocumentMember_invitedById_idx_61689f37\""
+                ]
             }
         ],
         "execute": [
@@ -1238,11 +1276,13 @@
             {
                 "description": "verify index \"DocumentMember_invitedById_idx_61689f37\" exists",
                 "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
-                "params": ["\"public\".\"DocumentMember_invitedById_idx_61689f37\""]
+                "params": [
+                    "\"public\".\"DocumentMember_invitedById_idx_61689f37\""
+                ]
             }
         ]
     },
-    {
+        {
         "id": "index.DocumentMember.DocumentMember_userId_idx_a489d58a",
         "label": "Create index \"DocumentMember_userId_idx_a489d58a\" on \"DocumentMember\"",
         "operationClass": "additive",
@@ -1294,7 +1334,9 @@
             {
                 "description": "ensure index \"DocumentOperation_authorId_idx_e47547ed\" does not exist",
                 "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
-                "params": ["\"public\".\"DocumentOperation_authorId_idx_e47547ed\""]
+                "params": [
+                    "\"public\".\"DocumentOperation_authorId_idx_e47547ed\""
+                ]
             }
         ],
         "execute": [
@@ -1308,7 +1350,9 @@
             {
                 "description": "verify index \"DocumentOperation_authorId_idx_e47547ed\" exists",
                 "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
-                "params": ["\"public\".\"DocumentOperation_authorId_idx_e47547ed\""]
+                "params": [
+                    "\"public\".\"DocumentOperation_authorId_idx_e47547ed\""
+                ]
             }
         ]
     },
@@ -1329,7 +1373,9 @@
             {
                 "description": "ensure index \"DocumentOperation_documentId_idx_825ef746\" does not exist",
                 "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
-                "params": ["\"public\".\"DocumentOperation_documentId_idx_825ef746\""]
+                "params": [
+                    "\"public\".\"DocumentOperation_documentId_idx_825ef746\""
+                ]
             }
         ],
         "execute": [
@@ -1343,11 +1389,13 @@
             {
                 "description": "verify index \"DocumentOperation_documentId_idx_825ef746\" exists",
                 "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
-                "params": ["\"public\".\"DocumentOperation_documentId_idx_825ef746\""]
+                "params": [
+                    "\"public\".\"DocumentOperation_documentId_idx_825ef746\""
+                ]
             }
         ]
     },
-    {
+        {
         "id": "index.Folder.Folder_ownerId_idx_e2d0c1ef",
         "label": "Create index \"Folder_ownerId_idx_e2d0c1ef\" on \"Folder\"",
         "operationClass": "additive",
@@ -1504,7 +1552,9 @@
             {
                 "description": "ensure index \"Message_documentId_createdAt_idx_93015d6d\" does not exist",
                 "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
-                "params": ["\"public\".\"Message_documentId_createdAt_idx_93015d6d\""]
+                "params": [
+                    "\"public\".\"Message_documentId_createdAt_idx_93015d6d\""
+                ]
             }
         ],
         "execute": [
@@ -1518,7 +1568,9 @@
             {
                 "description": "verify index \"Message_documentId_createdAt_idx_93015d6d\" exists",
                 "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
-                "params": ["\"public\".\"Message_documentId_createdAt_idx_93015d6d\""]
+                "params": [
+                    "\"public\".\"Message_documentId_createdAt_idx_93015d6d\""
+                ]
             }
         ]
     },
@@ -1679,7 +1731,11 @@
             {
                 "description": "ensure FK \"Document_ownerId_fkey\" does not exist",
                 "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
-                "params": ["Document_ownerId_fkey", "public", "\"public\".\"Document\""]
+                "params": [
+                    "Document_ownerId_fkey",
+                    "public",
+                    "\"public\".\"Document\""
+                ]
             }
         ],
         "execute": [
@@ -1692,7 +1748,11 @@
             {
                 "description": "verify FK \"Document_ownerId_fkey\" exists",
                 "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
-                "params": ["Document_ownerId_fkey", "public", "\"public\".\"Document\""]
+                "params": [
+                    "Document_ownerId_fkey",
+                    "public",
+                    "\"public\".\"Document\""
+                ]
             }
         ]
     },
@@ -1713,9 +1773,13 @@
             {
                 "description": "ensure FK \"Document_folderId_fkey\" does not exist",
                 "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
-                "params": ["Document_folderId_fkey", "public", "\"public\".\"Document\""]
-            }
-        ],
+                "params": [
+                    "Document_folderId_fkey",
+                    "public",
+                    "\"public\".\"Document\""]
+                }
+            ],
+
         "execute": [
             {
                 "description": "add FK \"Document_folderId_fkey\"",
@@ -1726,7 +1790,11 @@
             {
                 "description": "verify FK \"Document_folderId_fkey\" exists",
                 "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
-                "params": ["Document_folderId_fkey", "public", "\"public\".\"Document\""]
+                "params": [
+                    "Document_folderId_fkey",
+                    "public",
+                    "\"public\".\"Document\""
+                ]
             }
         ]
     },
@@ -1747,7 +1815,11 @@
             {
                 "description": "ensure FK \"Document_lastModifiedById_fkey\" does not exist",
                 "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
-                "params": ["Document_lastModifiedById_fkey", "public", "\"public\".\"Document\""]
+                "params": [
+                    "Document_lastModifiedById_fkey",
+                    "public",
+                    "\"public\".\"Document\""
+                ]
             }
         ],
         "execute": [
@@ -1760,11 +1832,15 @@
             {
                 "description": "verify FK \"Document_lastModifiedById_fkey\" exists",
                 "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
-                "params": ["Document_lastModifiedById_fkey", "public", "\"public\".\"Document\""]
-            }
-        ]
-    },
+                "params": [
+                    "Document_lastModifiedById_fkey",
+                    "public",
+                    "\"public\".\"Document\""]
+                }
+            ]
+        },
     {
+
         "id": "foreignKey.DocumentMember.DocumentMember_documentId_fkey",
         "label": "Add foreign key \"DocumentMember_documentId_fkey\" on \"DocumentMember\"",
         "operationClass": "additive",
@@ -1823,9 +1899,13 @@
             {
                 "description": "ensure FK \"DocumentMember_userId_fkey\" does not exist",
                 "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
-                "params": ["DocumentMember_userId_fkey", "public", "\"public\".\"DocumentMember\""]
-            }
-        ],
+                "params": [
+                    "DocumentMember_userId_fkey",
+                    "public",
+                    "\"public\".\"DocumentMember\""]
+                }
+            ],
+
         "execute": [
             {
                 "description": "add FK \"DocumentMember_userId_fkey\"",
@@ -1836,11 +1916,15 @@
             {
                 "description": "verify FK \"DocumentMember_userId_fkey\" exists",
                 "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
-                "params": ["DocumentMember_userId_fkey", "public", "\"public\".\"DocumentMember\""]
-            }
-        ]
-    },
+                "params": [
+                    "DocumentMember_userId_fkey",
+                    "public",
+                    "\"public\".\"DocumentMember\""]
+                }
+            ]
+        },
     {
+
         "id": "foreignKey.DocumentMember.DocumentMember_invitedById_fkey",
         "label": "Add foreign key \"DocumentMember_invitedById_fkey\" on \"DocumentMember\"",
         "operationClass": "additive",
@@ -1983,7 +2067,11 @@
             {
                 "description": "ensure FK \"Folder_parentId_fkey\" does not exist",
                 "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
-                "params": ["Folder_parentId_fkey", "public", "\"public\".\"Folder\""]
+                "params": [
+                    "Folder_parentId_fkey",
+                    "public",
+                    "\"public\".\"Folder\""
+                ]
             }
         ],
         "execute": [
@@ -1996,7 +2084,11 @@
             {
                 "description": "verify FK \"Folder_parentId_fkey\" exists",
                 "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
-                "params": ["Folder_parentId_fkey", "public", "\"public\".\"Folder\""]
+                "params": [
+                    "Folder_parentId_fkey",
+                    "public",
+                    "\"public\".\"Folder\""
+                ]
             }
         ]
     },
@@ -2017,7 +2109,11 @@
             {
                 "description": "ensure FK \"Folder_ownerId_fkey\" does not exist",
                 "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
-                "params": ["Folder_ownerId_fkey", "public", "\"public\".\"Folder\""]
+                "params": [
+                    "Folder_ownerId_fkey",
+                    "public",
+                    "\"public\".\"Folder\""
+                ]
             }
         ],
         "execute": [
@@ -2030,11 +2126,15 @@
             {
                 "description": "verify FK \"Folder_ownerId_fkey\" exists",
                 "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
-                "params": ["Folder_ownerId_fkey", "public", "\"public\".\"Folder\""]
+                "params": [
+                    "Folder_ownerId_fkey",
+                    "public",
+                    "\"public\".\"Folder\""
+                ]
             }
         ]
     },
-    {
+        {
         "id": "foreignKey.Message.Message_documentId_fkey",
         "label": "Add foreign key \"Message_documentId_fkey\" on \"Message\"",
         "operationClass": "additive",
@@ -2051,7 +2151,11 @@
             {
                 "description": "ensure FK \"Message_documentId_fkey\" does not exist",
                 "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
-                "params": ["Message_documentId_fkey", "public", "\"public\".\"Message\""]
+                "params": [
+                    "Message_documentId_fkey",
+                    "public",
+                    "\"public\".\"Message\""
+                ]
             }
         ],
         "execute": [
@@ -2064,7 +2168,11 @@
             {
                 "description": "verify FK \"Message_documentId_fkey\" exists",
                 "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
-                "params": ["Message_documentId_fkey", "public", "\"public\".\"Message\""]
+                "params": [
+                    "Message_documentId_fkey",
+                    "public",
+                    "\"public\".\"Message\""
+                ]
             }
         ]
     },
@@ -2085,7 +2193,11 @@
             {
                 "description": "ensure FK \"Message_authorId_fkey\" does not exist",
                 "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
-                "params": ["Message_authorId_fkey", "public", "\"public\".\"Message\""]
+                "params": [
+                    "Message_authorId_fkey",
+                    "public",
+                    "\"public\".\"Message\""
+                ]
             }
         ],
         "execute": [
@@ -2098,7 +2210,11 @@
             {
                 "description": "verify FK \"Message_authorId_fkey\" exists",
                 "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
-                "params": ["Message_authorId_fkey", "public", "\"public\".\"Message\""]
+                "params": [
+                    "Message_authorId_fkey",
+                    "public",
+                    "\"public\".\"Message\""
+                ]
             }
         ]
     },
@@ -2119,7 +2235,11 @@
             {
                 "description": "ensure FK \"Session_userId_fkey\" does not exist",
                 "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
-                "params": ["Session_userId_fkey", "public", "\"public\".\"Session\""]
+                "params": [
+                    "Session_userId_fkey",
+                    "public",
+                    "\"public\".\"Session\""
+                ]
             }
         ],
         "execute": [
@@ -2132,11 +2252,15 @@
             {
                 "description": "verify FK \"Session_userId_fkey\" exists",
                 "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
-                "params": ["Session_userId_fkey", "public", "\"public\".\"Session\""]
+                "params": [
+                    "Session_userId_fkey",
+                    "public",
+                    "\"public\".\"Session\""
+                ]
             }
         ]
     },
-    {
+        {
         "id": "foreignKey.User.User_blockedById_fkey",
         "label": "Add foreign key \"User_blockedById_fkey\" on \"User\"",
         "operationClass": "additive",
@@ -2153,7 +2277,11 @@
             {
                 "description": "ensure FK \"User_blockedById_fkey\" does not exist",
                 "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
-                "params": ["User_blockedById_fkey", "public", "\"public\".\"User\""]
+                "params": [
+                    "User_blockedById_fkey",
+                    "public",
+                    "\"public\".\"User\""
+                ]
             }
         ],
         "execute": [
@@ -2166,7 +2294,11 @@
             {
                 "description": "verify FK \"User_blockedById_fkey\" exists",
                 "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
-                "params": ["User_blockedById_fkey", "public", "\"public\".\"User\""]
+                "params": [
+                    "User_blockedById_fkey",
+                    "public",
+                    "\"public\".\"User\""
+                ]
             }
         ]
     },
@@ -2187,7 +2319,11 @@
             {
                 "description": "ensure FK \"User_createdById_fkey\" does not exist",
                 "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
-                "params": ["User_createdById_fkey", "public", "\"public\".\"User\""]
+                "params": [
+                    "User_createdById_fkey",
+                    "public",
+                    "\"public\".\"User\""
+                ]
             }
         ],
         "execute": [
@@ -2200,7 +2336,11 @@
             {
                 "description": "verify FK \"User_createdById_fkey\" exists",
                 "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
-                "params": ["User_createdById_fkey", "public", "\"public\".\"User\""]
+                "params": [
+                    "User_createdById_fkey",
+                    "public",
+                    "\"public\".\"User\""
+                ]
             }
         ]
     }

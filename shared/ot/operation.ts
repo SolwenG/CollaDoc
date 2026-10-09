@@ -180,7 +180,8 @@ export function compose(first: Operation, second: Operation): Operation {
             b.take()
             continue
         }
-        if (!stepA || !stepB) throw new Error('Cannot compose: operations have different lengths')
+        if (!stepA || !stepB)
+            throw new Error('Cannot compose: operations have different lengths')
 
         const length = Math.min(a.peekLength(), b.peekLength())
         const partA = a.take(length)!
@@ -193,9 +194,14 @@ export function compose(first: Operation, second: Operation): Operation {
     return result.build()
 }
 
-export function transform(client: Operation, server: Operation): [Operation, Operation] {
+export function transform(
+    client: Operation,
+    server: Operation
+): [Operation, Operation] {
     if (baseLength(client) !== baseLength(server)) {
-        throw new Error('Cannot transform: operations do not apply to the same text')
+        throw new Error(
+            'Cannot transform: operations do not apply to the same text'
+        )
     }
     const clientPrime = new OperationBuilder()
     const serverPrime = new OperationBuilder()
@@ -218,7 +224,10 @@ export function transform(client: Operation, server: Operation): [Operation, Ope
             a.take()
             continue
         }
-        if (!stepA || !stepB) throw new Error('Cannot transform: operations have different lengths')
+        if (!stepA || !stepB)
+            throw new Error(
+                'Cannot transform: operations have different lengths'
+            )
 
         const length = Math.min(a.peekLength(), b.peekLength())
         const partA = a.take(length)!
@@ -264,7 +273,11 @@ function isLowSurrogate(code: number): boolean {
 export function diff(before: string, after: string): Operation {
     const maxPrefix = Math.min(before.length, after.length)
     let prefix = 0
-    while (prefix < maxPrefix && before.charCodeAt(prefix) === after.charCodeAt(prefix)) prefix++
+    while (
+        prefix < maxPrefix &&
+        before.charCodeAt(prefix) === after.charCodeAt(prefix)
+    )
+        prefix++
     if (prefix > 0 && isHighSurrogate(before.charCodeAt(prefix - 1))) prefix--
 
     const maxSuffix = maxPrefix - prefix
@@ -276,7 +289,8 @@ export function diff(before: string, after: string): Operation {
     ) {
         suffix++
     }
-    if (suffix > 0 && isLowSurrogate(before.charCodeAt(before.length - suffix))) suffix--
+    if (suffix > 0 && isLowSurrogate(before.charCodeAt(before.length - suffix)))
+        suffix--
 
     return new OperationBuilder()
         .retain(prefix)

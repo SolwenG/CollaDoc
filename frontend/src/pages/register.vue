@@ -106,7 +106,6 @@ import {
     required,
     safeCharacters,
 } from '@/utils/validation'
-
 const $q = useQuasar()
 const route = useRoute()
 const router = useRouter()

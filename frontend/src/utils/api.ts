@@ -48,3 +48,9 @@ export async function readApiError(response: Response): Promise<ApiError | null>
     const body = await readJson<{ error?: ApiError }>(response)
     return body?.error ?? null
 }
+
+export async function getJson<T>(path: string): Promise<T | null> {
+    const response = await apiFetch(path)
+    if (!response.ok) return null
+    return readJson<T>(response)
+}

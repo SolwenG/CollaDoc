@@ -1,5 +1,5 @@
 import multer from 'multer'
-import { MAX_FILE_SIZE_BYTES } from '../../../shared/files.ts'
+import { MAX_FILE_SIZE_BYTES } from 'shared/files'
 
 export const uploadSingleFile = multer({
     storage: multer.memoryStorage(),
