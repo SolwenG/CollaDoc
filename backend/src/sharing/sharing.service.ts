@@ -1,4 +1,5 @@
-import { createHash, randomBytes } from 'node:crypto'
+import { createHmac, timingSafeEqual } from 'node:crypto'
+import * as z from 'zod'
 import { AppError } from '../errors/app-error.ts'
 import { db } from '../prisma/db.ts'
 import type { CreateShareLinkInput } from './sharing.schema.ts'
@@ -16,13 +17,55 @@ export type AcceptResult = {
     outcome: 'owner' | 'joined' | 'upgraded' | 'unchanged'
 }
 
-// Same recipe as the session token (auth/session.ts): only the hash is stored
-function generateShareToken(): string {
-    return randomBytes(32).toString('base64url')
+/** Read at import time: a missing or short secret stops the server at startup, not at the first share */
+const SHARE_LINK_SECRET = loadShareLinkSecret()
+
+function loadShareLinkSecret(): Buffer {
+    const secret = Buffer.from(process.env['SHARE_LINK_SECRET'] ?? '', 'base64')
+    if (secret.length < 32) {
+        throw new Error('SHARE_LINK_SECRET must be at least 32 bytes encoded in base64')
+    }
+    return secret
 }
 
-function hashShareToken(token: string): string {
-    return createHash('sha256').update(token).digest('hex')
+// Everything the server needs is in the token: nothing is stored in the database
+const shareLinkPayloadSchema = z.object({
+    documentId: z.number(),
+    role: z.enum(['EDITOR', 'VIEWER']),
+    createdById: z.number(),
+    expiresAt: z.number(), // ms since epoch
+})
+
+type ShareLinkPayload = z.infer<typeof shareLinkPayloadSchema>
+
+function sign(data: string): Buffer {
+    return createHmac('sha256', SHARE_LINK_SECRET).update(data).digest()
+}
+
+/** "payload.signature", each part in base64url ("." is outside that alphabet) */
+function encodeShareToken(payload: ShareLinkPayload): string {
+    const data = Buffer.from(JSON.stringify(payload)).toString('base64url')
+    return `${data}.${sign(data).toString('base64url')}`
+}
+
+/** Null when the token is malformed or was not signed by this server */
+function decodeShareToken(token: string): ShareLinkPayload | null {
+    const [data, signature, ...rest] = token.split('.')
+    if (!data || !signature || rest.length > 0) return null
+
+    const expected = sign(data)
+    const received = Buffer.from(signature, 'base64url')
+    if (received.length !== expected.length || !timingSafeEqual(received, expected)) {
+        return null
+    }
+
+    try {
+        const json = JSON.parse(Buffer.from(data, 'base64url').toString('utf8'))
+        const parsed = shareLinkPayloadSchema.safeParse(json)
+        return parsed.success ? parsed.data : null
+    } catch {
+        return null
+    }
 }
 
 function documentNotFound(): AppError {
@@ -52,69 +95,18 @@ export async function assertDocumentOwner(documentId: number, userId: number) {
     throw new AppError('FORBIDDEN', 'Seul le propriétaire peut gérer le partage de ce document')
 }
 
-export async function createShareLink(documentId: number, role: MemberRole, createdById: number) {
-    const token = generateShareToken()
-    const link = await db.orm.public.ShareLink.select(
-        'id',
-        'role',
-        'expiresAt',
-        'createdAt'
-    ).create({
-        tokenHash: hashShareToken(token),
-        documentId,
-        role,
-        createdById,
-        expiresAt: new Date(Date.now() + SHARE_LINK_TTL_MS).toISOString(),
-    })
+export function createShareLink(documentId: number, role: MemberRole, createdById: number) {
+    const expiresAt = Date.now() + SHARE_LINK_TTL_MS
+    const token = encodeShareToken({ documentId, role, createdById, expiresAt })
 
-    // The only time the token leaves the server: the database keeps its hash alone
-    return { ...link, token }
-}
-
-export async function listActiveShareLinks(documentId: number) {
-    const now = new Date().toISOString()
-    return db.orm.public.ShareLink.select('id', 'role', 'expiresAt', 'createdAt')
-        .where((l) => l.documentId.eq(documentId))
-        .where((l) => l.revokedAt.isNull())
-        .where((l) => l.expiresAt.gt(now))
-        .orderBy((l) => l.createdAt.desc())
-        .all()
-}
-
-export async function revokeShareLink(documentId: number, linkId: number) {
-    // documentId too: an owner cannot reach the links of another document
-    const link = await db.orm.public.ShareLink.select('revokedAt')
-        .where({ id: linkId, documentId })
-        .first()
-    if (!link) {
-        throw new AppError('SHARE_LINK_NOT_FOUND', 'Lien de partage introuvable')
-    }
-    if (link.revokedAt !== null) return
-
-    await db.orm.public.ShareLink.where({ id: linkId }).update({
-        revokedAt: new Date().toISOString(),
-    })
+    return { role, expiresAt: new Date(expiresAt).toISOString(), token }
 }
 
 export async function acceptShareLink(token: string, userId: number): Promise<AcceptResult> {
-    const link = await db.orm.public.ShareLink.select(
-        'documentId',
-        'role',
-        'createdById',
-        'expiresAt',
-        'revokedAt'
-    )
-        .where({ tokenHash: hashShareToken(token) })
-        .first()
+    const link = decodeShareToken(token)
 
     if (!link) throw shareLinkNotFound()
-    if (link.revokedAt !== null) {
-        throw new AppError(
-            'SHARE_LINK_REVOKED',
-            "Ce lien d'invitation a été révoqué par le propriétaire du document"
-        )
-    }
-    if (new Date(link.expiresAt).getTime() <= Date.now()) {
+    if (link.expiresAt <= Date.now()) {
         throw new AppError('SHARE_LINK_EXPIRED', "Ce lien d'invitation a expiré")
     }
 
@@ -122,7 +114,7 @@ export async function acceptShareLink(token: string, userId: number): Promise<Ac
     const document = await db.orm.public.Document.select('ownerId')
         .where({ id: documentId })
         .first()
-    // The links are deleted with their document; this covers the moment in between
+    // The document may have been deleted since the link was created
     if (!document) throw shareLinkNotFound()
     if (document.ownerId === userId) {
         return { documentId, role: 'OWNER', outcome: 'owner' }
@@ -181,7 +173,7 @@ export async function updateMemberRole(
     if (!updated) throw memberNotFound()
 }
 
-// A link still active lets the removed member back in: it has to be revoked as well
+// A link not yet expired still lets the removed member back in
 export async function removeMember(documentId: number, ownerId: number, userId: number) {
     if (userId === ownerId) {
         throw new AppError(

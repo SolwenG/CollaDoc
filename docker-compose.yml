@@ -1,69 +1,70 @@
 services:
-    db:
-        image: postgres:18-alpine
-        restart: unless-stopped
-        environment:
-            POSTGRES_USER: ${POSTGRES_USER:-colladoc}
-            POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-colladoc}
-            POSTGRES_DB: ${POSTGRES_DB:-colladoc}
-        volumes:
-            - db-data:/var/lib/postgresql
-        ports:
-            - '127.0.0.1:${DB_PORT:-5433}:5432'
-        healthcheck:
-            test: ['CMD-SHELL', 'pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}']
-            interval: 5s
-            timeout: 5s
-            retries: 10
+  db:
+    image: postgres:18-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-colladoc}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-colladoc}
+      POSTGRES_DB: ${POSTGRES_DB:-colladoc}
+    volumes:
+      - db-data:/var/lib/postgresql
+    ports:
+      - "127.0.0.1:${DB_PORT:-5433}:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
-    backend:
-        build:
-            context: .
-            dockerfile: backend/Dockerfile
-        restart: unless-stopped
-        environment:
-            DATABASE_URL: postgresql://${POSTGRES_USER:-colladoc}:${POSTGRES_PASSWORD:-colladoc}@db:5432/${POSTGRES_DB:-colladoc}
-            PORT: '3000'
-            REALTIME_INTERNAL_URL: http://realtime:3001
-            INTERNAL_SECRET: ${INTERNAL_SECRET:?INTERNAL_SECRET must be set in .env}
-            TOTP_ENCRYPTION_KEY: ${TOTP_ENCRYPTION_KEY:?TOTP_ENCRYPTION_KEY must be set in the root .env}
-            UPLOAD_DIR: /app/uploads
-        volumes:
-            - uploads-data:/app/uploads
-        ports:
-            - '127.0.0.1:${BACKEND_PORT:-3000}:3000'
-        depends_on:
-            db:
-                condition: service_healthy
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-colladoc}:${POSTGRES_PASSWORD:-colladoc}@db:5432/${POSTGRES_DB:-colladoc}
+      PORT: "3000"
+      REALTIME_INTERNAL_URL: http://realtime:3001
+      INTERNAL_SECRET: ${INTERNAL_SECRET:?INTERNAL_SECRET must be set in .env}
+      TOTP_ENCRYPTION_KEY: ${TOTP_ENCRYPTION_KEY:?TOTP_ENCRYPTION_KEY must be set in the root .env}
+      SHARE_LINK_SECRET: ${SHARE_LINK_SECRET:?SHARE_LINK_SECRET must be set in the root .env}
+      UPLOAD_DIR: /app/uploads
+    volumes:
+      - uploads-data:/app/uploads
+    ports:
+      - "127.0.0.1:${BACKEND_PORT:-3000}:3000"
+    depends_on:
+      db:
+        condition: service_healthy
 
-    # Second server: collaborative editing over socket.io (see docs/collaboration-ot.md)
-    realtime:
-        build:
-            context: .
-            dockerfile: backend/Dockerfile
-        command: ['node', 'src/realtime.ts']
-        restart: unless-stopped
-        environment:
-            DATABASE_URL: postgresql://${POSTGRES_USER:-colladoc}:${POSTGRES_PASSWORD:-colladoc}@db:5432/${POSTGRES_DB:-colladoc}
-            REALTIME_PORT: '3001'
-            INTERNAL_SECRET: ${INTERNAL_SECRET:?INTERNAL_SECRET must be set in .env}
-        ports:
-            - '127.0.0.1:${REALTIME_PORT:-3001}:3001'
-        depends_on:
-            db:
-                condition: service_healthy
+  # Second server: collaborative editing over socket.io (see docs/collaboration-ot.md)
+  realtime:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    command: ["node", "src/realtime.ts"]
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-colladoc}:${POSTGRES_PASSWORD:-colladoc}@db:5432/${POSTGRES_DB:-colladoc}
+      REALTIME_PORT: "3001"
+      INTERNAL_SECRET: ${INTERNAL_SECRET:?INTERNAL_SECRET must be set in .env}
+    ports:
+      - "127.0.0.1:${REALTIME_PORT:-3001}:3001"
+    depends_on:
+      db:
+        condition: service_healthy
 
-    frontend:
-        build:
-            context: .
-            dockerfile: frontend/Dockerfile
-        restart: unless-stopped
-        ports:
-            - '${FRONTEND_PORT:-8080}:80'
-        depends_on:
-            - backend
-            - realtime
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    restart: unless-stopped
+    ports:
+      - "${FRONTEND_PORT:-8080}:80"
+    depends_on:
+      - backend
+      - realtime
 
 volumes:
-    db-data:
-    uploads-data:
+  db-data:
+  uploads-data:

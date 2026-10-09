@@ -83,10 +83,7 @@ async function onSubmit() {
         }
 
         if (result === 'invalid') {
-            $q.notify({
-                type: 'negative',
-                message: 'Identifiant ou mot de passe incorrect.',
-            })
+            $q.notify({ type: 'negative', message: 'Identifiant ou mot de passe incorrect.' })
             return
         }
 
@@ -106,15 +103,9 @@ async function onSubmit() {
             return
         }
 
-        $q.notify({
-            type: 'negative',
-            message: 'Une erreur est survenue. Réessayez plus tard.',
-        })
+        $q.notify({ type: 'negative', message: 'Une erreur est survenue. Réessayez plus tard.' })
     } catch {
-        $q.notify({
-            type: 'negative',
-            message: 'Impossible de joindre le serveur.',
-        })
+        $q.notify({ type: 'negative', message: 'Impossible de joindre le serveur.' })
     } finally {
         loading.value = false
     }
