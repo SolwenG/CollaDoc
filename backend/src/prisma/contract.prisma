@@ -107,6 +107,21 @@ model DocumentMember {
   @@index([userId])
 }
 
+model ShareLink {
+  id          Int                @id @default(autoincrement())
+  tokenHash   String             @unique // SHA-256 du jeton du lien, comme Session
+  documentId  Int
+  document    Document           @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  role        MemberRole // rôle donné à qui accepte le lien
+  createdById Int // devient invitedById du membre ajouté
+  createdBy   User               @relation(fields: [createdById], references: [id])
+  expiresAt   TimestamptzString // createdAt + 7 jours
+  revokedAt   TimestamptzString? // non null = lien révoqué par le propriétaire
+  createdAt   TimestamptzString  @default(now())
+
+  @@index([documentId])
+}
+
 model DocumentOperation {
   id         Int               @id @default(autoincrement())
   documentId Int
