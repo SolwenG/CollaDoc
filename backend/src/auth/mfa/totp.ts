@@ -16,9 +16,7 @@ const ENCRYPTION_KEY = loadEncryptionKey()
 function loadEncryptionKey(): Buffer {
     const key = Buffer.from(process.env['TOTP_ENCRYPTION_KEY'] ?? '', 'base64')
     if (key.length !== 32) {
-        throw new Error(
-            'TOTP_ENCRYPTION_KEY must be 32 bytes encoded in base64'
-        )
+        throw new Error('TOTP_ENCRYPTION_KEY must be 32 bytes encoded in base64')
     }
     return key
 }
@@ -29,13 +27,8 @@ function encryptSecret(secret: string): string {
     const cipher = createCipheriv(CIPHER_ALGORITHM, ENCRYPTION_KEY, iv, {
         authTagLength: AUTH_TAG_LENGTH,
     })
-    const ciphertext = Buffer.concat([
-        cipher.update(secret, 'utf8'),
-        cipher.final(),
-    ])
-    return [iv, cipher.getAuthTag(), ciphertext]
-        .map((part) => part.toString('base64url'))
-        .join('.')
+    const ciphertext = Buffer.concat([cipher.update(secret, 'utf8'), cipher.final()])
+    return [iv, cipher.getAuthTag(), ciphertext].map((part) => part.toString('base64url')).join('.')
 }
 
 function decryptSecret(encryptedSecret: string): string {

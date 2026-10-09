@@ -1,9 +1,6 @@
 import type { Request, Response } from 'express'
 import { notifySessionsChanged } from '../../realtime/realtime-notifier.ts'
-import {
-    PASSWORD_MAX_LENGTH,
-    PASSWORD_MIN_LENGTH,
-} from '../../auth/password.ts'
+import { PASSWORD_MAX_LENGTH, PASSWORD_MIN_LENGTH } from '../../auth/password.ts'
 import { getAuthUser } from '../../middlewares/auth.middleware.ts'
 import { AppError } from '../../errors/app-error.ts'
 import {
@@ -36,9 +33,7 @@ export async function updateDisplayName(req: Request, res: Response) {
 
 export async function changePassword(req: Request, res: Response) {
     const { id, sessionId } = getAuthUser(req)
-    const { currentPassword, newPassword } = changePasswordSchema.parse(
-        req.body
-    )
+    const { currentPassword, newPassword } = changePasswordSchema.parse(req.body)
 
     if (newPassword === currentPassword) {
         throw new AppError(
@@ -63,18 +58,12 @@ export async function changePassword(req: Request, res: Response) {
         )
     }
 
-    const isCurrent = await profileService.isCurrentPassword(
-        id,
-        currentPassword
-    )
+    const isCurrent = await profileService.isCurrentPassword(id, currentPassword)
     if (isCurrent === null) {
         throw new AppError('UNAUTHENTICATED', 'Non authentifié')
     }
     if (!isCurrent) {
-        throw new AppError(
-            'INVALID_CURRENT_PASSWORD',
-            'Mot de passe actuel incorrect'
-        )
+        throw new AppError('INVALID_CURRENT_PASSWORD', 'Mot de passe actuel incorrect')
     }
 
     await profileService.changePassword(id, sessionId, newPassword)

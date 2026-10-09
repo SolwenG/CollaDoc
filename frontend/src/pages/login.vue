@@ -29,9 +29,7 @@
         </q-form>
         <div class="q-mt-md">
             Pas encore de compte ?
-            <router-link to="/register" class="text-primary text-bold"
-                >Créer un compte</router-link
-            >
+            <router-link to="/register" class="text-primary text-bold">Créer un compte</router-link>
         </div>
         <TwoFactorDialog v-model="showTwoFactor" @verified="router.push('/')" />
     </AuthCard>
@@ -58,10 +56,7 @@ const showTwoFactor = ref(false)
 async function onSubmit() {
     loading.value = true
     try {
-        const result = await auth.login(
-            username.value.trim().toLowerCase(),
-            password.value
-        )
+        const result = await auth.login(username.value.trim().toLowerCase(), password.value)
 
         if (result === 'success') {
             await router.push('/')

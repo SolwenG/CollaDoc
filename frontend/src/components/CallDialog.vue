@@ -2,16 +2,9 @@
     <!-- Appel entrant -->
     <q-dialog :model-value="status === 'ringing'" persistent>
         <q-card>
-            <q-card-section
-                >{{ incoming?.from.displayName }} vous appelle…</q-card-section
-            >
+            <q-card-section>{{ incoming?.from.displayName }} vous appelle…</q-card-section>
             <q-card-actions align="right">
-                <q-btn
-                    icon="call_end"
-                    color="negative"
-                    round
-                    @click="declineCall"
-                />
+                <q-btn icon="call_end" color="negative" round @click="declineCall" />
                 <q-btn icon="call" color="positive" round @click="acceptCall" />
             </q-card-actions>
         </q-card>
@@ -19,10 +12,7 @@
 
     <!-- Barre d'appel en cours -->
     <div v-if="inCall" class="row items-center q-gutter-sm">
-        <q-chip
-            :color="status === 'connected' ? 'positive' : 'warning'"
-            text-color="white"
-        >
+        <q-chip :color="status === 'connected' ? 'positive' : 'warning'" text-color="white">
             {{ statusLabel }}
         </q-chip>
         <q-btn
@@ -42,17 +32,8 @@ import { useQuasar } from 'quasar'
 import { useCall } from '@/hooks/useCall'
 
 const $q = useQuasar()
-const {
-    status,
-    incoming,
-    muted,
-    error,
-    lastEnd,
-    acceptCall,
-    declineCall,
-    hangup,
-    toggleMute,
-} = useCall()
+const { status, incoming, muted, error, lastEnd, acceptCall, declineCall, hangup, toggleMute } =
+    useCall()
 
 const inCall = computed(() => status.value !== 'idle')
 
@@ -80,10 +61,7 @@ const errorMessages: Record<string, string> = {
     connection_failed: 'La connexion audio a échoué',
     server_error: 'Erreur serveur',
 }
-watch(
-    error,
-    (e) => e && $q.notify({ type: 'negative', message: errorMessages[e] ?? e })
-)
+watch(error, (e) => e && $q.notify({ type: 'negative', message: errorMessages[e] ?? e }))
 
 const endMessages: Record<string, string> = {
     declined: 'Appel refusé',

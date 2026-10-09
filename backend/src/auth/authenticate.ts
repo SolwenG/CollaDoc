@@ -12,15 +12,11 @@ export type TokenCheck =
           user: { id: number; role: 'USER' | 'ADMIN' }
       }
 
-export async function checkSessionToken(
-    token: string,
-    now = Date.now()
-): Promise<TokenCheck> {
+export async function checkSessionToken(token: string, now = Date.now()): Promise<TokenCheck> {
     const session = await findSessionByToken(token)
     if (!session) return { status: 'unknown' }
 
-    if (new Date(session.expiresAt).getTime() <= now)
-        return { status: 'expired' }
+    if (new Date(session.expiresAt).getTime() <= now) return { status: 'expired' }
 
     const user = await findUserForAuth(session.userId)
     if (!user || user.blockedAt !== null) return { status: 'userUnavailable' }

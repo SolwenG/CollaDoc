@@ -23,36 +23,24 @@ export default class M extends Migration<Start, End> {
     override get operations() {
         return [
             this.dropTable({ schema: 'public', table: 'Post' }),
-            this.dropColumn({
-                schema: 'public',
-                table: 'User',
-                column: 'name',
-            }),
+            this.dropColumn({ schema: 'public', table: 'User', column: 'name' }),
             this.dropConstraint({
                 schema: 'public',
                 table: 'User',
                 constraint: 'User_email_key',
             }),
-            this.dropColumn({
-                schema: 'public',
-                table: 'User',
-                column: 'email',
-            }),
+            this.dropColumn({ schema: 'public', table: 'User', column: 'email' }),
             this.createTable({
                 schema: 'public',
                 table: 'Document',
                 columns: [
-                    col('content', 'text', {
-                        codecRef: { codecId: 'pg/text@1' },
-                    }),
+                    col('content', 'text', { codecRef: { codecId: 'pg/text@1' } }),
                     col('createdAt', 'timestamptz', {
                         notNull: true,
                         default: fn('now()'),
                         codecRef: { codecId: 'pg/timestamptz-string@1' },
                     }),
-                    col('folderId', 'int4', {
-                        codecRef: { codecId: 'pg/int4@1' },
-                    }),
+                    col('folderId', 'int4', { codecRef: { codecId: 'pg/int4@1' } }),
                     col('id', 'SERIAL', {
                         notNull: true,
                         codecRef: { codecId: 'pg/int4@1' },
@@ -64,16 +52,12 @@ export default class M extends Migration<Start, End> {
                     col('lastModifiedById', 'int4', {
                         codecRef: { codecId: 'pg/int4@1' },
                     }),
-                    col('mimeType', 'text', {
-                        codecRef: { codecId: 'pg/text@1' },
-                    }),
+                    col('mimeType', 'text', { codecRef: { codecId: 'pg/text@1' } }),
                     col('name', 'text', {
                         notNull: true,
                         codecRef: { codecId: 'pg/text@1' },
                     }),
-                    col('originalName', 'text', {
-                        codecRef: { codecId: 'pg/text@1' },
-                    }),
+                    col('originalName', 'text', { codecRef: { codecId: 'pg/text@1' } }),
                     col('ownerId', 'int4', {
                         notNull: true,
                         codecRef: { codecId: 'pg/int4@1' },
@@ -89,9 +73,7 @@ export default class M extends Migration<Start, End> {
                         default: lit(0),
                         codecRef: { codecId: 'pg/int4@1' },
                     }),
-                    col('storagePath', 'text', {
-                        codecRef: { codecId: 'pg/text@1' },
-                    }),
+                    col('storagePath', 'text', { codecRef: { codecId: 'pg/text@1' } }),
                     col('updatedAt', 'timestamptz', {
                         notNull: true,
                         codecRef: { codecId: 'pg/timestamptz-string@1' },
@@ -99,10 +81,7 @@ export default class M extends Migration<Start, End> {
                 ],
                 constraints: [
                     primaryKey(['id']),
-                    checkExpression(
-                        'Document_kind_check_74d9448e',
-                        "\"kind\" IN ('TEXT', 'FILE')"
-                    ),
+                    checkExpression('Document_kind_check_74d9448e', "\"kind\" IN ('TEXT', 'FILE')"),
                 ],
             }),
             this.createTable({
@@ -160,9 +139,7 @@ export default class M extends Migration<Start, End> {
                         notNull: true,
                         codecRef: { codecId: 'pg/int4@1' },
                     }),
-                    col('length', 'int4', {
-                        codecRef: { codecId: 'pg/int4@1' },
-                    }),
+                    col('length', 'int4', { codecRef: { codecId: 'pg/int4@1' } }),
                     col('position', 'int4', {
                         notNull: true,
                         codecRef: { codecId: 'pg/int4@1' },
@@ -206,9 +183,7 @@ export default class M extends Migration<Start, End> {
                         notNull: true,
                         codecRef: { codecId: 'pg/int4@1' },
                     }),
-                    col('parentId', 'int4', {
-                        codecRef: { codecId: 'pg/int4@1' },
-                    }),
+                    col('parentId', 'int4', { codecRef: { codecId: 'pg/int4@1' } }),
                     col('updatedAt', 'timestamptz', {
                         notNull: true,
                         codecRef: { codecId: 'pg/timestamptz-string@1' },
@@ -347,10 +322,7 @@ export default class M extends Migration<Start, End> {
                     db.public.User.select('id')
                         .where((f, fns) => fns.eq(f.displayName, null))
                         .limit(1),
-                run: () =>
-                    db.public.User.delete().where((f, fns) =>
-                        fns.eq(f.displayName, null)
-                    ),
+                run: () => db.public.User.delete().where((f, fns) => fns.eq(f.displayName, null)),
             }),
             this.setNotNull({
                 schema: 'public',
@@ -370,10 +342,7 @@ export default class M extends Migration<Start, End> {
                     db.public.User.select('id')
                         .where((f, fns) => fns.eq(f.passwordHash, null))
                         .limit(1),
-                run: () =>
-                    db.public.User.delete().where((f, fns) =>
-                        fns.eq(f.passwordHash, null)
-                    ),
+                run: () => db.public.User.delete().where((f, fns) => fns.eq(f.passwordHash, null)),
             }),
             this.setNotNull({
                 schema: 'public',
@@ -386,16 +355,9 @@ export default class M extends Migration<Start, End> {
                     db.public.User.select('id')
                         .where((f, fns) => fns.eq(f.username, null))
                         .limit(1),
-                run: () =>
-                    db.public.User.delete().where((f, fns) =>
-                        fns.eq(f.username, null)
-                    ),
+                run: () => db.public.User.delete().where((f, fns) => fns.eq(f.username, null)),
             }),
-            this.setNotNull({
-                schema: 'public',
-                table: 'User',
-                column: 'username',
-            }),
+            this.setNotNull({ schema: 'public', table: 'User', column: 'username' }),
             this.addUnique({
                 schema: 'public',
                 table: 'DocumentOperation',
@@ -541,11 +503,7 @@ export default class M extends Migration<Start, End> {
                 foreignKey: {
                     name: 'Document_ownerId_fkey',
                     columns: ['ownerId'],
-                    references: {
-                        schema: 'public',
-                        table: 'User',
-                        columns: ['id'],
-                    },
+                    references: { schema: 'public', table: 'User', columns: ['id'] },
                 },
             }),
             this.addForeignKey({
@@ -554,11 +512,7 @@ export default class M extends Migration<Start, End> {
                 foreignKey: {
                     name: 'Document_folderId_fkey',
                     columns: ['folderId'],
-                    references: {
-                        schema: 'public',
-                        table: 'Folder',
-                        columns: ['id'],
-                    },
+                    references: { schema: 'public', table: 'Folder', columns: ['id'] },
                     onDelete: 'cascade',
                 },
             }),
@@ -568,11 +522,7 @@ export default class M extends Migration<Start, End> {
                 foreignKey: {
                     name: 'Document_lastModifiedById_fkey',
                     columns: ['lastModifiedById'],
-                    references: {
-                        schema: 'public',
-                        table: 'User',
-                        columns: ['id'],
-                    },
+                    references: { schema: 'public', table: 'User', columns: ['id'] },
                 },
             }),
             this.addForeignKey({
@@ -581,11 +531,7 @@ export default class M extends Migration<Start, End> {
                 foreignKey: {
                     name: 'DocumentMember_documentId_fkey',
                     columns: ['documentId'],
-                    references: {
-                        schema: 'public',
-                        table: 'Document',
-                        columns: ['id'],
-                    },
+                    references: { schema: 'public', table: 'Document', columns: ['id'] },
                     onDelete: 'cascade',
                 },
             }),
@@ -595,11 +541,7 @@ export default class M extends Migration<Start, End> {
                 foreignKey: {
                     name: 'DocumentMember_userId_fkey',
                     columns: ['userId'],
-                    references: {
-                        schema: 'public',
-                        table: 'User',
-                        columns: ['id'],
-                    },
+                    references: { schema: 'public', table: 'User', columns: ['id'] },
                 },
             }),
             this.addForeignKey({
@@ -608,11 +550,7 @@ export default class M extends Migration<Start, End> {
                 foreignKey: {
                     name: 'DocumentMember_invitedById_fkey',
                     columns: ['invitedById'],
-                    references: {
-                        schema: 'public',
-                        table: 'User',
-                        columns: ['id'],
-                    },
+                    references: { schema: 'public', table: 'User', columns: ['id'] },
                 },
             }),
             this.addForeignKey({
@@ -621,11 +559,7 @@ export default class M extends Migration<Start, End> {
                 foreignKey: {
                     name: 'DocumentOperation_documentId_fkey',
                     columns: ['documentId'],
-                    references: {
-                        schema: 'public',
-                        table: 'Document',
-                        columns: ['id'],
-                    },
+                    references: { schema: 'public', table: 'Document', columns: ['id'] },
                     onDelete: 'cascade',
                 },
             }),
@@ -635,11 +569,7 @@ export default class M extends Migration<Start, End> {
                 foreignKey: {
                     name: 'DocumentOperation_authorId_fkey',
                     columns: ['authorId'],
-                    references: {
-                        schema: 'public',
-                        table: 'User',
-                        columns: ['id'],
-                    },
+                    references: { schema: 'public', table: 'User', columns: ['id'] },
                 },
             }),
             this.addForeignKey({
@@ -648,11 +578,7 @@ export default class M extends Migration<Start, End> {
                 foreignKey: {
                     name: 'Folder_parentId_fkey',
                     columns: ['parentId'],
-                    references: {
-                        schema: 'public',
-                        table: 'Folder',
-                        columns: ['id'],
-                    },
+                    references: { schema: 'public', table: 'Folder', columns: ['id'] },
                     onDelete: 'cascade',
                 },
             }),
@@ -662,11 +588,7 @@ export default class M extends Migration<Start, End> {
                 foreignKey: {
                     name: 'Folder_ownerId_fkey',
                     columns: ['ownerId'],
-                    references: {
-                        schema: 'public',
-                        table: 'User',
-                        columns: ['id'],
-                    },
+                    references: { schema: 'public', table: 'User', columns: ['id'] },
                 },
             }),
             this.addForeignKey({
@@ -675,11 +597,7 @@ export default class M extends Migration<Start, End> {
                 foreignKey: {
                     name: 'Message_documentId_fkey',
                     columns: ['documentId'],
-                    references: {
-                        schema: 'public',
-                        table: 'Document',
-                        columns: ['id'],
-                    },
+                    references: { schema: 'public', table: 'Document', columns: ['id'] },
                     onDelete: 'cascade',
                 },
             }),
@@ -689,11 +607,7 @@ export default class M extends Migration<Start, End> {
                 foreignKey: {
                     name: 'Message_authorId_fkey',
                     columns: ['authorId'],
-                    references: {
-                        schema: 'public',
-                        table: 'User',
-                        columns: ['id'],
-                    },
+                    references: { schema: 'public', table: 'User', columns: ['id'] },
                 },
             }),
             this.addForeignKey({
@@ -702,11 +616,7 @@ export default class M extends Migration<Start, End> {
                 foreignKey: {
                     name: 'Session_userId_fkey',
                     columns: ['userId'],
-                    references: {
-                        schema: 'public',
-                        table: 'User',
-                        columns: ['id'],
-                    },
+                    references: { schema: 'public', table: 'User', columns: ['id'] },
                     onDelete: 'cascade',
                 },
             }),
@@ -716,11 +626,7 @@ export default class M extends Migration<Start, End> {
                 foreignKey: {
                     name: 'User_blockedById_fkey',
                     columns: ['blockedById'],
-                    references: {
-                        schema: 'public',
-                        table: 'User',
-                        columns: ['id'],
-                    },
+                    references: { schema: 'public', table: 'User', columns: ['id'] },
                 },
             }),
             this.addForeignKey({
@@ -729,11 +635,7 @@ export default class M extends Migration<Start, End> {
                 foreignKey: {
                     name: 'User_createdById_fkey',
                     columns: ['createdById'],
-                    references: {
-                        schema: 'public',
-                        table: 'User',
-                        columns: ['id'],
-                    },
+                    references: { schema: 'public', table: 'User', columns: ['id'] },
                 },
             }),
         ]

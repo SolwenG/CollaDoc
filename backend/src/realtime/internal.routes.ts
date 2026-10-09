@@ -12,11 +12,7 @@ import type { CollabServer } from './socket.types.ts'
 
 const idSchema = z.coerce.number().int().positive()
 
-function requireInternalSecret(
-    req: Request,
-    _res: Response,
-    next: NextFunction
-) {
+function requireInternalSecret(req: Request, _res: Response, next: NextFunction) {
     const expected = process.env['INTERNAL_SECRET']
     const received = req.get('x-internal-secret')
     if (
@@ -54,25 +50,22 @@ export function internalRoutes(io: CollabServer): Router {
         res.status(204).end()
     })
 
-    router.post(
-        '/documents/:documentId/members/:userId/revoked',
-        async (req, res) => {
-            const documentId = idSchema.parse(req.params['documentId'])
-            const userId = idSchema.parse(req.params['userId'])
-            const room = documentRoom(documentId)
-            for (const socket of await io.in(userRoom(userId)).fetchSockets()) {
-                if (!socket.rooms.has(room)) continue
-                socket.emit('document:closed', {
-                    documentId,
-                    reason: 'ACCESS_REVOKED',
-                })
-                socket.leave(room)
-                socket.data.documentIds.delete(documentId)
-                await leaveDocument(socket.id, documentId)
-            }
-            res.status(204).end()
+    router.post('/documents/:documentId/members/:userId/revoked', async (req, res) => {
+        const documentId = idSchema.parse(req.params['documentId'])
+        const userId = idSchema.parse(req.params['userId'])
+        const room = documentRoom(documentId)
+        for (const socket of await io.in(userRoom(userId)).fetchSockets()) {
+            if (!socket.rooms.has(room)) continue
+            socket.emit('document:closed', {
+                documentId,
+                reason: 'ACCESS_REVOKED',
+            })
+            socket.leave(room)
+            socket.data.documentIds.delete(documentId)
+            await leaveDocument(socket.id, documentId)
         }
-    )
+        res.status(204).end()
+    })
 
     return router
 }

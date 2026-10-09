@@ -22,10 +22,7 @@ export async function authenticateSocket(
     next: (error?: Error) => void
 ): Promise<void> {
     try {
-        const token = readCookie(
-            socket.handshake.headers.cookie,
-            SESSION_COOKIE_NAME
-        )
+        const token = readCookie(socket.handshake.headers.cookie, SESSION_COOKIE_NAME)
         if (!token) return next(new Error('UNAUTHENTICATED'))
 
         const check = await checkSessionToken(token)

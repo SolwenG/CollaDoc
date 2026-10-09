@@ -18,10 +18,7 @@ describe('toProfile', () => {
     })
 
     it('reports MFA as enabled when totpEnabledAt is set', () => {
-        expect(
-            toProfile({ ...row, totpEnabledAt: '2026-10-06T10:00:00Z' })
-                .mfaEnabled
-        ).toBe(true)
+        expect(toProfile({ ...row, totpEnabledAt: '2026-10-06T10:00:00Z' }).mfaEnabled).toBe(true)
     })
 
     it('exposes only the public profile fields', () => {

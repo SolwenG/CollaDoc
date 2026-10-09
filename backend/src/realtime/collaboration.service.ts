@@ -1,4 +1,4 @@
-import type { DocumentRole, Operation } from '../../../shared/ot/index.ts'
+import type { DocumentRole, Operation } from 'shared/ot/index'
 import { db } from '../prisma/db.ts'
 
 // Operations older than this many revisions before the snapshot are purged
@@ -15,11 +15,7 @@ export async function findDocumentRole(
     documentId: number,
     userId: number
 ): Promise<DocumentRole | null> {
-    const document = await db.orm.public.Document.select(
-        'id',
-        'kind',
-        'ownerId'
-    )
+    const document = await db.orm.public.Document.select('id', 'kind', 'ownerId')
         .where({ id: documentId })
         .first()
     if (!document || document.kind !== 'TEXT') return null
@@ -51,22 +47,14 @@ export async function findOperationsAfter(
         .where((o) => o.revision.gt(revision))
         .orderBy((o) => o.revision.asc())
         .all()
-    return rows.map((row) => ({
-        ...row,
-        operation: row.operation as Operation,
-    }))
+    return rows.map((row) => ({ ...row, operation: row.operation as Operation }))
 }
 
 export async function findOperationByOpId(opId: string) {
-    return db.orm.public.DocumentOperation.select('documentId', 'revision')
-        .where({ opId })
-        .first()
+    return db.orm.public.DocumentOperation.select('documentId', 'revision').where({ opId }).first()
 }
 
-export async function insertOperation(
-    documentId: number,
-    entry: JournalEntry
-): Promise<void> {
+export async function insertOperation(documentId: number, entry: JournalEntry): Promise<void> {
     await db.orm.public.DocumentOperation.create({
         documentId,
         revision: entry.revision,
@@ -95,9 +83,7 @@ export async function saveSnapshot({
             contentRevision,
             ...(lastModifiedById !== null && { lastModifiedById }),
         })
-        await tx.orm.public.DocumentOperation.where((o) =>
-            o.documentId.eq(documentId)
-        )
+        await tx.orm.public.DocumentOperation.where((o) => o.documentId.eq(documentId))
             .where((o) => o.revision.lt(contentRevision - KEPT_REVISIONS))
             .deleteAll()
     })

@@ -1,48 +1,26 @@
 import { Router } from 'express'
-import * as z from 'zod'
-import { AppError } from '../errors/app-error.ts'
-import { db } from '../prisma/db.ts'
+import { requireAuth } from '../middlewares/auth.middleware.ts'
+import { uploadSingleFile } from '../middlewares/upload.middleware.ts'
+import {
+    createTextDocument,
+    deleteDocument,
+    downloadFile,
+    getDocument,
+    replaceFile,
+    updateDocument,
+    uploadFile,
+} from '../documents/documents.controller.ts'
 
 const router = Router()
 
-const idSchema = z.coerce.number().int().positive()
+router.use(requireAuth)
 
-router.get('/:id/members', async (req, res) => {
-    const documentId = idSchema.parse(req.params.id)
-
-    const doc = await db.orm.public.Document.select('ownerId')
-        .where({ id: documentId })
-        .first()
-
-    if (!doc) {
-        throw new AppError('NOT_FOUND', 'Document not found')
-    }
-
-    // Get owner
-    const owner = await db.orm.public.User.select(
-        'id',
-        'username',
-        'displayName'
-    )
-        .where({ id: doc.ownerId })
-        .first()
-
-    // Get members
-    const members = await db.orm.public.DocumentMember.select('userId')
-        .where({ documentId })
-        .include('user', (user) => user.select('id', 'username', 'displayName'))
-
-    const result = [
-        ...(owner ? [{ ...owner, isOwner: true }] : []),
-        ...members.map((m) => ({
-            id: m.user.id,
-            username: m.user.username,
-            displayName: m.user.displayName,
-            isOwner: false,
-        })),
-    ]
-
-    res.json(result)
-})
+router.post('/', createTextDocument)
+router.post('/files', uploadSingleFile, uploadFile)
+router.get('/:id', getDocument)
+router.get('/:id/file', downloadFile)
+router.put('/:id/file', uploadSingleFile, replaceFile)
+router.patch('/:id', updateDocument)
+router.delete('/:id', deleteDocument)
 
 export { router as DocumentRoutes }

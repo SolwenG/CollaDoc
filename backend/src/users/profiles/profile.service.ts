@@ -31,11 +31,7 @@ export async function isCurrentPassword(userId: number, password: string) {
     return verifyPassword(currentHash, password)
 }
 
-export async function changePassword(
-    userId: number,
-    sessionId: number,
-    newPassword: string
-) {
+export async function changePassword(userId: number, sessionId: number, newPassword: string) {
     const newHash = await hashPassword(newPassword)
     await profileRepository.replacePassword(userId, newHash, sessionId)
 }

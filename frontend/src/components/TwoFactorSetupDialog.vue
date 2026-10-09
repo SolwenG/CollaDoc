@@ -2,9 +2,7 @@
     <q-dialog v-model="open" persistent @hide="reset">
         <q-card class="setup-card">
             <q-card-section>
-                <div class="text-h6">
-                    Activer la vérification en deux étapes
-                </div>
+                <div class="text-h6">Activer la vérification en deux étapes</div>
             </q-card-section>
 
             <q-card-section v-if="!setup">
@@ -25,27 +23,15 @@
                     />
                     <div class="row justify-end q-gutter-sm">
                         <q-btn flat label="Annuler" @click="open = false" />
-                        <q-btn
-                            type="submit"
-                            color="primary"
-                            label="Continuer"
-                            :loading="loading"
-                        />
+                        <q-btn type="submit" color="primary" label="Continuer" :loading="loading" />
                     </div>
                 </q-form>
             </q-card-section>
 
             <q-card-section v-else class="q-gutter-y-md">
-                <div>
-                    1. Scannez ce QR code avec votre application
-                    d'authentification.
-                </div>
+                <div>1. Scannez ce QR code avec votre application d'authentification.</div>
                 <div class="row justify-center">
-                    <img
-                        :src="setup.qrCodeDataUrl"
-                        alt="QR code à scanner"
-                        class="qr-code"
-                    />
+                    <img :src="setup.qrCodeDataUrl" alt="QR code à scanner" class="qr-code" />
                 </div>
 
                 <div>Ou saisissez cette clé manuellement :</div>
@@ -62,9 +48,7 @@
                     </template>
                 </q-input>
 
-                <div>
-                    2. Saisissez le code à 6 chiffres affiché par l'application.
-                </div>
+                <div>2. Saisissez le code à 6 chiffres affiché par l'application.</div>
                 <q-form class="q-gutter-y-md" @submit="onCodeSubmit">
                     <q-input
                         v-model="code"
@@ -81,12 +65,7 @@
                     />
                     <div class="row justify-end q-gutter-sm">
                         <q-btn flat label="Annuler" @click="open = false" />
-                        <q-btn
-                            type="submit"
-                            color="primary"
-                            label="Activer"
-                            :loading="loading"
-                        />
+                        <q-btn type="submit" color="primary" label="Activer" :loading="loading" />
                     </div>
                 </q-form>
             </q-card-section>
@@ -117,10 +96,7 @@ async function copySecret(secret: string) {
         await copyToClipboard(secret)
         $q.notify({ type: 'positive', message: 'Clé copiée.' })
     } catch {
-        $q.notify({
-            type: 'negative',
-            message: 'Copie impossible, sélectionnez la clé à la main.',
-        })
+        $q.notify({ type: 'negative', message: 'Copie impossible, sélectionnez la clé à la main.' })
     }
 }
 
@@ -134,10 +110,7 @@ function reset() {
 
 function handleMfaError(error: MfaError) {
     if (error === 'already-enabled') {
-        $q.notify({
-            type: 'info',
-            message: 'La vérification en deux étapes est déjà activée.',
-        })
+        $q.notify({ type: 'info', message: 'La vérification en deux étapes est déjà activée.' })
         emit('enabled')
         open.value = false
         return
@@ -153,10 +126,7 @@ function handleMfaError(error: MfaError) {
         // The global 401 handler already logged out and redirected
         return
     }
-    $q.notify({
-        type: 'negative',
-        message: 'Une erreur est survenue. Réessayez plus tard.',
-    })
+    $q.notify({ type: 'negative', message: 'Une erreur est survenue. Réessayez plus tard.' })
 }
 
 async function onPasswordSubmit() {
@@ -174,10 +144,7 @@ async function onPasswordSubmit() {
         }
         handleMfaError(result.status)
     } catch {
-        $q.notify({
-            type: 'negative',
-            message: 'Impossible de joindre le serveur.',
-        })
+        $q.notify({ type: 'negative', message: 'Impossible de joindre le serveur.' })
     } finally {
         loading.value = false
     }
@@ -188,10 +155,7 @@ async function onCodeSubmit() {
     try {
         const result = await auth.enableMfa(code.value)
         if (result === 'success') {
-            $q.notify({
-                type: 'positive',
-                message: 'Vérification en deux étapes activée.',
-            })
+            $q.notify({ type: 'positive', message: 'Vérification en deux étapes activée.' })
             emit('enabled')
             open.value = false
             return
@@ -203,18 +167,12 @@ async function onCodeSubmit() {
         if (result === 'setup-not-started') {
             setup.value = null
             code.value = ''
-            $q.notify({
-                type: 'warning',
-                message: 'La configuration a changé, recommencez.',
-            })
+            $q.notify({ type: 'warning', message: 'La configuration a changé, recommencez.' })
             return
         }
         handleMfaError(result)
     } catch {
-        $q.notify({
-            type: 'negative',
-            message: 'Impossible de joindre le serveur.',
-        })
+        $q.notify({ type: 'negative', message: 'Impossible de joindre le serveur.' })
     } finally {
         loading.value = false
     }

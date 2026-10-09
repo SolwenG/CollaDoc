@@ -25,17 +25,11 @@ export function updateDisplayName(userId: number, displayName: string) {
 }
 
 export async function findPasswordHash(userId: number) {
-    const user = await db.orm.public.User.where({ id: userId })
-        .select('passwordHash')
-        .first()
+    const user = await db.orm.public.User.where({ id: userId }).select('passwordHash').first()
     return user?.passwordHash ?? null
 }
 
-export async function replacePassword(
-    userId: number,
-    passwordHash: string,
-    keepSessionId: number
-) {
+export async function replacePassword(userId: number, passwordHash: string, keepSessionId: number) {
     await db.transaction(async (tx) => {
         await tx.orm.public.User.where({ id: userId }).update({
             passwordHash,

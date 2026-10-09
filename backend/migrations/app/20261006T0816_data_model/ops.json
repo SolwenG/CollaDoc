@@ -916,10 +916,10 @@
                 "params": [
                     "Folder_ownerId_parentId_name_key",
                     "public",
-                    "\"public\".\"Folder\""
-                ]
-            }
-        ],
+                    "\"public\".\"Folder\""]
+                }
+            ],
+
         "execute": [
             {
                 "description": "add unique constraint \"Folder_ownerId_parentId_name_key\"",
@@ -933,12 +933,12 @@
                 "params": [
                     "Folder_ownerId_parentId_name_key",
                     "public",
-                    "\"public\".\"Folder\""
-                ]
-            }
-        ]
-    },
+                    "\"public\".\"Folder\""]
+                }
+            ]
+        },
     {
+
         "id": "unique.Session.Session_tokenHash_key",
         "label": "Add unique constraint on \"Session\" (tokenHash)",
         "operationClass": "additive",
@@ -980,7 +980,7 @@
             }
         ]
     },
-    {
+        {
         "id": "checkConstraint.User.User_role_check_1954e8c0",
         "label": "Add check constraint \"User_role_check_1954e8c0\" on \"User\"",
         "operationClass": "additive",
@@ -1169,7 +1169,7 @@
             }
         ]
     },
-    {
+        {
         "id": "index.Document.Document_ownerId_idx_e2d0c1ef",
         "label": "Create index \"Document_ownerId_idx_e2d0c1ef\" on \"Document\"",
         "operationClass": "additive",
@@ -1282,7 +1282,7 @@
             }
         ]
     },
-    {
+        {
         "id": "index.DocumentMember.DocumentMember_userId_idx_a489d58a",
         "label": "Create index \"DocumentMember_userId_idx_a489d58a\" on \"DocumentMember\"",
         "operationClass": "additive",
@@ -1395,7 +1395,7 @@
             }
         ]
     },
-    {
+        {
         "id": "index.Folder.Folder_ownerId_idx_e2d0c1ef",
         "label": "Create index \"Folder_ownerId_idx_e2d0c1ef\" on \"Folder\"",
         "operationClass": "additive",
@@ -1776,10 +1776,10 @@
                 "params": [
                     "Document_folderId_fkey",
                     "public",
-                    "\"public\".\"Document\""
-                ]
-            }
-        ],
+                    "\"public\".\"Document\""]
+                }
+            ],
+
         "execute": [
             {
                 "description": "add FK \"Document_folderId_fkey\"",
@@ -1835,12 +1835,12 @@
                 "params": [
                     "Document_lastModifiedById_fkey",
                     "public",
-                    "\"public\".\"Document\""
-                ]
-            }
-        ]
-    },
+                    "\"public\".\"Document\""]
+                }
+            ]
+        },
     {
+
         "id": "foreignKey.DocumentMember.DocumentMember_documentId_fkey",
         "label": "Add foreign key \"DocumentMember_documentId_fkey\" on \"DocumentMember\"",
         "operationClass": "additive",
@@ -1902,10 +1902,10 @@
                 "params": [
                     "DocumentMember_userId_fkey",
                     "public",
-                    "\"public\".\"DocumentMember\""
-                ]
-            }
-        ],
+                    "\"public\".\"DocumentMember\""]
+                }
+            ],
+
         "execute": [
             {
                 "description": "add FK \"DocumentMember_userId_fkey\"",
@@ -1919,12 +1919,12 @@
                 "params": [
                     "DocumentMember_userId_fkey",
                     "public",
-                    "\"public\".\"DocumentMember\""
-                ]
-            }
-        ]
-    },
+                    "\"public\".\"DocumentMember\""]
+                }
+            ]
+        },
     {
+
         "id": "foreignKey.DocumentMember.DocumentMember_invitedById_fkey",
         "label": "Add foreign key \"DocumentMember_invitedById_fkey\" on \"DocumentMember\"",
         "operationClass": "additive",
@@ -2134,7 +2134,7 @@
             }
         ]
     },
-    {
+        {
         "id": "foreignKey.Message.Message_documentId_fkey",
         "label": "Add foreign key \"Message_documentId_fkey\" on \"Message\"",
         "operationClass": "additive",
@@ -2260,7 +2260,7 @@
             }
         ]
     },
-    {
+        {
         "id": "foreignKey.User.User_blockedById_fkey",
         "label": "Add foreign key \"User_blockedById_fkey\" on \"User\"",
         "operationClass": "additive",

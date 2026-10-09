@@ -1,10 +1,20 @@
 <template>
     <q-page padding class="column">
+        <q-breadcrumbs class="q-mb-sm">
+            <q-breadcrumbs-el v-if="isOwner" label="Mes documents" icon="home" to="/" />
+            <q-breadcrumbs-el v-else label="Accueil" icon="home" to="/" />
+            <q-breadcrumbs-el
+                v-for="folder in details?.path ?? []"
+                :key="folder.id"
+                :label="folder.name"
+                :to="`/folders/${folder.id}`"
+            />
+            <q-breadcrumbs-el :label="details?.document.name ?? '…'" />
+        </q-breadcrumbs>
+
         <div class="row items-center q-mb-md q-gutter-sm">
-            <h1 class="text-h5 q-my-none">Document</h1>
-            <q-chip v-if="role === 'VIEWER'" icon="visibility" dense
-                >Lecture seule</q-chip
-            >
+            <h1 class="text-h5 q-my-none ellipsis">{{ details?.document.name ?? 'Document' }}</h1>
+            <q-chip v-if="role === 'VIEWER'" icon="visibility" dense>Lecture seule</q-chip>
             <q-chip
                 :color="STATUS[status].color"
                 text-color="white"
@@ -17,18 +27,13 @@
             <CallDialog />
         </div>
 
-        <q-banner
-            v-if="closedMessage"
-            class="bg-negative text-white q-mb-md"
-            rounded
-        >
+        <q-banner v-if="closedMessage" class="bg-negative text-white q-mb-md" rounded>
             {{ closedMessage }}
         </q-banner>
 
         <q-banner v-if="lostText !== null" class="bg-warning q-mb-md" rounded>
-            Certaines de vos modifications n'ont pas pu être synchronisées. Le
-            document a été rechargé, voici votre version pour la recopier si
-            besoin.
+            Certaines de vos modifications n'ont pas pu être synchronisées. Le document a été
+            rechargé, voici votre version pour la recopier si besoin.
             <template #action>
                 <q-btn flat label="Copier" @click="copyLostText" />
                 <q-btn flat label="Fermer" @click="lostText = null" />
@@ -58,12 +63,8 @@
                             </q-avatar>
                         </q-item-section>
                         <q-item-section>
-                            <q-item-label>{{
-                                member.displayName
-                            }}</q-item-label>
-                            <q-item-label caption
-                                >@{{ member.username }}</q-item-label
-                            >
+                            <q-item-label>{{ member.displayName }}</q-item-label>
+                            <q-item-label caption>@{{ member.username }}</q-item-label>
                         </q-item-section>
                         <q-item-section side>
                             <CallButton
@@ -84,10 +85,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { computed, ref, onMounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { copyToClipboard, useQuasar } from 'quasar'
-import { useCollaborativeDocument } from '@/hooks/useCollaborativeDocument.ts'
+import { useCollaborativeDocument } from '@/hooks/useCollaborativeDocument'
+import { fetchDocument, type DocumentDetails } from '@/utils/drive-api'
 import CallButton from '@/components/CallButton.vue'
 import CallDialog from '@/components/CallDialog.vue'
 import { fetchDocumentMembers, type DocumentMember } from '@/utils/document.ts'
@@ -108,16 +110,20 @@ const $q = useQuasar()
 const textarea = ref<HTMLTextAreaElement | null>(null)
 const members = ref<DocumentMember[]>([])
 
-const {
-    status,
-    role,
-    readonly,
-    closedMessage,
-    lostText,
-    onInput,
-    onBeforeInput,
-    onKeydown,
-} = useCollaborativeDocument(Number(route.params.id), textarea)
+const { status, role, readonly, closedMessage, lostText, onInput, onBeforeInput, onKeydown } =
+    useCollaborativeDocument(Number(route.params.id), textarea)
+
+const details = ref<DocumentDetails | null>(null)
+const isOwner = computed(() => details.value?.access === 'OWNER')
+
+watch(
+    () => route.params.id,
+    async (id) => {
+        const result = await fetchDocument(Number(id))
+        details.value = result.ok ? result.data : null
+    },
+    { immediate: true }
+)
 
 async function copyLostText() {
     if (lostText.value === null) return

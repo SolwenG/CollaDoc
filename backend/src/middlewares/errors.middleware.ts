@@ -1,4 +1,5 @@
 import type { ErrorRequestHandler } from 'express'
+import multer from 'multer'
 import { z } from 'zod'
 import { AppError } from '../errors/app-error.ts'
 import type { ErrorCode } from '../errors/app-error.ts'
@@ -22,11 +23,13 @@ function normalizeError(err: unknown): AppError {
     if (err instanceof AppError) return err
 
     if (err instanceof z.ZodError) {
-        return new AppError(
-            'VALIDATION_ERROR',
-            'Données invalides',
-            z.flattenError(err)
-        )
+        return new AppError('VALIDATION_ERROR', 'Données invalides', z.flattenError(err))
+    }
+
+    if (err instanceof multer.MulterError) {
+        return err.code === 'LIMIT_FILE_SIZE'
+            ? new AppError('FILE_TOO_LARGE', 'Le fichier dépasse 20 Mo')
+            : new AppError('VALIDATION_ERROR', 'Envoi de fichier invalide')
     }
 
     if (isBodyParserError(err)) {

@@ -20,10 +20,7 @@ export async function login({ username, password }: LoginInput) {
     )
 
     if (!user || !passwordMatches) {
-        throw new AppError(
-            'INVALID_CREDENTIALS',
-            'Invalid username or password'
-        )
+        throw new AppError('INVALID_CREDENTIALS', 'Invalid username or password')
     }
 
     // Checked after the password, so only the account owner learns it is blocked

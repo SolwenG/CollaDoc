@@ -1,14 +1,7 @@
 import type { Request, Response } from 'express'
-import {
-    getAuthUser,
-    getPendingMfa,
-} from '../../middlewares/auth.middleware.ts'
+import { getAuthUser, getPendingMfa } from '../../middlewares/auth.middleware.ts'
 import { mfaCodeSchema, mfaSetupSchema } from '../auth.schema.ts'
-import {
-    completeMfaLogin,
-    confirmMfaSetup,
-    startMfaSetup,
-} from './mfa.service.ts'
+import { completeMfaLogin, confirmMfaSetup, startMfaSetup } from './mfa.service.ts'
 import { setSessionCookie } from '../session.ts'
 
 export async function setupMfa(req: Request, res: Response) {

@@ -27,10 +27,7 @@ async function findUserForMfa(id: number) {
         .first()
 }
 
-export async function startMfaSetup(
-    userId: number,
-    { password }: MfaSetupInput
-) {
+export async function startMfaSetup(userId: number, { password }: MfaSetupInput) {
     const user = await findUserForMfa(userId)
     if (!user) throw new AppError('UNAUTHENTICATED', 'Authentication required')
 
@@ -43,8 +40,9 @@ export async function startMfaSetup(
         throw new AppError('INVALID_CURRENT_PASSWORD', 'Invalid password')
     }
 
-    const { secret, otpauthUrl, qrCodeDataUrl, encryptedSecret } =
-        await createTotpSetup(user.username)
+    const { secret, otpauthUrl, qrCodeDataUrl, encryptedSecret } = await createTotpSetup(
+        user.username
+    )
 
     const saved = await db.orm.public.User.select('id')
         .where({ id: user.id, totpEnabledAt: null })
@@ -54,10 +52,7 @@ export async function startMfaSetup(
     return { secret, otpauthUrl, qrCodeDataUrl }
 }
 
-export async function confirmMfaSetup(
-    userId: number,
-    { code }: MfaCodeInput
-): Promise<void> {
+export async function confirmMfaSetup(userId: number, { code }: MfaCodeInput): Promise<void> {
     const user = await findUserForMfa(userId)
     if (!user) throw new AppError('UNAUTHENTICATED', 'Authentication required')
 
@@ -72,34 +67,23 @@ export async function confirmMfaSetup(
         code,
         lastUsedStep: user.totpLastUsedStep,
     })
-    if (step === null)
-        throw new AppError('INVALID_MFA_CODE', 'Invalid MFA code')
+    if (step === null) throw new AppError('INVALID_MFA_CODE', 'Invalid MFA code')
 
     // Bound to the secret the code was checked against: a setup replayed in between
     // replaced it, and that new QR code has not been confirmed yet
     const enabled = await db.orm.public.User.select('id')
-        .where({
-            id: user.id,
-            totpEnabledAt: null,
-            totpSecret: user.totpSecret,
-        })
+        .where({ id: user.id, totpEnabledAt: null, totpSecret: user.totpSecret })
         .update({
             totpEnabledAt: new Date().toISOString(),
             totpLastUsedStep: step,
             ...MFA_ATTEMPTS_RESET,
         })
     if (!enabled) {
-        throw new AppError(
-            'MFA_SETUP_NOT_STARTED',
-            'The MFA setup changed, scan the new QR code'
-        )
+        throw new AppError('MFA_SETUP_NOT_STARTED', 'The MFA setup changed, scan the new QR code')
     }
 }
 
-export async function completeMfaLogin(
-    { userId, sessionId }: PendingMfa,
-    { code }: MfaCodeInput
-) {
+export async function completeMfaLogin({ userId, sessionId }: PendingMfa, { code }: MfaCodeInput) {
     const user = await findUserForMfa(userId)
     if (!user || user.totpSecret === null || user.totpEnabledAt === null) {
         throw new AppError('UNAUTHENTICATED', 'Authentication required')
@@ -111,8 +95,7 @@ export async function completeMfaLogin(
         code,
         lastUsedStep: user.totpLastUsedStep,
     })
-    if (step === null)
-        throw new AppError('INVALID_MFA_CODE', 'Invalid MFA code')
+    if (step === null) throw new AppError('INVALID_MFA_CODE', 'Invalid MFA code')
 
     // Two requests racing with the same code both pass verifyTotpCode: only one can move the step
     const recorded = await db.orm.public.User.select('id')

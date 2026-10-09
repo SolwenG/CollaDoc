@@ -1,13 +1,7 @@
 #!/usr/bin/env -S node
 import type { Contract as End } from '../../snapshots/91e7f9f035806fa2789a4d726ef7724cad434fd6b00014d47ebf12d6e6bb784e/contract'
 import endContract from '../../snapshots/91e7f9f035806fa2789a4d726ef7724cad434fd6b00014d47ebf12d6e6bb784e/contract.json' with { type: 'json' }
-import {
-    Migration,
-    MigrationCLI,
-    col,
-    fn,
-    primaryKey,
-} from '@prisma/orm-postgres/migration'
+import { Migration, MigrationCLI, col, fn, primaryKey } from '@prisma/orm-postgres/migration'
 
 export default class M extends Migration<never, End> {
     override readonly endContractJson = endContract
@@ -23,9 +17,7 @@ export default class M extends Migration<never, End> {
                         notNull: true,
                         codecRef: { codecId: 'pg/int4@1' },
                     }),
-                    col('content', 'text', {
-                        codecRef: { codecId: 'pg/text@1' },
-                    }),
+                    col('content', 'text', { codecRef: { codecId: 'pg/text@1' } }),
                     col('createdAt', 'timestamptz', {
                         notNull: true,
                         default: fn('now()'),
@@ -68,9 +60,7 @@ export default class M extends Migration<never, End> {
                         notNull: true,
                         codecRef: { codecId: 'pg/timestamptz-string@1' },
                     }),
-                    col('username', 'text', {
-                        codecRef: { codecId: 'pg/text@1' },
-                    }),
+                    col('username', 'text', { codecRef: { codecId: 'pg/text@1' } }),
                 ],
                 constraints: [primaryKey(['id'])],
             }),
@@ -92,11 +82,7 @@ export default class M extends Migration<never, End> {
                 foreignKey: {
                     name: 'Post_authorId_fkey',
                     columns: ['authorId'],
-                    references: {
-                        schema: 'public',
-                        table: 'User',
-                        columns: ['id'],
-                    },
+                    references: { schema: 'public', table: 'User', columns: ['id'] },
                 },
             }),
         ]

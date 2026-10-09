@@ -7,8 +7,6 @@ export interface DocumentMember {
     isOwner: boolean
 }
 
-export async function fetchDocumentMembers(
-    documentId: number
-): Promise<DocumentMember[] | null> {
+export async function fetchDocumentMembers(documentId: number): Promise<DocumentMember[] | null> {
     return getJson<DocumentMember[]>(`/documents/${documentId}/members`)
 }

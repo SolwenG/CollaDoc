@@ -43,13 +43,9 @@ const concurrentOperations = text.chain((base) =>
 
 describe('apply', () => {
     it('applies the examples of the documentation', () => {
-        expect(apply('Bonjour', [{ retain: 7 }, { insert: '!' }])).toBe(
-            'Bonjour!'
-        )
+        expect(apply('Bonjour', [{ retain: 7 }, { insert: '!' }])).toBe('Bonjour!')
         expect(apply('Bonjour', [{ delete: 1 }, { retain: 6 }])).toBe('onjour')
-        expect(
-            apply('Bonjour', [{ delete: 1 }, { retain: 6 }, { insert: '!' }])
-        ).toBe('onjour!')
+        expect(apply('Bonjour', [{ delete: 1 }, { retain: 6 }, { insert: '!' }])).toBe('onjour!')
     })
 
     it('refuses an operation made for a text of another length', () => {
@@ -59,13 +55,9 @@ describe('apply', () => {
     it("produces a text of the operation's target length", () => {
         fc.assert(
             fc.property(
-                text.chain((base) =>
-                    fc.tuple(fc.constant(base), operationOn(base))
-                ),
+                text.chain((base) => fc.tuple(fc.constant(base), operationOn(base))),
                 ([base, operation]) => {
-                    expect(apply(base, operation).length).toBe(
-                        targetLength(operation)
-                    )
+                    expect(apply(base, operation).length).toBe(targetLength(operation))
                 }
             )
         )
@@ -112,18 +104,12 @@ describe('compose', () => {
     it('gives the same text as applying both operations one after the other', () => {
         const sequence = text.chain((base) =>
             operationOn(base).chain((first) =>
-                fc.tuple(
-                    fc.constant(base),
-                    fc.constant(first),
-                    operationOn(apply(base, first))
-                )
+                fc.tuple(fc.constant(base), fc.constant(first), operationOn(apply(base, first)))
             )
         )
         fc.assert(
             fc.property(sequence, ([base, first, second]) => {
-                expect(apply(base, compose(first, second))).toBe(
-                    apply(apply(base, first), second)
-                )
+                expect(apply(base, compose(first, second))).toBe(apply(apply(base, first), second))
             }),
             { numRuns: 2000 }
         )
@@ -133,31 +119,21 @@ describe('compose', () => {
 describe('transformIndex', () => {
     it('moves a caret with the text around it', () => {
         // "Bonjour" -> "onjour!", caret between "Bonj" and "our"
-        const operation: Operation = [
-            { delete: 1 },
-            { retain: 6 },
-            { insert: '!' },
-        ]
+        const operation: Operation = [{ delete: 1 }, { retain: 6 }, { insert: '!' }]
         expect(transformIndex(operation, 4)).toBe(3)
         expect(transformIndex(operation, 0)).toBe(0)
     })
 
     it('pushes the caret right when text is inserted exactly at it', () => {
-        expect(
-            transformIndex([{ retain: 2 }, { insert: 'ab' }, { retain: 3 }], 2)
-        ).toBe(4)
+        expect(transformIndex([{ retain: 2 }, { insert: 'ab' }, { retain: 3 }], 2)).toBe(4)
     })
 
     it('keeps a caret placed at the end at the end', () => {
         fc.assert(
             fc.property(
-                text.chain((base) =>
-                    fc.tuple(fc.constant(base), operationOn(base))
-                ),
+                text.chain((base) => fc.tuple(fc.constant(base), operationOn(base))),
                 ([base, operation]) => {
-                    expect(transformIndex(operation, base.length)).toBe(
-                        targetLength(operation)
-                    )
+                    expect(transformIndex(operation, base.length)).toBe(targetLength(operation))
                 }
             )
         )
@@ -188,11 +164,6 @@ describe('diff', () => {
         for (const step of operation) {
             if ('insert' in step) expect(step.insert.isWellFormed()).toBe(true)
         }
-        expect(operation).toEqual([
-            { retain: 1 },
-            { insert: '😁' },
-            { delete: 2 },
-            { retain: 1 },
-        ])
+        expect(operation).toEqual([{ retain: 1 }, { insert: '😁' }, { delete: 2 }, { retain: 1 }])
     })
 })

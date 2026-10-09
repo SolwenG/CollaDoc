@@ -42,11 +42,7 @@ async function revokeSession(res: Response, token: string): Promise<void> {
     clearSessionCookie(res)
 }
 
-export async function requireAuth(
-    req: Request,
-    res: Response,
-    next: NextFunction
-) {
+export async function requireAuth(req: Request, res: Response, next: NextFunction) {
     const token = readSessionToken(req)
     if (!token) throw unauthenticated()
 
@@ -66,10 +62,7 @@ export async function requireAuth(
     }
 
     const { session, user } = check
-    if (
-        now - new Date(session.lastUsedAt).getTime() >=
-        SESSION_REFRESH_THRESHOLD_MS
-    ) {
+    if (now - new Date(session.lastUsedAt).getTime() >= SESSION_REFRESH_THRESHOLD_MS) {
         const refreshed = await refreshSession(session.id)
         if (refreshed) setSessionCookie(res, token, refreshed.expiresAt)
     }
@@ -92,11 +85,7 @@ export function requireAdmin(req: Request, _res: Response, next: NextFunction) {
 }
 
 /** The only gate a pending session passes: it opens /auth/mfa/verify and nothing else */
-export async function requirePendingMfa(
-    req: Request,
-    res: Response,
-    next: NextFunction
-) {
+export async function requirePendingMfa(req: Request, res: Response, next: NextFunction) {
     const token = readSessionToken(req)
     if (!token) throw unauthenticated()
 

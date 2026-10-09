@@ -1,6 +1,6 @@
-import { computed, ref } from 'vue'
-import { defineStore } from 'pinia'
 import { apiFetch, postJson, readApiError, readJson } from '@/utils/api'
+import { defineStore } from 'pinia'
+import { computed, ref } from 'vue'
 
 export interface User {
     id: number
@@ -10,12 +10,7 @@ export interface User {
 }
 
 export type LoginResult =
-    | 'success'
-    | 'mfa-required'
-    | 'invalid'
-    | 'blocked'
-    | 'rate-limited'
-    | 'error'
+    'success' | 'mfa-required' | 'invalid' | 'blocked' | 'rate-limited' | 'error'
 
 export interface MfaSetup {
     secret: string
@@ -32,8 +27,7 @@ export type MfaError =
     | 'expired'
     | 'error'
 
-export type MfaSetupResult =
-    { status: 'success'; setup: MfaSetup } | { status: MfaError }
+export type MfaSetupResult = { status: 'success'; setup: MfaSetup } | { status: MfaError }
 
 const LOGIN_ERRORS: Record<string, LoginResult> = {
     INVALID_CREDENTIALS: 'invalid',
@@ -62,16 +56,11 @@ export const useAuthStore = defineStore('auth', () => {
     const isLoggedIn = computed(() => user.value !== null)
     const isAdmin = computed(() => user.value?.role === 'ADMIN')
 
-    async function login(
-        username: string,
-        password: string
-    ): Promise<LoginResult> {
+    async function login(username: string, password: string): Promise<LoginResult> {
         const response = await postJson('/auth/login', { username, password })
 
         if (response.ok) {
-            const body = await readJson<{ user?: User; mfaRequired?: boolean }>(
-                response
-            )
+            const body = await readJson<{ user?: User; mfaRequired?: boolean }>(response)
 
             if (body?.mfaRequired) return 'mfa-required'
 
@@ -98,9 +87,7 @@ export const useAuthStore = defineStore('auth', () => {
     async function fetchCurrentUser() {
         try {
             const response = await apiFetch('/auth/session')
-            const body = response.ok
-                ? await readJson<{ user?: User }>(response)
-                : null
+            const body = response.ok ? await readJson<{ user?: User }>(response) : null
             user.value = body?.user ?? null
         } catch {
             user.value = null

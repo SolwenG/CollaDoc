@@ -37,9 +37,7 @@ export class CollabClient {
     applyLocal(operation: Operation): OutgoingOperation | null {
         if (isNoop(operation)) return null
         if (this.pending) {
-            this.buffer = this.buffer
-                ? compose(this.buffer, operation)
-                : operation
+            this.buffer = this.buffer ? compose(this.buffer, operation) : operation
             return null
         }
         this.pending = { opId: this.createOpId(), operation }
@@ -57,10 +55,7 @@ export class CollabClient {
         this.revision = message.revision
         if (!this.pending) return { toApply: message.operation, toSend: null }
 
-        const [pending, remote] = transform(
-            this.pending.operation,
-            message.operation
-        )
+        const [pending, remote] = transform(this.pending.operation, message.operation)
         this.pending = { ...this.pending, operation: pending }
         if (!this.buffer) return { toApply: remote, toSend: null }
 

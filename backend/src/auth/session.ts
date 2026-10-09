@@ -47,13 +47,7 @@ export async function createSession({ userId, mfaSatisfied }: CreateSession) {
 
 export async function findSessionByToken(token: string) {
     const tokenHash = hashSessionToken(token)
-    return db.orm.public.Session.select(
-        'id',
-        'userId',
-        'mfaSatisfied',
-        'expiresAt',
-        'lastUsedAt'
-    )
+    return db.orm.public.Session.select('id', 'userId', 'mfaSatisfied', 'expiresAt', 'lastUsedAt')
         .where({ tokenHash })
         .first()
 }
@@ -77,9 +71,7 @@ function computeExpirationTime({
     mfaSatisfied: boolean
     now: number
 }): Date {
-    const expirationTime = mfaSatisfied
-        ? SESSION_TTL_MS
-        : PENDING_MFA_SESSION_TTL_MS
+    const expirationTime = mfaSatisfied ? SESSION_TTL_MS : PENDING_MFA_SESSION_TTL_MS
     return new Date(now + expirationTime)
 }
 
@@ -92,11 +84,7 @@ export async function deleteSessionById(sessionId: number): Promise<void> {
     await db.orm.public.Session.where({ id: sessionId }).delete()
 }
 
-export function setSessionCookie(
-    res: Response,
-    token: string,
-    expiresAt: string
-) {
+export function setSessionCookie(res: Response, token: string, expiresAt: string) {
     res.cookie(SESSION_COOKIE_NAME, token, {
         ...SESSION_COOKIE_OPTIONS,
         expires: new Date(expiresAt),

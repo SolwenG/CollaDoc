@@ -1,9 +1,5 @@
-import { apply } from '../../../shared/ot/index.ts'
-import {
-    findOperationsAfter,
-    findSnapshot,
-    saveSnapshot,
-} from './collaboration.service.ts'
+import { apply } from 'shared/ot/index'
+import { findOperationsAfter, findSnapshot, saveSnapshot } from './collaboration.service.ts'
 
 // A snapshot is written after this many operations, even if users stay connected
 export const SNAPSHOT_EVERY_OPERATIONS = 50
@@ -31,19 +27,14 @@ export function forgetDocument(documentId: number): void {
     openDocuments.delete(documentId)
 }
 
-export async function loadDocument(
-    documentId: number
-): Promise<OpenDocument | null> {
+export async function loadDocument(documentId: number): Promise<OpenDocument | null> {
     const existing = openDocuments.get(documentId)
     if (existing) return existing
 
     const snapshot = await findSnapshot(documentId)
     if (!snapshot) return null
 
-    const entries = await findOperationsAfter(
-        documentId,
-        snapshot.contentRevision
-    )
+    const entries = await findOperationsAfter(documentId, snapshot.contentRevision)
     let text = snapshot.content ?? ''
     for (const entry of entries) text = apply(text, entry.operation)
 

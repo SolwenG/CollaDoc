@@ -1,9 +1,5 @@
 import type { Request, Response } from 'express'
-import {
-    hashPassword,
-    PASSWORD_MAX_LENGTH,
-    PASSWORD_MIN_LENGTH,
-} from '../auth/password.ts'
+import { hashPassword, PASSWORD_MAX_LENGTH, PASSWORD_MIN_LENGTH } from '../auth/password.ts'
 import { AppError } from '../errors/app-error.ts'
 import { registerSchema } from './users.schema.ts'
 import { createAccount, findByUsername } from './users.service.ts'

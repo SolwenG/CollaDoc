@@ -76,9 +76,7 @@
         </q-form>
         <div class="q-mt-md">
             Déjà un compte ?
-            <router-link to="/login" class="text-primary text-bold"
-                >Se connecter</router-link
-            >
+            <router-link to="/login" class="text-primary text-bold">Se connecter</router-link>
         </div>
     </AuthCard>
 </template>
@@ -124,8 +122,7 @@ const samePassword = (val: string) =>
 // details comes from z.flattenError on the back: { fieldErrors: { field: [messages] } }
 function showFieldErrors(details: unknown) {
     const fieldErrors = (
-        details as
-            { fieldErrors?: Record<string, string[] | undefined> } | undefined
+        details as { fieldErrors?: Record<string, string[] | undefined> } | undefined
     )?.fieldErrors
     if (!fieldErrors) return false
 
@@ -133,11 +130,7 @@ function showFieldErrors(details: unknown) {
     displayNameError.value = fieldErrors.displayName?.[0] ?? ''
     passwordError.value = fieldErrors.password?.[0] ?? ''
 
-    return !!(
-        usernameError.value ||
-        displayNameError.value ||
-        passwordError.value
-    )
+    return !!(usernameError.value || displayNameError.value || passwordError.value)
 }
 
 async function onSubmit() {
@@ -165,18 +158,12 @@ async function onSubmit() {
             return
         }
 
-        if (
-            error?.code === 'PASSWORD_TOO_SHORT' ||
-            error?.code === 'PASSWORD_TOO_LONG'
-        ) {
+        if (error?.code === 'PASSWORD_TOO_SHORT' || error?.code === 'PASSWORD_TOO_LONG') {
             passwordError.value = error.message
             return
         }
 
-        if (
-            error?.code === 'VALIDATION_ERROR' &&
-            showFieldErrors(error.details)
-        ) {
+        if (error?.code === 'VALIDATION_ERROR' && showFieldErrors(error.details)) {
             return
         }
 

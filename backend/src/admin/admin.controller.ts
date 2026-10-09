@@ -4,17 +4,8 @@ import { AppError } from '../errors/app-error.ts'
 import { getAuthUser } from '../middlewares/auth.middleware.ts'
 import { notifySessionsChanged } from '../realtime/realtime-notifier.ts'
 import { createAccount, findByUsername } from '../users/users.service.ts'
-import {
-    createUserSchema,
-    listUsersQuerySchema,
-    userIdParamsSchema,
-} from './admin.schema.ts'
-import {
-    blockUser,
-    findAdminUserView,
-    listUsers,
-    unblockUser,
-} from './admin.service.ts'
+import { createUserSchema, listUsersQuerySchema, userIdParamsSchema } from './admin.schema.ts'
+import { blockUser, findAdminUserView, listUsers, unblockUser } from './admin.service.ts'
 
 export async function getUsers(req: Request, res: Response) {
     const query = listUsersQuerySchema.parse(req.query)

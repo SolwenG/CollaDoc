@@ -7,8 +7,7 @@ import {
     Migration,
     MigrationCLI,
     col,
-    lit,
-} from '@prisma/orm-postgres/migration'
+    lit} from '@prisma/orm-postgres/migration'
 
 export default class M extends Migration<Start, End> {
     override readonly startContractJson = startContract

@@ -34,9 +34,6 @@ export async function reserveMfaAttempt(userId: number): Promise<void> {
     const { affectedRows } = await db.runtime().execute(plan)
     // No row updated: the account is locked (or was deleted in between)
     if (affectedRows === 0) {
-        throw new AppError(
-            'TOO_MANY_ATTEMPTS',
-            'Too many MFA attempts, try again later'
-        )
+        throw new AppError('TOO_MANY_ATTEMPTS', 'Too many MFA attempts, try again later')
     }
 }

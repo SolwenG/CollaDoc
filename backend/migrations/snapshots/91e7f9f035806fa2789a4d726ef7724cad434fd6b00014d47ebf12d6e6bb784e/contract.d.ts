@@ -527,10 +527,7 @@ export type AggregateTypes = {
         }
     }
 }
-type DefaultLiteralValue<
-    CodecId extends string,
-    Encoded,
-> = CodecId extends keyof CodecTypes
+type DefaultLiteralValue<CodecId extends string, Encoded> = CodecId extends keyof CodecTypes
     ? Encoded extends CodecTypes[CodecId]['json']
         ? Encoded
         : CodecTypes[CodecId]['json']
@@ -719,14 +716,12 @@ type ContractBase = Omit<
                             foreignKeys: readonly [
                                 {
                                     readonly source: {
-                                        readonly namespaceId: 'public' &
-                                            NamespaceId
+                                        readonly namespaceId: 'public' & NamespaceId
                                         readonly tableName: 'Post'
                                         readonly columns: readonly ['authorId']
                                     }
                                     readonly target: {
-                                        readonly namespaceId: 'public' &
-                                            NamespaceId
+                                        readonly namespaceId: 'public' & NamespaceId
                                         readonly tableName: 'User'
                                         readonly columns: readonly ['id']
                                     }
@@ -775,9 +770,7 @@ type ContractBase = Omit<
                                 }
                             }
                             primaryKey: { readonly columns: readonly ['id'] }
-                            uniques: readonly [
-                                { readonly columns: readonly ['email'] },
-                            ]
+                            uniques: readonly [{ readonly columns: readonly ['email'] }]
                             indexes: readonly []
                             foreignKeys: readonly []
                         }
@@ -868,18 +861,12 @@ type ContractBase = Omit<
                             readonly table: 'Post'
                             readonly namespaceId: 'public'
                             readonly fields: {
-                                readonly authorId: {
-                                    readonly column: 'authorId'
-                                }
+                                readonly authorId: { readonly column: 'authorId' }
                                 readonly content: { readonly column: 'content' }
-                                readonly createdAt: {
-                                    readonly column: 'createdAt'
-                                }
+                                readonly createdAt: { readonly column: 'createdAt' }
                                 readonly id: { readonly column: 'id' }
                                 readonly title: { readonly column: 'title' }
-                                readonly updatedAt: {
-                                    readonly column: 'updatedAt'
-                                }
+                                readonly updatedAt: { readonly column: 'updatedAt' }
                             }
                         }
                     }
@@ -945,18 +932,12 @@ type ContractBase = Omit<
                             readonly table: 'User'
                             readonly namespaceId: 'public'
                             readonly fields: {
-                                readonly createdAt: {
-                                    readonly column: 'createdAt'
-                                }
+                                readonly createdAt: { readonly column: 'createdAt' }
                                 readonly email: { readonly column: 'email' }
                                 readonly id: { readonly column: 'id' }
                                 readonly name: { readonly column: 'name' }
-                                readonly updatedAt: {
-                                    readonly column: 'updatedAt'
-                                }
-                                readonly username: {
-                                    readonly column: 'username'
-                                }
+                                readonly updatedAt: { readonly column: 'updatedAt' }
+                                readonly username: { readonly column: 'username' }
                             }
                         }
                     }

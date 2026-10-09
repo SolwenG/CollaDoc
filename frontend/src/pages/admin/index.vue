@@ -3,11 +3,7 @@
         <div class="q-pa-md" style="max-width: 800px; margin: 0 auto">
             <div class="row items-center justify-between q-mb-md">
                 <h1 class="text-h5 q-ma-none">Liste des utilisateurs</h1>
-                <q-btn
-                    label="Créer un nouvel utilisateur"
-                    color="primary"
-                    @click="goToNewUser"
-                />
+                <q-btn label="Créer un nouvel utilisateur" color="primary" @click="goToNewUser" />
             </div>
 
             <!-- Search and Filters -->
@@ -35,10 +31,7 @@
             </q-banner>
 
             <!-- Error State -->
-            <q-banner
-                v-if="errorMessage"
-                class="bg-negative text-white rounded-borders"
-            >
+            <q-banner v-if="errorMessage" class="bg-negative text-white rounded-borders">
                 {{ errorMessage }}
             </q-banner>
 
@@ -52,17 +45,11 @@
 
                         <q-item-section>
                             <q-item-label>{{ user.displayName }}</q-item-label>
-                            <q-item-label caption
-                                >@{{ user.username }}</q-item-label
-                            >
+                            <q-item-label caption>@{{ user.username }}</q-item-label>
                             <q-item-label caption>
                                 <q-chip
                                     size="xs"
-                                    :color="
-                                        user.role === 'ADMIN'
-                                            ? 'primary'
-                                            : 'grey'
-                                    "
+                                    :color="user.role === 'ADMIN' ? 'primary' : 'grey'"
                                     text-color="white"
                                 >
                                     {{ user.role }}
@@ -84,11 +71,7 @@
                                     Mot de passe à changer
                                 </q-chip>
                             </q-item-label>
-                            <q-item-label
-                                v-if="user.blockedAt"
-                                caption
-                                class="text-negative"
-                            >
+                            <q-item-label v-if="user.blockedAt" caption class="text-negative">
                                 Bloqué le
                                 {{ new Date(user.blockedAt).toLocaleString() }}
                                 <span v-if="user.blockedBy">
@@ -99,14 +82,8 @@
 
                         <q-item-section side>
                             <q-btn
-                                :icon="
-                                    isUserBlocked(user) ? 'lock_open' : 'block'
-                                "
-                                :color="
-                                    isUserBlocked(user)
-                                        ? 'positive'
-                                        : 'negative'
-                                "
+                                :icon="isUserBlocked(user) ? 'lock_open' : 'block'"
+                                :color="isUserBlocked(user) ? 'positive' : 'negative'"
                                 flat
                                 round
                                 @click="openBlockModal(user)"
@@ -124,10 +101,7 @@
                 </q-list>
 
                 <!-- Pagination -->
-                <q-card-section
-                    v-if="pagination.total > 0"
-                    class="row justify-center"
-                >
+                <q-card-section v-if="pagination.total > 0" class="row justify-center">
                     <q-pagination
                         v-model="pagination.page"
                         :max="Math.ceil(pagination.total / pagination.pageSize)"
@@ -136,10 +110,7 @@
                     />
                 </q-card-section>
 
-                <q-card-section
-                    v-if="users.length === 0 && !loading"
-                    class="text-center text-grey"
-                >
+                <q-card-section v-if="users.length === 0 && !loading" class="text-center text-grey">
                     Aucun utilisateur trouvé
                 </q-card-section>
             </q-card>
@@ -167,12 +138,7 @@
                 </q-card-section>
 
                 <q-card-actions align="right">
-                    <q-btn
-                        flat
-                        label="Annuler"
-                        color="grey"
-                        @click="blockDialog.show = false"
-                    />
+                    <q-btn flat label="Annuler" color="grey" @click="blockDialog.show = false" />
                     <q-btn
                         flat
                         label="Confirmer"
@@ -260,9 +226,7 @@ async function confirmBlock() {
         !isUserBlocked(blockDialog.user)
     )
     if (updatedUser) {
-        const index = users.value.findIndex(
-            (u) => u.id === blockDialog.user!.id
-        )
+        const index = users.value.findIndex((u) => u.id === blockDialog.user!.id)
         if (index !== -1) {
             users.value[index] = updatedUser
         }

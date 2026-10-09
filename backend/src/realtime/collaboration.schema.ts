@@ -19,11 +19,8 @@ const operationSchema = z
     .max(10_000)
     .refine(
         (steps) =>
-            steps.reduce(
-                (total, step) =>
-                    total + ('insert' in step ? step.insert.length : 0),
-                0
-            ) <= MAX_INSERTED_LENGTH
+            steps.reduce((total, step) => total + ('insert' in step ? step.insert.length : 0), 0) <=
+            MAX_INSERTED_LENGTH
     )
 
 const documentIdSchema = z.int().positive()

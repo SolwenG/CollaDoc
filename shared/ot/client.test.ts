@@ -56,12 +56,7 @@ class FakeUser {
     }
 }
 
-function editOn(
-    text: string,
-    position: number,
-    size: number,
-    insert: string
-): Operation {
+function editOn(text: string, position: number, size: number, insert: string): Operation {
     const at = text.length === 0 ? 0 : position % (text.length + 1)
     const deleted = Math.min(size, text.length - at)
     return new OperationBuilder()
@@ -124,31 +119,19 @@ describe('CollabClient', () => {
                         const message = user.toServer.shift()
                         if (!message) return
                         const accepted = server.receive(message)
-                        for (const other of users)
-                            other.fromServer.push(accepted)
+                        for (const other of users) other.fromServer.push(accepted)
                     }
 
-                    for (const {
-                        user: index,
-                        kind,
-                        position,
-                        size,
-                        insert,
-                    } of actions) {
+                    for (const { user: index, kind, position, size, insert } of actions) {
                         const user = users[index]!
-                        if (kind === 'edit')
-                            user.edit(editOn(user.text, position, size, insert))
+                        if (kind === 'edit') user.edit(editOn(user.text, position, size, insert))
                         else if (kind === 'send') sendOne(user)
                         else user.deliverOne()
                     }
 
                     // Let the network drain
                     while (
-                        users.some(
-                            (user) =>
-                                user.toServer.length > 0 ||
-                                user.fromServer.length > 0
-                        )
+                        users.some((user) => user.toServer.length > 0 || user.fromServer.length > 0)
                     ) {
                         for (const user of users) {
                             sendOne(user)

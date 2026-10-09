@@ -527,10 +527,7 @@ export type AggregateTypes = {
         }
     }
 }
-type DefaultLiteralValue<
-    CodecId extends string,
-    Encoded,
-> = CodecId extends keyof CodecTypes
+type DefaultLiteralValue<CodecId extends string, Encoded> = CodecId extends keyof CodecTypes
     ? Encoded extends CodecTypes[CodecId]['json']
         ? Encoded
         : CodecTypes[CodecId]['json']
@@ -595,8 +592,7 @@ export type FieldOutputTypes = {
             readonly userId: CodecTypes['pg/int4@1']['output']
         }
         readonly User: {
-            readonly blockedAt:
-                CodecTypes['pg/timestamptz-string@1']['output'] | null
+            readonly blockedAt: CodecTypes['pg/timestamptz-string@1']['output'] | null
             readonly blockedById: CodecTypes['pg/int4@1']['output'] | null
             readonly createdAt: CodecTypes['pg/timestamptz-string@1']['output']
             readonly createdById: CodecTypes['pg/int4@1']['output'] | null
@@ -605,8 +601,7 @@ export type FieldOutputTypes = {
             readonly mustChangePassword: CodecTypes['pg/bool@1']['output']
             readonly passwordHash: CodecTypes['pg/text@1']['output']
             readonly role: 'USER' | 'ADMIN'
-            readonly totpEnabledAt:
-                CodecTypes['pg/timestamptz-string@1']['output'] | null
+            readonly totpEnabledAt: CodecTypes['pg/timestamptz-string@1']['output'] | null
             readonly totpSecret: CodecTypes['pg/text@1']['output'] | null
             readonly updatedAt: CodecTypes['pg/timestamptz-string@1']['output']
             readonly username: CodecTypes['pg/text@1']['output']
@@ -672,8 +667,7 @@ export type FieldInputTypes = {
             readonly userId: CodecTypes['pg/int4@1']['input']
         }
         readonly User: {
-            readonly blockedAt:
-                CodecTypes['pg/timestamptz-string@1']['input'] | null
+            readonly blockedAt: CodecTypes['pg/timestamptz-string@1']['input'] | null
             readonly blockedById: CodecTypes['pg/int4@1']['input'] | null
             readonly createdAt: CodecTypes['pg/timestamptz-string@1']['input']
             readonly createdById: CodecTypes['pg/int4@1']['input'] | null
@@ -682,8 +676,7 @@ export type FieldInputTypes = {
             readonly mustChangePassword: CodecTypes['pg/bool@1']['input']
             readonly passwordHash: CodecTypes['pg/text@1']['input']
             readonly role: 'USER' | 'ADMIN'
-            readonly totpEnabledAt:
-                CodecTypes['pg/timestamptz-string@1']['input'] | null
+            readonly totpEnabledAt: CodecTypes['pg/timestamptz-string@1']['input'] | null
             readonly totpSecret: CodecTypes['pg/text@1']['input'] | null
             readonly updatedAt: CodecTypes['pg/timestamptz-string@1']['input']
             readonly username: CodecTypes['pg/text@1']['input']
@@ -749,8 +742,7 @@ export type StorageColumnTypes = {
             readonly userId: CodecTypes['pg/int4@1']['output']
         }
         readonly User: {
-            readonly blockedAt:
-                CodecTypes['pg/timestamptz-string@1']['output'] | null
+            readonly blockedAt: CodecTypes['pg/timestamptz-string@1']['output'] | null
             readonly blockedById: CodecTypes['pg/int4@1']['output'] | null
             readonly createdAt: CodecTypes['pg/timestamptz-string@1']['output']
             readonly createdById: CodecTypes['pg/int4@1']['output'] | null
@@ -759,8 +751,7 @@ export type StorageColumnTypes = {
             readonly mustChangePassword: CodecTypes['pg/bool@1']['output']
             readonly passwordHash: CodecTypes['pg/text@1']['output']
             readonly role: 'USER' | 'ADMIN'
-            readonly totpEnabledAt:
-                CodecTypes['pg/timestamptz-string@1']['output'] | null
+            readonly totpEnabledAt: CodecTypes['pg/timestamptz-string@1']['output'] | null
             readonly totpSecret: CodecTypes['pg/text@1']['output'] | null
             readonly updatedAt: CodecTypes['pg/timestamptz-string@1']['output']
             readonly username: CodecTypes['pg/text@1']['output']
@@ -826,8 +817,7 @@ export type StorageColumnInputTypes = {
             readonly userId: CodecTypes['pg/int4@1']['input']
         }
         readonly User: {
-            readonly blockedAt:
-                CodecTypes['pg/timestamptz-string@1']['input'] | null
+            readonly blockedAt: CodecTypes['pg/timestamptz-string@1']['input'] | null
             readonly blockedById: CodecTypes['pg/int4@1']['input'] | null
             readonly createdAt: CodecTypes['pg/timestamptz-string@1']['input']
             readonly createdById: CodecTypes['pg/int4@1']['input'] | null
@@ -836,8 +826,7 @@ export type StorageColumnInputTypes = {
             readonly mustChangePassword: CodecTypes['pg/bool@1']['input']
             readonly passwordHash: CodecTypes['pg/text@1']['input']
             readonly role: 'USER' | 'ADMIN'
-            readonly totpEnabledAt:
-                CodecTypes['pg/timestamptz-string@1']['input'] | null
+            readonly totpEnabledAt: CodecTypes['pg/timestamptz-string@1']['input'] | null
             readonly totpSecret: CodecTypes['pg/text@1']['input'] | null
             readonly updatedAt: CodecTypes['pg/timestamptz-string@1']['input']
             readonly username: CodecTypes['pg/text@1']['input']
@@ -984,10 +973,7 @@ type ContractBase = Omit<
                                     readonly nullable: false
                                     readonly default: {
                                         readonly kind: 'literal'
-                                        readonly value: DefaultLiteralValue<
-                                            'pg/int4@1',
-                                            0
-                                        >
+                                        readonly value: DefaultLiteralValue<'pg/int4@1', 0>
                                     }
                                 }
                                 readonly createdAt: {
@@ -1071,18 +1057,13 @@ type ContractBase = Omit<
                                 {
                                     readonly name: 'Document_lastModifiedById_idx_f811679d'
                                     readonly prefix: 'Document_lastModifiedById_idx'
-                                    readonly columns: readonly [
-                                        'lastModifiedById',
-                                    ]
+                                    readonly columns: readonly ['lastModifiedById']
                                     readonly unique: false
                                 },
                                 {
                                     readonly name: 'Document_ownerId_folderId_idx_e5008c91'
                                     readonly prefix: 'Document_ownerId_folderId_idx'
-                                    readonly columns: readonly [
-                                        'ownerId',
-                                        'folderId',
-                                    ]
+                                    readonly columns: readonly ['ownerId', 'folderId']
                                     readonly unique: false
                                 },
                                 {
@@ -1095,44 +1076,36 @@ type ContractBase = Omit<
                             foreignKeys: readonly [
                                 {
                                     readonly source: {
-                                        readonly namespaceId: 'public' &
-                                            NamespaceId
+                                        readonly namespaceId: 'public' & NamespaceId
                                         readonly tableName: 'Document'
                                         readonly columns: readonly ['ownerId']
                                     }
                                     readonly target: {
-                                        readonly namespaceId: 'public' &
-                                            NamespaceId
+                                        readonly namespaceId: 'public' & NamespaceId
                                         readonly tableName: 'User'
                                         readonly columns: readonly ['id']
                                     }
                                 },
                                 {
                                     readonly source: {
-                                        readonly namespaceId: 'public' &
-                                            NamespaceId
+                                        readonly namespaceId: 'public' & NamespaceId
                                         readonly tableName: 'Document'
                                         readonly columns: readonly ['folderId']
                                     }
                                     readonly target: {
-                                        readonly namespaceId: 'public' &
-                                            NamespaceId
+                                        readonly namespaceId: 'public' & NamespaceId
                                         readonly tableName: 'Folder'
                                         readonly columns: readonly ['id']
                                     }
                                 },
                                 {
                                     readonly source: {
-                                        readonly namespaceId: 'public' &
-                                            NamespaceId
+                                        readonly namespaceId: 'public' & NamespaceId
                                         readonly tableName: 'Document'
-                                        readonly columns: readonly [
-                                            'lastModifiedById',
-                                        ]
+                                        readonly columns: readonly ['lastModifiedById']
                                     }
                                     readonly target: {
-                                        readonly namespaceId: 'public' &
-                                            NamespaceId
+                                        readonly namespaceId: 'public' & NamespaceId
                                         readonly tableName: 'User'
                                         readonly columns: readonly ['id']
                                     }
@@ -1172,10 +1145,7 @@ type ContractBase = Omit<
                                 }
                             }
                             primaryKey: {
-                                readonly columns: readonly [
-                                    'documentId',
-                                    'userId',
-                                ]
+                                readonly columns: readonly ['documentId', 'userId']
                             }
                             uniques: readonly []
                             indexes: readonly [
@@ -1201,46 +1171,36 @@ type ContractBase = Omit<
                             foreignKeys: readonly [
                                 {
                                     readonly source: {
-                                        readonly namespaceId: 'public' &
-                                            NamespaceId
+                                        readonly namespaceId: 'public' & NamespaceId
                                         readonly tableName: 'DocumentMember'
-                                        readonly columns: readonly [
-                                            'documentId',
-                                        ]
+                                        readonly columns: readonly ['documentId']
                                     }
                                     readonly target: {
-                                        readonly namespaceId: 'public' &
-                                            NamespaceId
+                                        readonly namespaceId: 'public' & NamespaceId
                                         readonly tableName: 'Document'
                                         readonly columns: readonly ['id']
                                     }
                                 },
                                 {
                                     readonly source: {
-                                        readonly namespaceId: 'public' &
-                                            NamespaceId
+                                        readonly namespaceId: 'public' & NamespaceId
                                         readonly tableName: 'DocumentMember'
                                         readonly columns: readonly ['userId']
                                     }
                                     readonly target: {
-                                        readonly namespaceId: 'public' &
-                                            NamespaceId
+                                        readonly namespaceId: 'public' & NamespaceId
                                         readonly tableName: 'User'
                                         readonly columns: readonly ['id']
                                     }
                                 },
                                 {
                                     readonly source: {
-                                        readonly namespaceId: 'public' &
-                                            NamespaceId
+                                        readonly namespaceId: 'public' & NamespaceId
                                         readonly tableName: 'DocumentMember'
-                                        readonly columns: readonly [
-                                            'invitedById',
-                                        ]
+                                        readonly columns: readonly ['invitedById']
                                     }
                                     readonly target: {
-                                        readonly namespaceId: 'public' &
-                                            NamespaceId
+                                        readonly namespaceId: 'public' & NamespaceId
                                         readonly tableName: 'User'
                                         readonly columns: readonly ['id']
                                     }
@@ -1296,12 +1256,7 @@ type ContractBase = Omit<
                             primaryKey: { readonly columns: readonly ['id'] }
                             uniques: readonly [
                                 { readonly columns: readonly ['opId'] },
-                                {
-                                    readonly columns: readonly [
-                                        'documentId',
-                                        'revision',
-                                    ]
-                                },
+                                { readonly columns: readonly ['documentId', 'revision'] },
                             ]
                             indexes: readonly [
                                 {
@@ -1320,30 +1275,24 @@ type ContractBase = Omit<
                             foreignKeys: readonly [
                                 {
                                     readonly source: {
-                                        readonly namespaceId: 'public' &
-                                            NamespaceId
+                                        readonly namespaceId: 'public' & NamespaceId
                                         readonly tableName: 'DocumentOperation'
-                                        readonly columns: readonly [
-                                            'documentId',
-                                        ]
+                                        readonly columns: readonly ['documentId']
                                     }
                                     readonly target: {
-                                        readonly namespaceId: 'public' &
-                                            NamespaceId
+                                        readonly namespaceId: 'public' & NamespaceId
                                         readonly tableName: 'Document'
                                         readonly columns: readonly ['id']
                                     }
                                 },
                                 {
                                     readonly source: {
-                                        readonly namespaceId: 'public' &
-                                            NamespaceId
+                                        readonly namespaceId: 'public' & NamespaceId
                                         readonly tableName: 'DocumentOperation'
                                         readonly columns: readonly ['authorId']
                                     }
                                     readonly target: {
-                                        readonly namespaceId: 'public' &
-                                            NamespaceId
+                                        readonly namespaceId: 'public' & NamespaceId
                                         readonly tableName: 'User'
                                         readonly columns: readonly ['id']
                                     }
@@ -1393,13 +1342,7 @@ type ContractBase = Omit<
                             }
                             primaryKey: { readonly columns: readonly ['id'] }
                             uniques: readonly [
-                                {
-                                    readonly columns: readonly [
-                                        'ownerId',
-                                        'parentId',
-                                        'name',
-                                    ]
-                                },
+                                { readonly columns: readonly ['ownerId', 'parentId', 'name'] },
                             ]
                             indexes: readonly [
                                 {
@@ -1417,10 +1360,7 @@ type ContractBase = Omit<
                                 {
                                     readonly name: 'Folder_root_name_unique_0d8a2683'
                                     readonly prefix: 'Folder_root_name_unique'
-                                    readonly columns: readonly [
-                                        'ownerId',
-                                        'name',
-                                    ]
+                                    readonly columns: readonly ['ownerId', 'name']
                                     readonly where: '"parentId" IS NULL'
                                     readonly unique: true
                                 },
@@ -1428,28 +1368,24 @@ type ContractBase = Omit<
                             foreignKeys: readonly [
                                 {
                                     readonly source: {
-                                        readonly namespaceId: 'public' &
-                                            NamespaceId
+                                        readonly namespaceId: 'public' & NamespaceId
                                         readonly tableName: 'Folder'
                                         readonly columns: readonly ['parentId']
                                     }
                                     readonly target: {
-                                        readonly namespaceId: 'public' &
-                                            NamespaceId
+                                        readonly namespaceId: 'public' & NamespaceId
                                         readonly tableName: 'Folder'
                                         readonly columns: readonly ['id']
                                     }
                                 },
                                 {
                                     readonly source: {
-                                        readonly namespaceId: 'public' &
-                                            NamespaceId
+                                        readonly namespaceId: 'public' & NamespaceId
                                         readonly tableName: 'Folder'
                                         readonly columns: readonly ['ownerId']
                                     }
                                     readonly target: {
-                                        readonly namespaceId: 'public' &
-                                            NamespaceId
+                                        readonly namespaceId: 'public' & NamespaceId
                                         readonly tableName: 'User'
                                         readonly columns: readonly ['id']
                                     }
@@ -1504,10 +1440,7 @@ type ContractBase = Omit<
                                 {
                                     readonly name: 'Message_documentId_createdAt_idx_93015d6d'
                                     readonly prefix: 'Message_documentId_createdAt_idx'
-                                    readonly columns: readonly [
-                                        'documentId',
-                                        'createdAt',
-                                    ]
+                                    readonly columns: readonly ['documentId', 'createdAt']
                                     readonly unique: false
                                 },
                                 {
@@ -1520,30 +1453,24 @@ type ContractBase = Omit<
                             foreignKeys: readonly [
                                 {
                                     readonly source: {
-                                        readonly namespaceId: 'public' &
-                                            NamespaceId
+                                        readonly namespaceId: 'public' & NamespaceId
                                         readonly tableName: 'Message'
-                                        readonly columns: readonly [
-                                            'documentId',
-                                        ]
+                                        readonly columns: readonly ['documentId']
                                     }
                                     readonly target: {
-                                        readonly namespaceId: 'public' &
-                                            NamespaceId
+                                        readonly namespaceId: 'public' & NamespaceId
                                         readonly tableName: 'Document'
                                         readonly columns: readonly ['id']
                                     }
                                 },
                                 {
                                     readonly source: {
-                                        readonly namespaceId: 'public' &
-                                            NamespaceId
+                                        readonly namespaceId: 'public' & NamespaceId
                                         readonly tableName: 'Message'
                                         readonly columns: readonly ['authorId']
                                     }
                                     readonly target: {
-                                        readonly namespaceId: 'public' &
-                                            NamespaceId
+                                        readonly namespaceId: 'public' & NamespaceId
                                         readonly tableName: 'User'
                                         readonly columns: readonly ['id']
                                     }
@@ -1601,9 +1528,7 @@ type ContractBase = Omit<
                                 }
                             }
                             primaryKey: { readonly columns: readonly ['id'] }
-                            uniques: readonly [
-                                { readonly columns: readonly ['tokenHash'] },
-                            ]
+                            uniques: readonly [{ readonly columns: readonly ['tokenHash'] }]
                             indexes: readonly [
                                 {
                                     readonly name: 'Session_userId_idx_a489d58a'
@@ -1615,14 +1540,12 @@ type ContractBase = Omit<
                             foreignKeys: readonly [
                                 {
                                     readonly source: {
-                                        readonly namespaceId: 'public' &
-                                            NamespaceId
+                                        readonly namespaceId: 'public' & NamespaceId
                                         readonly tableName: 'Session'
                                         readonly columns: readonly ['userId']
                                     }
                                     readonly target: {
-                                        readonly namespaceId: 'public' &
-                                            NamespaceId
+                                        readonly namespaceId: 'public' & NamespaceId
                                         readonly tableName: 'User'
                                         readonly columns: readonly ['id']
                                     }
@@ -1675,10 +1598,7 @@ type ContractBase = Omit<
                                     readonly nullable: false
                                     readonly default: {
                                         readonly kind: 'literal'
-                                        readonly value: DefaultLiteralValue<
-                                            'pg/bool@1',
-                                            false
-                                        >
+                                        readonly value: DefaultLiteralValue<'pg/bool@1', false>
                                     }
                                 }
                                 readonly passwordHash: {
@@ -1692,10 +1612,7 @@ type ContractBase = Omit<
                                     readonly nullable: false
                                     readonly default: {
                                         readonly kind: 'literal'
-                                        readonly value: DefaultLiteralValue<
-                                            'pg/text@1',
-                                            'USER'
-                                        >
+                                        readonly value: DefaultLiteralValue<'pg/text@1', 'USER'>
                                     }
                                 }
                                 readonly totpEnabledAt: {
@@ -1720,9 +1637,7 @@ type ContractBase = Omit<
                                 }
                             }
                             primaryKey: { readonly columns: readonly ['id'] }
-                            uniques: readonly [
-                                { readonly columns: readonly ['username'] },
-                            ]
+                            uniques: readonly [{ readonly columns: readonly ['username'] }]
                             indexes: readonly [
                                 {
                                     readonly name: 'User_blockedById_idx_60a57bcc'
@@ -1740,32 +1655,24 @@ type ContractBase = Omit<
                             foreignKeys: readonly [
                                 {
                                     readonly source: {
-                                        readonly namespaceId: 'public' &
-                                            NamespaceId
+                                        readonly namespaceId: 'public' & NamespaceId
                                         readonly tableName: 'User'
-                                        readonly columns: readonly [
-                                            'blockedById',
-                                        ]
+                                        readonly columns: readonly ['blockedById']
                                     }
                                     readonly target: {
-                                        readonly namespaceId: 'public' &
-                                            NamespaceId
+                                        readonly namespaceId: 'public' & NamespaceId
                                         readonly tableName: 'User'
                                         readonly columns: readonly ['id']
                                     }
                                 },
                                 {
                                     readonly source: {
-                                        readonly namespaceId: 'public' &
-                                            NamespaceId
+                                        readonly namespaceId: 'public' & NamespaceId
                                         readonly tableName: 'User'
-                                        readonly columns: readonly [
-                                            'createdById',
-                                        ]
+                                        readonly columns: readonly ['createdById']
                                     }
                                     readonly target: {
-                                        readonly namespaceId: 'public' &
-                                            NamespaceId
+                                        readonly namespaceId: 'public' & NamespaceId
                                         readonly tableName: 'User'
                                         readonly columns: readonly ['id']
                                     }
@@ -1952,9 +1859,7 @@ type ContractBase = Omit<
                                 readonly cardinality: 'N:1'
                                 readonly nullable: true
                                 readonly on: {
-                                    readonly localFields: readonly [
-                                        'lastModifiedById',
-                                    ]
+                                    readonly localFields: readonly ['lastModifiedById']
                                     readonly targetFields: readonly ['id']
                                 }
                             }
@@ -1979,32 +1884,20 @@ type ContractBase = Omit<
                                 readonly contentRevision: {
                                     readonly column: 'contentRevision'
                                 }
-                                readonly createdAt: {
-                                    readonly column: 'createdAt'
-                                }
-                                readonly folderId: {
-                                    readonly column: 'folderId'
-                                }
+                                readonly createdAt: { readonly column: 'createdAt' }
+                                readonly folderId: { readonly column: 'folderId' }
                                 readonly id: { readonly column: 'id' }
                                 readonly kind: { readonly column: 'kind' }
                                 readonly lastModifiedById: {
                                     readonly column: 'lastModifiedById'
                                 }
-                                readonly mimeType: {
-                                    readonly column: 'mimeType'
-                                }
+                                readonly mimeType: { readonly column: 'mimeType' }
                                 readonly name: { readonly column: 'name' }
-                                readonly originalName: {
-                                    readonly column: 'originalName'
-                                }
+                                readonly originalName: { readonly column: 'originalName' }
                                 readonly ownerId: { readonly column: 'ownerId' }
                                 readonly size: { readonly column: 'size' }
-                                readonly storagePath: {
-                                    readonly column: 'storagePath'
-                                }
-                                readonly updatedAt: {
-                                    readonly column: 'updatedAt'
-                                }
+                                readonly storagePath: { readonly column: 'storagePath' }
+                                readonly updatedAt: { readonly column: 'updatedAt' }
                             }
                         }
                     }
@@ -2055,9 +1948,7 @@ type ContractBase = Omit<
                                 readonly cardinality: 'N:1'
                                 readonly nullable: false
                                 readonly on: {
-                                    readonly localFields: readonly [
-                                        'documentId',
-                                    ]
+                                    readonly localFields: readonly ['documentId']
                                     readonly targetFields: readonly ['id']
                                 }
                             }
@@ -2069,9 +1960,7 @@ type ContractBase = Omit<
                                 readonly cardinality: 'N:1'
                                 readonly nullable: false
                                 readonly on: {
-                                    readonly localFields: readonly [
-                                        'invitedById',
-                                    ]
+                                    readonly localFields: readonly ['invitedById']
                                     readonly targetFields: readonly ['id']
                                 }
                             }
@@ -2092,15 +1981,9 @@ type ContractBase = Omit<
                             readonly table: 'DocumentMember'
                             readonly namespaceId: 'public'
                             readonly fields: {
-                                readonly createdAt: {
-                                    readonly column: 'createdAt'
-                                }
-                                readonly documentId: {
-                                    readonly column: 'documentId'
-                                }
-                                readonly invitedById: {
-                                    readonly column: 'invitedById'
-                                }
+                                readonly createdAt: { readonly column: 'createdAt' }
+                                readonly documentId: { readonly column: 'documentId' }
+                                readonly invitedById: { readonly column: 'invitedById' }
                                 readonly role: { readonly column: 'role' }
                                 readonly userId: { readonly column: 'userId' }
                             }
@@ -2179,9 +2062,7 @@ type ContractBase = Omit<
                                 readonly cardinality: 'N:1'
                                 readonly nullable: false
                                 readonly on: {
-                                    readonly localFields: readonly [
-                                        'documentId',
-                                    ]
+                                    readonly localFields: readonly ['documentId']
                                     readonly targetFields: readonly ['id']
                                 }
                             }
@@ -2190,23 +2071,13 @@ type ContractBase = Omit<
                             readonly table: 'DocumentOperation'
                             readonly namespaceId: 'public'
                             readonly fields: {
-                                readonly authorId: {
-                                    readonly column: 'authorId'
-                                }
-                                readonly createdAt: {
-                                    readonly column: 'createdAt'
-                                }
-                                readonly documentId: {
-                                    readonly column: 'documentId'
-                                }
+                                readonly authorId: { readonly column: 'authorId' }
+                                readonly createdAt: { readonly column: 'createdAt' }
+                                readonly documentId: { readonly column: 'documentId' }
                                 readonly id: { readonly column: 'id' }
                                 readonly opId: { readonly column: 'opId' }
-                                readonly operation: {
-                                    readonly column: 'operation'
-                                }
-                                readonly revision: {
-                                    readonly column: 'revision'
-                                }
+                                readonly operation: { readonly column: 'operation' }
+                                readonly revision: { readonly column: 'revision' }
                             }
                         }
                     }
@@ -2285,18 +2156,12 @@ type ContractBase = Omit<
                             readonly table: 'Folder'
                             readonly namespaceId: 'public'
                             readonly fields: {
-                                readonly createdAt: {
-                                    readonly column: 'createdAt'
-                                }
+                                readonly createdAt: { readonly column: 'createdAt' }
                                 readonly id: { readonly column: 'id' }
                                 readonly name: { readonly column: 'name' }
                                 readonly ownerId: { readonly column: 'ownerId' }
-                                readonly parentId: {
-                                    readonly column: 'parentId'
-                                }
-                                readonly updatedAt: {
-                                    readonly column: 'updatedAt'
-                                }
+                                readonly parentId: { readonly column: 'parentId' }
+                                readonly updatedAt: { readonly column: 'updatedAt' }
                             }
                         }
                     }
@@ -2359,9 +2224,7 @@ type ContractBase = Omit<
                                 readonly cardinality: 'N:1'
                                 readonly nullable: false
                                 readonly on: {
-                                    readonly localFields: readonly [
-                                        'documentId',
-                                    ]
+                                    readonly localFields: readonly ['documentId']
                                     readonly targetFields: readonly ['id']
                                 }
                             }
@@ -2370,16 +2233,10 @@ type ContractBase = Omit<
                             readonly table: 'Message'
                             readonly namespaceId: 'public'
                             readonly fields: {
-                                readonly authorId: {
-                                    readonly column: 'authorId'
-                                }
+                                readonly authorId: { readonly column: 'authorId' }
                                 readonly content: { readonly column: 'content' }
-                                readonly createdAt: {
-                                    readonly column: 'createdAt'
-                                }
-                                readonly documentId: {
-                                    readonly column: 'documentId'
-                                }
+                                readonly createdAt: { readonly column: 'createdAt' }
+                                readonly documentId: { readonly column: 'documentId' }
                                 readonly id: { readonly column: 'id' }
                             }
                         }
@@ -2454,22 +2311,12 @@ type ContractBase = Omit<
                             readonly table: 'Session'
                             readonly namespaceId: 'public'
                             readonly fields: {
-                                readonly createdAt: {
-                                    readonly column: 'createdAt'
-                                }
-                                readonly expiresAt: {
-                                    readonly column: 'expiresAt'
-                                }
+                                readonly createdAt: { readonly column: 'createdAt' }
+                                readonly expiresAt: { readonly column: 'expiresAt' }
                                 readonly id: { readonly column: 'id' }
-                                readonly lastUsedAt: {
-                                    readonly column: 'lastUsedAt'
-                                }
-                                readonly mfaSatisfied: {
-                                    readonly column: 'mfaSatisfied'
-                                }
-                                readonly tokenHash: {
-                                    readonly column: 'tokenHash'
-                                }
+                                readonly lastUsedAt: { readonly column: 'lastUsedAt' }
+                                readonly mfaSatisfied: { readonly column: 'mfaSatisfied' }
+                                readonly tokenHash: { readonly column: 'tokenHash' }
                                 readonly userId: { readonly column: 'userId' }
                             }
                         }
@@ -2577,9 +2424,7 @@ type ContractBase = Omit<
                                 readonly cardinality: 'N:1'
                                 readonly nullable: true
                                 readonly on: {
-                                    readonly localFields: readonly [
-                                        'blockedById',
-                                    ]
+                                    readonly localFields: readonly ['blockedById']
                                     readonly targetFields: readonly ['id']
                                 }
                             }
@@ -2591,9 +2436,7 @@ type ContractBase = Omit<
                                 readonly cardinality: 'N:1'
                                 readonly nullable: true
                                 readonly on: {
-                                    readonly localFields: readonly [
-                                        'createdById',
-                                    ]
+                                    readonly localFields: readonly ['createdById']
                                     readonly targetFields: readonly ['id']
                                 }
                             }
@@ -2602,41 +2445,21 @@ type ContractBase = Omit<
                             readonly table: 'User'
                             readonly namespaceId: 'public'
                             readonly fields: {
-                                readonly blockedAt: {
-                                    readonly column: 'blockedAt'
-                                }
-                                readonly blockedById: {
-                                    readonly column: 'blockedById'
-                                }
-                                readonly createdAt: {
-                                    readonly column: 'createdAt'
-                                }
-                                readonly createdById: {
-                                    readonly column: 'createdById'
-                                }
-                                readonly displayName: {
-                                    readonly column: 'displayName'
-                                }
+                                readonly blockedAt: { readonly column: 'blockedAt' }
+                                readonly blockedById: { readonly column: 'blockedById' }
+                                readonly createdAt: { readonly column: 'createdAt' }
+                                readonly createdById: { readonly column: 'createdById' }
+                                readonly displayName: { readonly column: 'displayName' }
                                 readonly id: { readonly column: 'id' }
                                 readonly mustChangePassword: {
                                     readonly column: 'mustChangePassword'
                                 }
-                                readonly passwordHash: {
-                                    readonly column: 'passwordHash'
-                                }
+                                readonly passwordHash: { readonly column: 'passwordHash' }
                                 readonly role: { readonly column: 'role' }
-                                readonly totpEnabledAt: {
-                                    readonly column: 'totpEnabledAt'
-                                }
-                                readonly totpSecret: {
-                                    readonly column: 'totpSecret'
-                                }
-                                readonly updatedAt: {
-                                    readonly column: 'updatedAt'
-                                }
-                                readonly username: {
-                                    readonly column: 'username'
-                                }
+                                readonly totpEnabledAt: { readonly column: 'totpEnabledAt' }
+                                readonly totpSecret: { readonly column: 'totpSecret' }
+                                readonly updatedAt: { readonly column: 'updatedAt' }
+                                readonly username: { readonly column: 'username' }
                             }
                         }
                     }
@@ -2652,14 +2475,8 @@ type ContractBase = Omit<
                     readonly MemberRole: {
                         readonly codecId: 'pg/text@1'
                         readonly members: readonly [
-                            {
-                                readonly name: 'EDITOR'
-                                readonly value: 'EDITOR'
-                            },
-                            {
-                                readonly name: 'VIEWER'
-                                readonly value: 'VIEWER'
-                            },
+                            { readonly name: 'EDITOR'; readonly value: 'EDITOR' },
+                            { readonly name: 'VIEWER'; readonly value: 'VIEWER' },
                         ]
                     }
                     readonly Role: {

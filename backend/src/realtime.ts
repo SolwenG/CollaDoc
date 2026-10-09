@@ -5,11 +5,7 @@ import { errorHandler } from './middlewares/errors.middleware.ts'
 import { registerCollaborationHandlers } from './realtime/collaboration.handlers.ts'
 import { runInOrder } from './realtime/document-queue.ts'
 import { internalRoutes } from './realtime/internal.routes.ts'
-import {
-    getOpenDocument,
-    listOpenDocuments,
-    writeSnapshot,
-} from './realtime/open-documents.ts'
+import { getOpenDocument, listOpenDocuments, writeSnapshot } from './realtime/open-documents.ts'
 import { authenticateSocket } from './realtime/socket-auth.ts'
 import type { CollabServer } from './realtime/socket.types.ts'
 import { userRoom } from './realtime/socket.types.ts'
@@ -54,6 +50,4 @@ process.on('SIGTERM', shutdown)
 process.on('SIGINT', shutdown)
 
 const port = process.env['REALTIME_PORT'] ?? '3001'
-httpServer.listen(port, () =>
-    console.log(`✅ Realtime server is running on port ${port}`)
-)
+httpServer.listen(port, () => console.log(`✅ Realtime server is running on port ${port}`))

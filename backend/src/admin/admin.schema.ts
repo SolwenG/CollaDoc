@@ -11,12 +11,7 @@ export const createUserSchema = z.strictObject({
 
 export const listUsersQuerySchema = z.object({
     page: z.coerce.number().int().min(1).default(1),
-    pageSize: z.coerce
-        .number()
-        .int()
-        .min(1)
-        .max(PAGE_SIZE_MAX)
-        .default(PAGE_SIZE_DEFAULT),
+    pageSize: z.coerce.number().int().min(1).max(PAGE_SIZE_MAX).default(PAGE_SIZE_DEFAULT),
     search: z.string().trim().max(100).optional(),
 })
 

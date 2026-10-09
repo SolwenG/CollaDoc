@@ -2,8 +2,7 @@ import { ref, readonly } from 'vue'
 import { socket } from '@/services/socket'
 import type { IncomingCall, CallSignal } from 'shared/call/types'
 
-export type CallStatus =
-    'idle' | 'calling' | 'ringing' | 'connecting' | 'connected'
+export type CallStatus = 'idle' | 'calling' | 'ringing' | 'connecting' | 'connected'
 
 const ICE_SERVERS: RTCConfiguration = {
     iceServers: [
@@ -119,8 +118,7 @@ async function acceptCall() {
 }
 
 function declineCall() {
-    if (incoming.value)
-        socket.emit('call:hangup', { callId: incoming.value.callId })
+    if (incoming.value) socket.emit('call:hangup', { callId: incoming.value.callId })
     cleanup()
 }
 
@@ -163,8 +161,7 @@ function init() {
             if (p.description) {
                 await pc.setRemoteDescription(p.description)
                 // Candidats reçus avant la description : on les applique maintenant
-                for (const c of pendingCandidates)
-                    await pc.addIceCandidate(c).catch(() => {})
+                for (const c of pendingCandidates) await pc.addIceCandidate(c).catch(() => {})
                 pendingCandidates = []
                 if (p.description.type === 'offer') {
                     const answer = await pc.createAnswer()
@@ -175,8 +172,7 @@ function init() {
                     })
                 }
             } else if (p.candidate) {
-                if (pc.remoteDescription)
-                    await pc.addIceCandidate(p.candidate).catch(() => {})
+                if (pc.remoteDescription) await pc.addIceCandidate(p.candidate).catch(() => {})
                 else pendingCandidates.push(p.candidate)
             }
         } catch {
@@ -185,14 +181,11 @@ function init() {
         }
     })
 
-    socket.on(
-        'call:ended',
-        ({ callId: id, reason }: { callId: string; reason: string }) => {
-            if (id !== callId && id !== incoming.value?.callId) return
-            lastEnd.value = { reason, at: Date.now() }
-            cleanup()
-        }
-    )
+    socket.on('call:ended', ({ callId: id, reason }: { callId: string; reason: string }) => {
+        if (id !== callId && id !== incoming.value?.callId) return
+        lastEnd.value = { reason, at: Date.now() }
+        cleanup()
+    })
 }
 
 export function useCall() {

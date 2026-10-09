@@ -44,9 +44,7 @@ interface CreateUserResponse {
 export const useUserStore = defineStore('user', () => {
     const currentUser = ref<UserProfile | null>(null)
 
-    async function fetchUserProfile(
-        userId: number
-    ): Promise<UserProfile | null> {
+    async function fetchUserProfile(userId: number): Promise<UserProfile | null> {
         try {
             const response = await apiFetch(`/profile/${userId}`)
             if (response.status === 200) {
@@ -71,8 +69,7 @@ export const useUserStore = defineStore('user', () => {
         try {
             const queryParams = new URLSearchParams()
             if (params?.page) queryParams.append('page', params.page.toString())
-            if (params?.pageSize)
-                queryParams.append('pageSize', params.pageSize.toString())
+            if (params?.pageSize) queryParams.append('pageSize', params.pageSize.toString())
             if (params?.search) queryParams.append('search', params.search)
 
             const url = queryParams.toString()
@@ -112,28 +109,18 @@ export const useUserStore = defineStore('user', () => {
     async function createUser(data: {
         username: string
         role: 'USER' | 'ADMIN'
-    }): Promise<{
-        success: boolean
-        error?: string
-        temporaryPassword?: string
-    }> {
+    }): Promise<{ success: boolean; error?: string; temporaryPassword?: string }> {
         try {
             const response = await postJson('/admin/users', data)
             if (response.status === 201) {
                 const result = await readJson<CreateUserResponse>(response)
                 if (result?.temporaryPassword) {
-                    return {
-                        success: true,
-                        temporaryPassword: result.temporaryPassword,
-                    }
+                    return { success: true, temporaryPassword: result.temporaryPassword }
                 }
                 return { success: true }
             }
             const error = await readApiError(response)
-            return {
-                success: false,
-                error: error?.message || 'Erreur lors de la création',
-            }
+            return { success: false, error: error?.message || 'Erreur lors de la création' }
         } catch (error) {
             console.error('Create user error:', error)
             return { success: false, error: 'Erreur lors de la création' }
@@ -166,16 +153,10 @@ export const useUserStore = defineStore('user', () => {
                 return { success: true }
             }
             const error = await readApiError(response)
-            return {
-                success: false,
-                error: error?.message || 'Erreur lors de la mise à jour',
-            }
+            return { success: false, error: error?.message || 'Erreur lors de la mise à jour' }
         } catch (error) {
             console.error('Failed to update display name:', error)
-            return {
-                success: false,
-                error: "Erreur lors de la mise à jour du nom d'affichage",
-            }
+            return { success: false, error: "Erreur lors de la mise à jour du nom d'affichage" }
         }
     }
 
@@ -197,16 +178,10 @@ export const useUserStore = defineStore('user', () => {
                 return { success: true }
             }
             const error = await readApiError(response)
-            return {
-                success: false,
-                error: error?.message || 'Erreur lors de la mise à jour',
-            }
+            return { success: false, error: error?.message || 'Erreur lors de la mise à jour' }
         } catch (error) {
             console.error('Failed to update password:', error)
-            return {
-                success: false,
-                error: 'Erreur lors de la mise à jour du mot de passe',
-            }
+            return { success: false, error: 'Erreur lors de la mise à jour du mot de passe' }
         }
     }
 

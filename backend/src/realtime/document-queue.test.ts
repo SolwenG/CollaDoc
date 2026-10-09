@@ -12,10 +12,7 @@ describe('runInOrder', () => {
             events.push(`${name} end`)
         }
 
-        await Promise.all([
-            runInOrder(1, task('a', 20)),
-            runInOrder(1, task('b', 0)),
-        ])
+        await Promise.all([runInOrder(1, task('a', 20)), runInOrder(1, task('b', 0))])
 
         expect(events).toEqual(['a start', 'a end', 'b start', 'b end'])
     })

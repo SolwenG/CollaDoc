@@ -1,8 +1,5 @@
 import type { Server, Socket } from 'socket.io'
-import type {
-    ClientToServerEvents,
-    ServerToClientEvents,
-} from '../../../shared/ot/index.ts'
+import type { ClientToServerEvents, ServerToClientEvents } from 'shared/ot/index'
 
 type InterServerEvents = Record<string, never>
 

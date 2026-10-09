@@ -27,14 +27,10 @@ function selectAdminView<T extends ReturnType<typeof filteredUsers>>(users: T) {
             'blockedAt',
             'createdAt'
         )
-        .include('blockedBy', (blockedBy) =>
-            blockedBy.select('id', 'username', 'displayName')
-        )
+        .include('blockedBy', (blockedBy) => blockedBy.select('id', 'username', 'displayName'))
 }
 
-type AdminUserRow = Awaited<
-    ReturnType<ReturnType<typeof selectAdminView>['all']>
->[number]
+type AdminUserRow = Awaited<ReturnType<ReturnType<typeof selectAdminView>['all']>>[number]
 
 function toAdminUserView({ totpEnabledAt, ...user }: AdminUserRow) {
     return { ...user, mfaEnabled: totpEnabledAt !== null }

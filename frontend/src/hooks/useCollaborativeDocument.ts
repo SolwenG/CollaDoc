@@ -35,19 +35,15 @@ export function useCollaborativeDocument(
     const ready = ref(false)
 
     const readonly = computed(
-        () =>
-            !ready.value || role.value === 'VIEWER' || status.value === 'closed'
+        () => !ready.value || role.value === 'VIEWER' || status.value === 'closed'
     )
 
     let text = ''
     let client: CollabClient | null = null
-    const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io({
-        autoConnect: false,
-    })
+    const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io({ autoConnect: false })
 
     function render() {
-        if (textarea.value && textarea.value.value !== text)
-            textarea.value.value = text
+        if (textarea.value && textarea.value.value !== text) textarea.value.value = text
     }
 
     function send(outgoing: OutgoingOperation | null) {
@@ -92,9 +88,7 @@ export function useCollaborativeDocument(
         if ('text' in response) {
             if (client?.outgoing()) lostText.value = text
             text = response.text
-            client = new CollabClient(response.revision, () =>
-                crypto.randomUUID()
-            )
+            client = new CollabClient(response.revision, () => crypto.randomUUID())
             render()
         } else if (client) {
             for (const message of response.missed) receive(message)
@@ -158,18 +152,14 @@ export function useCollaborativeDocument(
 
     // The browser's undo history breaks as soon as remote edits change the text
     function onBeforeInput(event: InputEvent) {
-        if (
-            event.inputType === 'historyUndo' ||
-            event.inputType === 'historyRedo'
-        ) {
+        if (event.inputType === 'historyUndo' || event.inputType === 'historyRedo') {
             event.preventDefault()
         }
     }
 
     function onKeydown(event: KeyboardEvent) {
         const key = event.key.toLowerCase()
-        if ((event.ctrlKey || event.metaKey) && (key === 'z' || key === 'y'))
-            event.preventDefault()
+        if ((event.ctrlKey || event.metaKey) && (key === 'z' || key === 'y')) event.preventDefault()
     }
 
     watch(textarea, render)

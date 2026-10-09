@@ -7,9 +7,7 @@
                 <q-card-section>
                     <q-form class="q-gutter-md">
                         <!-- Display Name Section -->
-                        <p class="text-h6 q-mt-md">
-                            Modifier mon nom d'affichage
-                        </p>
+                        <p class="text-h6 q-mt-md">Modifier mon nom d'affichage</p>
                         <!-- Display Name Field -->
                         <div class="row items-center q-gutter-sm">
                             <div class="col">
@@ -67,20 +65,14 @@
                                     v-if="editing.password"
                                     v-model="formData.currentPassword"
                                     label="Mot de passe actuel"
-                                    :type="
-                                        showCurrentPassword
-                                            ? 'text'
-                                            : 'password'
-                                    "
+                                    :type="showCurrentPassword ? 'text' : 'password'"
                                     outlined
                                     dense
                                     autocomplete="current-password"
                                     :rules="[required]"
                                     :error="!!currentPasswordError"
                                     :error-message="currentPasswordError"
-                                    @update:model-value="
-                                        currentPasswordError = ''
-                                    "
+                                    @update:model-value="currentPasswordError = ''"
                                 >
                                     <template #append>
                                         <q-icon
@@ -90,10 +82,7 @@
                                                     : 'visibility'
                                             "
                                             class="cursor-pointer"
-                                            @click="
-                                                showCurrentPassword =
-                                                    !showCurrentPassword
-                                            "
+                                            @click="showCurrentPassword = !showCurrentPassword"
                                         />
                                     </template>
                                 </q-input>
@@ -117,15 +106,9 @@
                                 >
                                     <template #append>
                                         <q-icon
-                                            :name="
-                                                showPassword
-                                                    ? 'visibility_off'
-                                                    : 'visibility'
-                                            "
+                                            :name="showPassword ? 'visibility_off' : 'visibility'"
                                             class="cursor-pointer"
-                                            @click="
-                                                showPassword = !showPassword
-                                            "
+                                            @click="showPassword = !showPassword"
                                         />
                                     </template>
                                 </q-input>
@@ -133,11 +116,7 @@
                                     v-if="editing.password"
                                     v-model="formData.confirmPassword"
                                     label="Confirmer le nouveau mot de passe"
-                                    :type="
-                                        showConfirmPassword
-                                            ? 'text'
-                                            : 'password'
-                                    "
+                                    :type="showConfirmPassword ? 'text' : 'password'"
                                     :disable="!editing.password"
                                     outlined
                                     dense
@@ -145,9 +124,7 @@
                                     :rules="[required, passwordsMatch]"
                                     :error="!!confirmPasswordError"
                                     :error-message="confirmPasswordError"
-                                    @update:model-value="
-                                        confirmPasswordError = ''
-                                    "
+                                    @update:model-value="confirmPasswordError = ''"
                                 >
                                     <template #append>
                                         <q-icon
@@ -157,20 +134,12 @@
                                                     : 'visibility'
                                             "
                                             class="cursor-pointer"
-                                            @click="
-                                                showConfirmPassword =
-                                                    !showConfirmPassword
-                                            "
+                                            @click="showConfirmPassword = !showConfirmPassword"
                                         />
                                     </template>
                                 </q-input>
-                                <div
-                                    v-if="formData.password && editing.password"
-                                >
-                                    <q-linear-progress
-                                        :value="(score + 1) / 5"
-                                        :color="color"
-                                    />
+                                <div v-if="formData.password && editing.password">
+                                    <q-linear-progress :value="(score + 1) / 5" :color="color" />
                                     <div class="text-caption">{{ label }}</div>
                                 </div>
                             </div>
@@ -240,10 +209,7 @@
             </template>
         </div>
 
-        <TwoFactorSetupDialog
-            v-model="showMfaDialog"
-            @enabled="refreshProfile"
-        />
+        <TwoFactorSetupDialog v-model="showMfaDialog" @enabled="refreshProfile" />
     </q-page>
 </template>
 
@@ -302,8 +268,7 @@ const { score, label, color, strongEnough } = usePasswordStrength(password)
 
 const passwordsMatch = () => {
     return (
-        formData.password === formData.confirmPassword ||
-        'Les mots de passe ne correspondent pas'
+        formData.password === formData.confirmPassword || 'Les mots de passe ne correspondent pas'
     )
 }
 
@@ -370,8 +335,7 @@ async function saveField(field: 'displayName' | 'password') {
             editing.displayName = false
             originalFormData.displayName = formData.displayName
         } else {
-            displayNameError.value =
-                result.error || 'Erreur lors de la mise à jour'
+            displayNameError.value = result.error || 'Erreur lors de la mise à jour'
         }
     } else if (field === 'password') {
         if (!formData.currentPassword.trim()) {
@@ -379,19 +343,14 @@ async function saveField(field: 'displayName' | 'password') {
             return
         }
         if (!formData.password.trim()) {
-            passwordError.value =
-                'Le nouveau mot de passe ne peut pas être vide'
+            passwordError.value = 'Le nouveau mot de passe ne peut pas être vide'
             return
         }
         if (formData.password !== formData.confirmPassword) {
-            confirmPasswordError.value =
-                'Les mots de passe ne correspondent pas'
+            confirmPasswordError.value = 'Les mots de passe ne correspondent pas'
             return
         }
-        const result = await userStore.updatePassword(
-            formData.currentPassword,
-            formData.password
-        )
+        const result = await userStore.updatePassword(formData.currentPassword, formData.password)
         if (result.success) {
             successMessage.value = 'Mot de passe mis à jour avec succès'
             formData.password = ''
@@ -400,8 +359,7 @@ async function saveField(field: 'displayName' | 'password') {
             editing.password = false
         } else {
             // Error is already a string from the store, display it
-            passwordError.value =
-                result.error || 'Erreur lors de la mise à jour'
+            passwordError.value = result.error || 'Erreur lors de la mise à jour'
         }
     }
 }

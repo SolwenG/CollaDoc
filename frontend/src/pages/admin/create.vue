@@ -30,17 +30,11 @@
                 map-options
             />
 
-            <q-banner
-                v-if="errorMessage"
-                class="bg-negative text-white rounded-borders"
-            >
+            <q-banner v-if="errorMessage" class="bg-negative text-white rounded-borders">
                 {{ errorMessage }}
             </q-banner>
 
-            <q-banner
-                v-if="successMessage"
-                class="bg-positive text-white rounded-borders"
-            >
+            <q-banner v-if="successMessage" class="bg-positive text-white rounded-borders">
                 {{ successMessage }}
             </q-banner>
 
@@ -53,13 +47,7 @@
                     class="col"
                     @click="goBack"
                 />
-                <q-btn
-                    type="submit"
-                    label="Créer"
-                    color="primary"
-                    class="col"
-                    :loading="loading"
-                />
+                <q-btn type="submit" label="Créer" color="primary" class="col" :loading="loading" />
             </div>
         </q-form>
     </AuthCard>
@@ -72,40 +60,24 @@
 
             <q-card-section>
                 <p>
-                    Utilisateur {{ createdUsername }} créé avec succès. Voici le
-                    mot de passe temporaire :
+                    Utilisateur {{ createdUsername }} créé avec succès. Voici le mot de passe
+                    temporaire :
                 </p>
                 <q-input v-model="temporaryPassword" readonly outlined dense>
                     <template #append>
-                        <q-btn
-                            icon="content_copy"
-                            flat
-                            round
-                            @click="copyPassword"
-                        >
+                        <q-btn icon="content_copy" flat round @click="copyPassword">
                             <q-tooltip>Copier</q-tooltip>
                         </q-btn>
                     </template>
                 </q-input>
                 <p class="text-caption text-negative">
-                    Ce mot de passe ne sera affiché qu'une seule fois. Copiez-le
-                    maintenant.
+                    Ce mot de passe ne sera affiché qu'une seule fois. Copiez-le maintenant.
                 </p>
             </q-card-section>
 
             <q-card-actions align="right">
-                <q-btn
-                    flat
-                    label="Fermer"
-                    color="grey"
-                    @click="closePasswordDialog"
-                />
-                <q-btn
-                    flat
-                    label="Retour"
-                    color="primary"
-                    @click="closeAndGoBack"
-                />
+                <q-btn flat label="Fermer" color="grey" @click="closePasswordDialog" />
+                <q-btn flat label="Retour" color="primary" @click="closeAndGoBack" />
             </q-card-actions>
         </q-card>
     </q-dialog>
@@ -176,8 +148,7 @@ async function handleCreateUser() {
         formData.role = 'USER'
     } else {
         // Error is already a string from the store, display it
-        usernameError.value =
-            result.error || "Erreur lors de la création de l'utilisateur"
+        usernameError.value = result.error || "Erreur lors de la création de l'utilisateur"
     }
     loading.value = false
 }

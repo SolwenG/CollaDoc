@@ -1,15 +1,5 @@
-import type {
-    JoinResponse,
-    Operation,
-    OperationMessage,
-    RejectReason,
-} from '../../../shared/ot/index.ts'
-import {
-    apply,
-    baseLength,
-    targetLength,
-    transform,
-} from '../../../shared/ot/index.ts'
+import type { JoinResponse, Operation, OperationMessage, RejectReason } from 'shared/ot/index'
+import { apply, baseLength, targetLength, transform } from 'shared/ot/index'
 import {
     MAX_DOCUMENT_LENGTH,
     joinSchema,
@@ -34,14 +24,9 @@ import {
 import type { CollabSocket } from './socket.types.ts'
 import { documentRoom } from './socket.types.ts'
 
-function isComplete(
-    entries: JournalEntry[],
-    from: number,
-    to: number
-): boolean {
+function isComplete(entries: JournalEntry[], from: number, to: number): boolean {
     return (
-        entries.length === to - from &&
-        (entries.length === 0 || entries[0]!.revision === from + 1)
+        entries.length === to - from && (entries.length === 0 || entries[0]!.revision === from + 1)
     )
 }
 
@@ -87,10 +72,7 @@ async function joinDocument(
 }
 
 // Removes the socket from the document; the last one out writes the snapshot
-export function leaveDocument(
-    socketId: string,
-    documentId: number
-): Promise<void> {
+export function leaveDocument(socketId: string, documentId: number): Promise<void> {
     return runInOrder(documentId, async () => {
         const document = getOpenDocument(documentId)
         if (!document || !document.sockets.delete(socketId)) return
@@ -133,8 +115,7 @@ async function handleOperation(
         const missed = await findOperationsAfter(documentId, revision)
         if (!isComplete(missed, revision, document.revision)) return 'TOO_OLD'
         try {
-            for (const entry of missed)
-                [operation] = transform(operation, entry.operation)
+            for (const entry of missed) [operation] = transform(operation, entry.operation)
         } catch {
             return 'INVALID'
         }
@@ -154,14 +135,9 @@ async function handleOperation(
     document.lastAuthorId = userId
 
     socket.emit('operation:ack', { documentId, opId, revision: entry.revision })
-    socket
-        .to(documentRoom(documentId))
-        .emit('operation:remote', { documentId, ...entry })
+    socket.to(documentRoom(documentId)).emit('operation:remote', { documentId, ...entry })
 
-    if (
-        document.revision - document.contentRevision >=
-        SNAPSHOT_EVERY_OPERATIONS
-    ) {
+    if (document.revision - document.contentRevision >= SNAPSHOT_EVERY_OPERATIONS) {
         await writeSnapshot(document)
     }
     return null
@@ -172,9 +148,7 @@ function rejectionTarget(message: unknown): {
     opId: string
 } {
     const { documentId, opId } =
-        typeof message === 'object' && message !== null
-            ? (message as Record<string, unknown>)
-            : {}
+        typeof message === 'object' && message !== null ? (message as Record<string, unknown>) : {}
     return {
         documentId: typeof documentId === 'number' ? documentId : 0,
         opId: typeof opId === 'string' ? opId : '',
@@ -187,13 +161,7 @@ export function registerCollaborationHandlers(socket: CollabSocket): void {
         const parsed = joinSchema.safeParse(request)
         if (!parsed.success) return reply({ ok: false, reason: 'NOT_FOUND' })
         try {
-            reply(
-                await joinDocument(
-                    socket,
-                    parsed.data.documentId,
-                    parsed.data.revision
-                )
-            )
+            reply(await joinDocument(socket, parsed.data.documentId, parsed.data.revision))
         } catch (error) {
             console.error(error)
             reply({ ok: false, reason: 'NOT_FOUND' })
@@ -212,15 +180,12 @@ export function registerCollaborationHandlers(socket: CollabSocket): void {
         const { documentId, opId } = parsed.data
         let reason: RejectReason | null
         try {
-            reason = await runInOrder(documentId, () =>
-                handleOperation(socket, parsed.data)
-            )
+            reason = await runInOrder(documentId, () => handleOperation(socket, parsed.data))
         } catch (error) {
             console.error(error)
             reason = 'INVALID'
         }
-        if (reason)
-            socket.emit('operation:rejected', { documentId, opId, reason })
+        if (reason) socket.emit('operation:rejected', { documentId, opId, reason })
     })
 
     socket.on('document:leave', async (request) => {

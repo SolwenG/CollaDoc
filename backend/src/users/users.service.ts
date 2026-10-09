@@ -21,13 +21,7 @@ export async function createAccount({
     mustChangePassword,
     createdById,
 }: Register) {
-    return db.orm.public.User.select(
-        'id',
-        'username',
-        'displayName',
-        'role',
-        'createdAt'
-    ).create({
+    return db.orm.public.User.select('id', 'username', 'displayName', 'role', 'createdAt').create({
         username,
         displayName,
         passwordHash,
@@ -52,13 +46,9 @@ export async function findUserForLogin(username: string) {
 }
 
 export async function findUserForAuth(id: number) {
-    return db.orm.public.User.select('id', 'role', 'blockedAt')
-        .where({ id })
-        .first()
+    return db.orm.public.User.select('id', 'role', 'blockedAt').where({ id }).first()
 }
 
 export async function findPublicUserById(id: number) {
-    return db.orm.public.User.select('id', 'username', 'displayName', 'role')
-        .where({ id })
-        .first()
+    return db.orm.public.User.select('id', 'username', 'displayName', 'role').where({ id }).first()
 }

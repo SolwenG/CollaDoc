@@ -18,10 +18,7 @@ function attemptedUsername(req: Request): string {
     return result.success ? result.data : ''
 }
 
-function createLoginLimiter(
-    limit: number,
-    keyGenerator: (req: Request) => string
-) {
+function createLoginLimiter(limit: number, keyGenerator: (req: Request) => string) {
     return rateLimit({
         windowMs: LOGIN_WINDOW_MS,
         limit,
@@ -31,12 +28,7 @@ function createLoginLimiter(
         legacyHeaders: false,
         // Through errorHandler, so the 429 has the same body as every other API error
         handler: (_req, _res, next) => {
-            next(
-                new AppError(
-                    'TOO_MANY_ATTEMPTS',
-                    'Too many login attempts, try again later'
-                )
-            )
+            next(new AppError('TOO_MANY_ATTEMPTS', 'Too many login attempts, try again later'))
         },
     })
 }
