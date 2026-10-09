@@ -162,16 +162,28 @@
         </q-card-section>
       </q-card>
 
-      <!-- MFA Configuration Button -->
-      <q-btn
-        label="Configuration MFA"
-        color="primary"
-        class="full-width q-mt-lg"
-        @click="showMfaDialog = true"
-      />
+      <!-- MFA status, hidden until the profile is loaded so the button does not flash -->
+      <template v-if="userStore.currentUser">
+        <q-banner
+          v-if="userStore.currentUser.mfaEnabled"
+          class="bg-positive text-white rounded-borders q-mt-lg"
+        >
+          <template #avatar>
+            <q-icon name="verified_user" />
+          </template>
+          Vérification en deux étapes activée.
+        </q-banner>
+        <q-btn
+          v-else
+          label="Activer la vérification en deux étapes"
+          color="primary"
+          class="full-width q-mt-lg"
+          @click="showMfaDialog = true"
+        />
+      </template>
     </div>
 
-    <TwoFactorSetupDialog v-model="showMfaDialog" />
+    <TwoFactorSetupDialog v-model="showMfaDialog" @enabled="refreshProfile" />
   </q-page>
 </template>
 
@@ -322,5 +334,9 @@ async function saveField(field: 'displayName' | 'password') {
       passwordError.value = result.error || 'Erreur lors de la mise à jour';
     }
   }
+}
+
+async function refreshProfile() {
+  if (authStore.user) await userStore.fetchUserProfile(authStore.user.id);
 }
 </script>

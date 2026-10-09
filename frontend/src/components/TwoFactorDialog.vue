@@ -22,7 +22,7 @@
             @update:model-value="codeError = ''"
           />
           <div class="row justify-end q-gutter-sm">
-            <q-btn flat label="Annuler" @click="open = false" />
+            <q-btn flat label="Annuler" @click="abort()" />
             <q-btn type="submit" color="primary" label="Vérifier" :loading="loading" />
           </div>
         </q-form>
@@ -33,10 +33,14 @@
 
 <script setup lang="ts">
 import { ref, watch } from 'vue';
+import { useQuasar } from 'quasar';
 import { required, sixDigits } from '@/utils/validation';
+import { useAuthStore } from '@/stores/auth';
 
 const open = defineModel<boolean>({ required: true });
-defineEmits<{ verified: [] }>();
+const emit = defineEmits<{ verified: [] }>();
+const $q = useQuasar();
+const auth = useAuthStore();
 
 const code = ref('');
 const codeError = ref('');
@@ -50,10 +54,38 @@ watch(open, (isOpen) => {
   }
 });
 
-function onSubmit() {
-  // TODO : envoyer le code au back quand l'API 2FA existera
-  // Une fois le code vérifié : fermer la fenêtre (open.value = false) puis emit('verified')
-  codeError.value = 'Code invalide (vérification pas encore branchée)';
+async function abort(message?: string) {
+  open.value = false;
+  if (message) $q.notify({ type: 'negative', message });
+  await auth.logout();
+}
+
+async function onSubmit() {
+  loading.value = true;
+  try {
+    const result = await auth.verifyMfa(code.value);
+    if (result === 'success') {
+      emit('verified');
+      return;
+    }
+    if (result === 'invalid-code') {
+      codeError.value = 'Code invalide.';
+      return;
+    }
+    if (result === 'locked') {
+      await abort('Trop de tentatives. Réessayez dans quelques minutes.');
+      return;
+    }
+    if (result === 'expired') {
+      await abort('Session expirée, reconnectez-vous.');
+      return;
+    }
+    $q.notify({ type: 'negative', message: 'Une erreur est survenue. Réessayez plus tard.' });
+  } catch {
+    $q.notify({ type: 'negative', message: 'Impossible de joindre le serveur.' });
+  } finally {
+    loading.value = false;
+  }
 }
 </script>
 
