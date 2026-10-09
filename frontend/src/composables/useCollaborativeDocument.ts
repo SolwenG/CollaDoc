@@ -141,6 +141,10 @@ export function useCollaborativeDocument(
         closedMessage.value = CLOSED_MESSAGES[message.reason]
         socket.disconnect()
     })
+    // The owner changed this user's role: the editor follows without a reload
+    socket.on('document:role-changed', (message) => {
+        if (message.documentId === documentId) role.value = message.role
+    })
 
     function onInput() {
         const element = textarea.value

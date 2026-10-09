@@ -51,6 +51,11 @@ export type ClosedMessage = {
     reason: 'DELETED' | 'ACCESS_REVOKED'
 }
 
+export type RoleChangedMessage = {
+    documentId: number
+    role: DocumentRole
+}
+
 export interface ClientToServerEvents {
     'document:join': (request: JoinRequest, reply: (response: JoinResponse) => void) => void
     'document:leave': (request: { documentId: number }) => void
@@ -62,4 +67,5 @@ export interface ServerToClientEvents {
     'operation:remote': (message: RemoteOperation) => void
     'operation:rejected': (message: RejectedMessage) => void
     'document:closed': (message: ClosedMessage) => void
+    'document:role-changed': (message: RoleChangedMessage) => void
 }

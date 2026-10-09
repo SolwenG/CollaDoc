@@ -5,6 +5,7 @@ import * as z from 'zod'
 import { checkSessionToken } from '../auth/authenticate.ts'
 import { AppError } from '../errors/app-error.ts'
 import { leaveDocument } from './collaboration.handlers.ts'
+import { findDocumentRole } from './collaboration.service.ts'
 import { runInOrder } from './document-queue.ts'
 import { forgetDocument } from './open-documents.ts'
 import { documentRoom, userRoom } from './socket.types.ts'
@@ -63,6 +64,22 @@ export function internalRoutes(io: CollabServer): Router {
             socket.leave(room)
             socket.data.documentIds.delete(documentId)
             await leaveDocument(socket.id, documentId)
+        }
+        res.status(204).end()
+    })
+
+    router.post('/documents/:documentId/members/:userId/role-changed', async (req, res) => {
+        const documentId = idSchema.parse(req.params['documentId'])
+        const userId = idSchema.parse(req.params['userId'])
+        // Read from the database, never from the request: the latest change wins
+        const role = await findDocumentRole(documentId, userId)
+        if (role) {
+            const room = documentRoom(documentId)
+            for (const socket of await io.in(userRoom(userId)).fetchSockets()) {
+                if (socket.rooms.has(room)) {
+                    socket.emit('document:role-changed', { documentId, role })
+                }
+            }
         }
         res.status(204).end()
     })

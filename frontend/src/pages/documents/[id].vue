@@ -15,6 +15,14 @@
         <div class="row items-center q-mb-md q-gutter-sm">
             <h1 class="text-h5 q-my-none ellipsis">{{ details?.document.name ?? 'Document' }}</h1>
             <q-space />
+            <q-btn
+                v-if="role === 'OWNER'"
+                color="primary"
+                icon="person_add"
+                label="Inviter"
+                dense
+                @click="showShareDialog = true"
+            />
             <q-chip v-if="role === 'VIEWER'" icon="visibility" dense>Lecture seule</q-chip>
             <q-chip
                 :color="STATUS[status].color"
@@ -48,6 +56,8 @@
             @beforeinput="onBeforeInput"
             @keydown="onKeydown"
         />
+
+        <ShareDialog v-model="showShareDialog" :document-id="documentId" />
     </q-page>
 </template>
 
@@ -55,6 +65,7 @@
 import { computed, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { copyToClipboard, useQuasar } from 'quasar'
+import ShareDialog from '@/components/ShareDialog.vue'
 import { useCollaborativeDocument } from '@/composables/useCollaborativeDocument'
 import { fetchDocument, type DocumentDetails } from '@/utils/drive-api'
 
@@ -66,11 +77,13 @@ const STATUS = {
 } as const
 
 const route = useRoute('/documents/[id]')
+const documentId = Number(route.params.id)
 const $q = useQuasar()
 const textarea = ref<HTMLTextAreaElement | null>(null)
+const showShareDialog = ref(false)
 
 const { status, role, readonly, closedMessage, lostText, onInput, onBeforeInput, onKeydown } =
-    useCollaborativeDocument(Number(route.params.id), textarea)
+    useCollaborativeDocument(documentId, textarea)
 
 const details = ref<DocumentDetails | null>(null)
 const isOwner = computed(() => details.value?.access === 'OWNER')

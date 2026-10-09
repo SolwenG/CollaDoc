@@ -76,7 +76,12 @@
         </q-form>
         <div class="q-mt-md">
             Déjà un compte ?
-            <router-link to="/login" class="text-primary text-bold">Se connecter</router-link>
+            <router-link
+                :to="{ path: '/login', query: route.query }"
+                class="text-primary text-bold"
+            >
+                Se connecter
+            </router-link>
         </div>
     </AuthCard>
 </template>
@@ -84,7 +89,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useQuasar } from 'quasar'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import AuthCard from '@/components/AuthCard.vue'
 import { usePasswordStrength } from '@/hooks/usePasswordStrength'
 import { postJson, readApiError } from '@/utils/api'
@@ -103,6 +108,7 @@ import {
 } from '@/utils/validation'
 
 const $q = useQuasar()
+const route = useRoute()
 const router = useRouter()
 
 const username = ref('')
@@ -144,7 +150,8 @@ async function onSubmit() {
 
         if (response.status === 201) {
             $q.notify({ type: 'positive', message: 'Compte créé, vous pouvez vous connecter.' })
-            await router.push('/login')
+            // Keeps ?redirect=… so the login still leads to the invitation
+            await router.push({ path: '/login', query: route.query })
             return
         }
 
