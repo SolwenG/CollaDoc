@@ -12,7 +12,22 @@ export interface User {
 export type LoginResult =
   'success' | 'mfa-required' | 'invalid' | 'blocked' | 'rate-limited' | 'error';
 
-export type MfaError = 'invalid-code' | 'locked' | 'expired' | 'error';
+export interface MfaSetup {
+  secret: string;
+  otpauthUrl: string;
+  qrCodeDataUrl: string;
+}
+
+export type MfaError =
+  | 'invalid-password'
+  | 'invalid-code'
+  | 'already-enabled'
+  | 'setup-not-started'
+  | 'locked'
+  | 'expired'
+  | 'error';
+
+export type MfaSetupResult = { status: 'success'; setup: MfaSetup } | { status: MfaError };
 
 const LOGIN_ERRORS: Record<string, LoginResult> = {
   INVALID_CREDENTIALS: 'invalid',
@@ -21,7 +36,10 @@ const LOGIN_ERRORS: Record<string, LoginResult> = {
 };
 
 const MFA_ERRORS: Record<string, MfaError> = {
+  INVALID_CURRENT_PASSWORD: 'invalid-password',
   INVALID_MFA_CODE: 'invalid-code',
+  MFA_ALREADY_ENABLED: 'already-enabled',
+  MFA_SETUP_NOT_STARTED: 'setup-not-started',
   TOO_MANY_ATTEMPTS: 'locked',
   UNAUTHENTICATED: 'expired',
 };
@@ -81,6 +99,20 @@ export const useAuthStore = defineStore('auth', () => {
     user.value = null;
   }
 
+  async function startMfaSetup(password: string): Promise<MfaSetupResult> {
+    const response = await postJson('/auth/mfa/setup', { password });
+    if (response.ok) {
+      const setup = await readJson<MfaSetup>(response);
+      return setup ? { status: 'success', setup } : { status: 'error' };
+    }
+    return { status: await toMfaError(response) };
+  }
+
+  async function enableMfa(code: string): Promise<'success' | MfaError> {
+    const response = await postJson('/auth/mfa/enable', { code });
+    return response.ok ? 'success' : toMfaError(response);
+  }
+
   async function verifyMfa(code: string): Promise<'success' | MfaError> {
     const response = await postJson('/auth/mfa/verify', { code });
     if (response.ok) {
@@ -103,6 +135,8 @@ export const useAuthStore = defineStore('auth', () => {
     logout,
     fetchCurrentUser,
     forgetUser,
+    startMfaSetup,
+    enableMfa,
     verifyMfa,
   };
 });
