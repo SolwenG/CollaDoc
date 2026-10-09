@@ -14,10 +14,13 @@ export function onUnauthorized(handler: () => void) {
   unauthorizedHandler = handler;
 }
 
+/** Routes where a 401 is an expected answer, not an expired session */
+const EXPECTED_401_PATHS = ['/auth/login', '/auth/session', '/auth/mfa/verify'];
+
 export async function apiFetch(path: string, options: RequestInit = {}) {
   const response = await fetch(`${API_PREFIX}${path}`, options);
 
-  if (response.status === 401 && !path.startsWith('/auth/')) {
+  if (response.status === 401 && !EXPECTED_401_PATHS.includes(path)) {
     unauthorizedHandler?.();
   }
 
