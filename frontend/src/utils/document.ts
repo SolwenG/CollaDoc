@@ -8,5 +8,6 @@ export interface DocumentMember {
 }
 
 export async function fetchDocumentMembers(documentId: number): Promise<DocumentMember[] | null> {
-    return getJson<DocumentMember[]>(`/documents/${documentId}/members`)
+    const response = await getJson<{ members: DocumentMember[] }>(`/documents/${documentId}/members`)
+    return response?.members ?? null
 }
