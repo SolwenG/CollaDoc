@@ -2,37 +2,37 @@
 // by middlewares/errors.middleware.ts. Must not depend on Express.
 
 const STATUS_BY_CODE = {
-  VALIDATION_ERROR: 400,
-  INVALID_CURRENT_PASSWORD: 400,
-  INVALID_MFA_CODE: 400,
-  PASSWORD_UNCHANGED: 400,
-  PASSWORD_TOO_SHORT: 400,
-  PASSWORD_TOO_LONG: 400,
-  INVALID_CREDENTIALS: 401,
-  UNAUTHENTICATED: 401,
-  ACCOUNT_BLOCKED: 403,
-  FORBIDDEN: 403,
-  CANNOT_BLOCK_SELF: 403,
-  USER_NOT_FOUND: 404,
-  USERNAME_TAKEN: 409,
-  MFA_ALREADY_ENABLED: 409,
-  MFA_SETUP_NOT_STARTED: 409,
-  TOO_MANY_ATTEMPTS: 429,
-  INTERNAL_ERROR: 500,
-} as const;
+    VALIDATION_ERROR: 400,
+    INVALID_CURRENT_PASSWORD: 400,
+    INVALID_MFA_CODE: 400,
+    PASSWORD_UNCHANGED: 400,
+    PASSWORD_TOO_SHORT: 400,
+    PASSWORD_TOO_LONG: 400,
+    INVALID_CREDENTIALS: 401,
+    UNAUTHENTICATED: 401,
+    ACCOUNT_BLOCKED: 403,
+    FORBIDDEN: 403,
+    CANNOT_BLOCK_SELF: 403,
+    USER_NOT_FOUND: 404,
+    USERNAME_TAKEN: 409,
+    MFA_ALREADY_ENABLED: 409,
+    MFA_SETUP_NOT_STARTED: 409,
+    TOO_MANY_ATTEMPTS: 429,
+    INTERNAL_ERROR: 500,
+} as const
 
-export type ErrorCode = keyof typeof STATUS_BY_CODE;
+export type ErrorCode = keyof typeof STATUS_BY_CODE
 
 export class AppError extends Error {
-  readonly code: ErrorCode;
-  readonly status: number;
-  readonly details?: unknown;
+    readonly code: ErrorCode
+    readonly status: number
+    readonly details?: unknown
 
-  constructor(code: ErrorCode, message: string, details?: unknown) {
-    super(message);
-    this.name = "AppError";
-    this.code = code;
-    this.status = STATUS_BY_CODE[code];
-    this.details = details;
-  }
+    constructor(code: ErrorCode, message: string, details?: unknown) {
+        super(message)
+        this.name = 'AppError'
+        this.code = code
+        this.status = STATUS_BY_CODE[code]
+        this.details = details
+    }
 }

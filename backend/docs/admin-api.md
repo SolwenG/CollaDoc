@@ -8,15 +8,15 @@ L'admin connecté est lu via `getAuthUser(req)` (`src/middlewares/auth.middlewar
 
 ```json
 {
-  "id": 12,
-  "username": "alice",
-  "displayName": "Alice",
-  "role": "USER",
-  "mustChangePassword": false,
-  "blockedAt": null,
-  "blockedBy": null,
-  "createdAt": "2026-10-07 13:09:40.166+00",
-  "mfaEnabled": false
+    "id": 12,
+    "username": "alice",
+    "displayName": "Alice",
+    "role": "USER",
+    "mustChangePassword": false,
+    "blockedAt": null,
+    "blockedBy": null,
+    "createdAt": "2026-10-07 13:09:40.166+00",
+    "mfaEnabled": false
 }
 ```
 

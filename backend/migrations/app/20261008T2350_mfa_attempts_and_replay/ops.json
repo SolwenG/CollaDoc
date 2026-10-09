@@ -1,128 +1,104 @@
 [
-  {
-    "id": "column.public.User.mfaFailedAttempts",
-    "label": "Add column \"mfaFailedAttempts\" to \"User\"",
-    "operationClass": "additive",
-    "target": {
-      "id": "postgres",
-      "details": {
-        "schema": "public",
-        "objectType": "column",
-        "name": "mfaFailedAttempts",
-        "table": "User"
-      }
+    {
+        "id": "column.public.User.mfaFailedAttempts",
+        "label": "Add column \"mfaFailedAttempts\" to \"User\"",
+        "operationClass": "additive",
+        "target": {
+            "id": "postgres",
+            "details": {
+                "schema": "public",
+                "objectType": "column",
+                "name": "mfaFailedAttempts",
+                "table": "User"
+            }
+        },
+        "precheck": [
+            {
+                "description": "ensure column \"mfaFailedAttempts\" is missing",
+                "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+                "params": ["public", "User", "mfaFailedAttempts"]
+            }
+        ],
+        "execute": [
+            {
+                "description": "add column \"mfaFailedAttempts\"",
+                "sql": "ALTER TABLE \"public\".\"User\" ADD COLUMN \"mfaFailedAttempts\" int4 DEFAULT 0 NOT NULL"
+            }
+        ],
+        "postcheck": [
+            {
+                "description": "verify column \"mfaFailedAttempts\" exists",
+                "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+                "params": ["public", "User", "mfaFailedAttempts"]
+            }
+        ]
     },
-    "precheck": [
-      {
-        "description": "ensure column \"mfaFailedAttempts\" is missing",
-        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
-        "params": [
-          "public",
-          "User",
-          "mfaFailedAttempts"
+    {
+        "id": "column.public.User.mfaLockedUntil",
+        "label": "Add column \"mfaLockedUntil\" to \"User\"",
+        "operationClass": "additive",
+        "target": {
+            "id": "postgres",
+            "details": {
+                "schema": "public",
+                "objectType": "column",
+                "name": "mfaLockedUntil",
+                "table": "User"
+            }
+        },
+        "precheck": [
+            {
+                "description": "ensure column \"mfaLockedUntil\" is missing",
+                "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+                "params": ["public", "User", "mfaLockedUntil"]
+            }
+        ],
+        "execute": [
+            {
+                "description": "add column \"mfaLockedUntil\"",
+                "sql": "ALTER TABLE \"public\".\"User\" ADD COLUMN \"mfaLockedUntil\" timestamptz"
+            }
+        ],
+        "postcheck": [
+            {
+                "description": "verify column \"mfaLockedUntil\" exists",
+                "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+                "params": ["public", "User", "mfaLockedUntil"]
+            }
         ]
-      }
-    ],
-    "execute": [
-      {
-        "description": "add column \"mfaFailedAttempts\"",
-        "sql": "ALTER TABLE \"public\".\"User\" ADD COLUMN \"mfaFailedAttempts\" int4 DEFAULT 0 NOT NULL"
-      }
-    ],
-    "postcheck": [
-      {
-        "description": "verify column \"mfaFailedAttempts\" exists",
-        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
-        "params": [
-          "public",
-          "User",
-          "mfaFailedAttempts"
-        ]
-      }
-    ]
-  },
-  {
-    "id": "column.public.User.mfaLockedUntil",
-    "label": "Add column \"mfaLockedUntil\" to \"User\"",
-    "operationClass": "additive",
-    "target": {
-      "id": "postgres",
-      "details": {
-        "schema": "public",
-        "objectType": "column",
-        "name": "mfaLockedUntil",
-        "table": "User"
-      }
     },
-    "precheck": [
-      {
-        "description": "ensure column \"mfaLockedUntil\" is missing",
-        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
-        "params": [
-          "public",
-          "User",
-          "mfaLockedUntil"
+    {
+        "id": "column.public.User.totpLastUsedStep",
+        "label": "Add column \"totpLastUsedStep\" to \"User\"",
+        "operationClass": "additive",
+        "target": {
+            "id": "postgres",
+            "details": {
+                "schema": "public",
+                "objectType": "column",
+                "name": "totpLastUsedStep",
+                "table": "User"
+            }
+        },
+        "precheck": [
+            {
+                "description": "ensure column \"totpLastUsedStep\" is missing",
+                "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+                "params": ["public", "User", "totpLastUsedStep"]
+            }
+        ],
+        "execute": [
+            {
+                "description": "add column \"totpLastUsedStep\"",
+                "sql": "ALTER TABLE \"public\".\"User\" ADD COLUMN \"totpLastUsedStep\" int4"
+            }
+        ],
+        "postcheck": [
+            {
+                "description": "verify column \"totpLastUsedStep\" exists",
+                "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+                "params": ["public", "User", "totpLastUsedStep"]
+            }
         ]
-      }
-    ],
-    "execute": [
-      {
-        "description": "add column \"mfaLockedUntil\"",
-        "sql": "ALTER TABLE \"public\".\"User\" ADD COLUMN \"mfaLockedUntil\" timestamptz"
-      }
-    ],
-    "postcheck": [
-      {
-        "description": "verify column \"mfaLockedUntil\" exists",
-        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
-        "params": [
-          "public",
-          "User",
-          "mfaLockedUntil"
-        ]
-      }
-    ]
-  },
-  {
-    "id": "column.public.User.totpLastUsedStep",
-    "label": "Add column \"totpLastUsedStep\" to \"User\"",
-    "operationClass": "additive",
-    "target": {
-      "id": "postgres",
-      "details": {
-        "schema": "public",
-        "objectType": "column",
-        "name": "totpLastUsedStep",
-        "table": "User"
-      }
-    },
-    "precheck": [
-      {
-        "description": "ensure column \"totpLastUsedStep\" is missing",
-        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
-        "params": [
-          "public",
-          "User",
-          "totpLastUsedStep"
-        ]
-      }
-    ],
-    "execute": [
-      {
-        "description": "add column \"totpLastUsedStep\"",
-        "sql": "ALTER TABLE \"public\".\"User\" ADD COLUMN \"totpLastUsedStep\" int4"
-      }
-    ],
-    "postcheck": [
-      {
-        "description": "verify column \"totpLastUsedStep\" exists",
-        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
-        "params": [
-          "public",
-          "User",
-          "totpLastUsedStep"
-        ]
-      }
-    ]
-  }
+    }
 ]

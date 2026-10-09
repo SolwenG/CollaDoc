@@ -1,5 +1,9 @@
 {
-  "name": "shared",
-  "private": true,
-  "type": "module"
+    "name": "shared",
+    "private": true,
+    "type": "module",
+    "exports": {
+        "./call/types": "./call/types.ts",
+        "./ot/*": "./ot/*.ts"
+    }
 }
