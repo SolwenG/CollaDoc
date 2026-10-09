@@ -8,6 +8,7 @@ import {
 } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
 import { onUnauthorized } from '@/utils/api';
+import { safeRedirect } from '@/utils/redirect';
 
 // Pages reachable without being logged in
 const PUBLIC_PATHS = ['/login', '/register'];
@@ -53,11 +54,12 @@ export default defineRouter((/* { store, ssrContext } */) => {
     const isPublic = PUBLIC_PATHS.includes(to.path);
 
     if (!auth.isLoggedIn && !isPublic) {
-      return '/login';
+      // Remembers the requested page (an invitation link…) to come back to it after the login
+      return to.fullPath === '/' ? '/login' : { path: '/login', query: { redirect: to.fullPath } };
     }
 
     if (auth.isLoggedIn && isPublic) {
-      return '/';
+      return safeRedirect(to.query.redirect);
     }
 
     if (isAdminPath(to.path) && !auth.isAdmin) {
