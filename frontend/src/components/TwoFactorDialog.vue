@@ -36,6 +36,7 @@ import { ref, watch } from 'vue';
 import { required, sixDigits } from '@/utils/validation';
 
 const open = defineModel<boolean>({ required: true });
+defineEmits<{ verified: [] }>();
 
 const code = ref('');
 const codeError = ref('');
@@ -51,6 +52,7 @@ watch(open, (isOpen) => {
 
 function onSubmit() {
   // TODO : envoyer le code au back quand l'API 2FA existera
+  // Une fois le code vérifié : fermer la fenêtre (open.value = false) puis emit('verified')
   codeError.value = 'Code invalide (vérification pas encore branchée)';
 }
 </script>

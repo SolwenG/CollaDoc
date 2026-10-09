@@ -33,7 +33,7 @@
         Créer un compte
       </router-link>
     </div>
-    <TwoFactorDialog v-model="showTwoFactor" />
+    <TwoFactorDialog v-model="showTwoFactor" @verified="goToRequestedPage" />
   </AuthCard>
 </template>
 
@@ -75,8 +75,6 @@ async function onSubmit() {
     }
 
     if (result === 'mfa-required') {
-      // TODO (branche 2FA) : une fois le code vérifié, appeler goToRequestedPage()
-      // pour revenir à la page demandée (lien d'invitation…) au lieu de rester ici
       showTwoFactor.value = true;
       return;
     }
