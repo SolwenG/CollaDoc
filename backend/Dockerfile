@@ -6,7 +6,7 @@ WORKDIR /app/backend
 COPY backend/package.json backend/package-lock.json ./
 # npm links the "shared" dependency to ../shared, which must exist before installing
 COPY shared/ /app/shared/
-RUN npm ci --omit=dev
+RUN --mount=type=cache,target=/root/.npm npm ci --omit=dev
 
 COPY backend/ ./
 

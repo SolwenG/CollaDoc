@@ -4,10 +4,9 @@ FROM node:24-alpine AS build
 WORKDIR /app/frontend
 
 COPY frontend/package.json frontend/package-lock.json ./
-
 # npm links the "shared" dependency to ../shared, which must exist before installing
 COPY shared/ /app/shared/
-RUN npm ci --ignore-scripts
+RUN --mount=type=cache,target=/root/.npm npm ci --ignore-scripts
 
 COPY frontend/ ./
 RUN npx quasar prepare && npx quasar build
