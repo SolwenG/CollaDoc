@@ -15,6 +15,8 @@ services:
             interval: 5s
             timeout: 5s
             retries: 10
+        networks:
+            - data
 
     backend:
         build:
@@ -53,6 +55,9 @@ services:
             - ALL
         security_opt:
             - no-new-privileges:true
+        networks:
+            - data
+            - edge
 
     # Second server: collaborative editing over socket.io (see docs/collaboration-ot.md)
     realtime:
@@ -84,6 +89,9 @@ services:
             - ALL
         security_opt:
             - no-new-privileges:true
+        networks:
+            - data
+            - edge
 
     frontend:
         build:
@@ -111,7 +119,13 @@ services:
             - ALL
         security_opt:
             - no-new-privileges:true
+        networks:
+            - edge
 
 volumes:
     db-data:
     uploads-data:
+
+networks:
+    edge:
+    data:
