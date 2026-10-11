@@ -13,5 +13,11 @@ COPY backend/ ./
 ENV NODE_ENV=production
 EXPOSE 3000 3001
 
+# Uploads volume mount point: the only place the app writes. A fresh volume inherits this ownership
+RUN mkdir /app/uploads && chown node:node /app/uploads
+
+# Runs unprivileged: the code stays owned by root, so the app cannot modify it
+USER node
+
 # The realtime service overrides this with src/realtime.ts
 CMD ["node", "src/app.ts"]

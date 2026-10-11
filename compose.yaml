@@ -46,6 +46,13 @@ services:
         depends_on:
             db:
                 condition: service_healthy
+        read_only: true
+        tmpfs:
+            - /tmp:noexec,nosuid,size=16m
+        cap_drop:
+            - ALL
+        security_opt:
+            - no-new-privileges:true
 
     # Second server: collaborative editing over socket.io (see docs/collaboration-ot.md)
     realtime:
@@ -70,6 +77,13 @@ services:
         depends_on:
             db:
                 condition: service_healthy
+        read_only: true
+        tmpfs:
+            - /tmp:noexec,nosuid,size=16m
+        cap_drop:
+            - ALL
+        security_opt:
+            - no-new-privileges:true
 
     frontend:
         build:
