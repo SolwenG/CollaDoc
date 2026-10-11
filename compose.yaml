@@ -1,135 +1,104 @@
+# Pinned on purpose: otherwise derived from the folder name, which would change volume names (and "lose" the data)
+name: colladoc
+
+x-hardening: &hardening
+    read_only: true
+    cap_drop: ['ALL']
+    security_opt: ['no-new-privileges:true']
+
+x-healthcheck: &healthcheck
+    interval: 10s
+    timeout: 3s
+    retries: 3
+    start_period: 10s
+    start_interval: 1s
+
+x-backend-base: &backend-base
+    <<: *hardening
+    image: colladoc-backend
+    init: true
+    restart: unless-stopped
+    stop_grace_period: 10s
+    depends_on:
+        db:
+            condition: service_healthy
+    tmpfs: ['/tmp:noexec,nosuid,size=16m']
+    networks: ['data', 'edge']
+
+x-backend-env: &backend-env
+    DATABASE_URL: postgresql://${POSTGRES_USER:-colladoc}:${POSTGRES_PASSWORD:-colladoc}@db:5432/${POSTGRES_DB:-colladoc}
+    INTERNAL_SECRET: ${INTERNAL_SECRET:?INTERNAL_SECRET must be set in .env}
+
 services:
     db:
+        <<: *hardening
         image: postgres:18-alpine3.24
         restart: unless-stopped
         environment:
             POSTGRES_USER: ${POSTGRES_USER:-colladoc}
             POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-colladoc}
             POSTGRES_DB: ${POSTGRES_DB:-colladoc}
-        volumes:
-            - db-data:/var/lib/postgresql
-        ports:
-            - '127.0.0.1:${DB_PORT:-5433}:5432'
+        ports: ['127.0.0.1:${DB_PORT:-5433}:5432']
         healthcheck:
-            test: ['CMD-SHELL', 'pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}']
             interval: 5s
             timeout: 5s
             retries: 10
-        networks:
-            - data
+            test: ['CMD-SHELL', 'pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}']
         user: postgres
-        read_only: true
-        tmpfs:
-            - /var/run/postgresql:size=1m
-            - /tmp:noexec,nosuid,size=16m
-        cap_drop:
-            - ALL
-        security_opt:
-            - no-new-privileges:true
+        tmpfs: ['/var/run/postgresql:size=1m', '/tmp:noexec,nosuid,size=16m']
+        volumes: ['db-data:/var/lib/postgresql']
+        networks: ['data']
 
     backend:
+        <<: *backend-base
         build:
             context: .
             dockerfile: backend/Dockerfile
-        image: colladoc-backend
-        init: true
-        restart: unless-stopped
-        stop_grace_period: 10s
         environment:
-            DATABASE_URL: postgresql://${POSTGRES_USER:-colladoc}:${POSTGRES_PASSWORD:-colladoc}@db:5432/${POSTGRES_DB:-colladoc}
+            <<: *backend-env
             PORT: '3000'
             REALTIME_INTERNAL_URL: http://realtime:3001
-            INTERNAL_SECRET: ${INTERNAL_SECRET:?INTERNAL_SECRET must be set in .env}
             TOTP_ENCRYPTION_KEY: ${TOTP_ENCRYPTION_KEY:?TOTP_ENCRYPTION_KEY must be set in the root .env}
             SHARE_LINK_SECRET: ${SHARE_LINK_SECRET:?SHARE_LINK_SECRET must be set in the root .env}
             UPLOAD_DIR: /app/uploads
-        volumes:
-            - uploads-data:/app/uploads
-        ports:
-            - '127.0.0.1:${BACKEND_PORT:-3000}:3000'
+        ports: ['127.0.0.1:${BACKEND_PORT:-3000}:3000']
+        volumes: ['uploads-data:/app/uploads']
         healthcheck:
+            <<: *healthcheck
             test: ['CMD', 'wget', '-q', '--spider', 'http://127.0.0.1:3000/health']
-            interval: 10s
-            timeout: 3s
-            retries: 3
-            start_period: 10s
-            start_interval: 1s
-        depends_on:
-            db:
-                condition: service_healthy
-        read_only: true
-        tmpfs:
-            - /tmp:noexec,nosuid,size=16m
-        cap_drop:
-            - ALL
-        security_opt:
-            - no-new-privileges:true
-        networks:
-            - data
-            - edge
+        # Pinned on purpose (same as the image CMD): both services declare what they run side by side
+        command: ['node', 'src/app.ts']
 
-    # Second server: collaborative editing over socket.io (see docs/collaboration-ot.md)
+    # Second server: collaborative editing over socket.io
     realtime:
-        image: colladoc-backend
-        init: true
-        command: ['node', 'src/realtime.ts']
-        restart: unless-stopped
-        stop_grace_period: 10s
+        <<: *backend-base
         environment:
-            DATABASE_URL: postgresql://${POSTGRES_USER:-colladoc}:${POSTGRES_PASSWORD:-colladoc}@db:5432/${POSTGRES_DB:-colladoc}
+            <<: *backend-env
             REALTIME_PORT: '3001'
-            INTERNAL_SECRET: ${INTERNAL_SECRET:?INTERNAL_SECRET must be set in .env}
-        ports:
-            - '127.0.0.1:${REALTIME_PORT:-3001}:3001'
+        ports: ['127.0.0.1:${REALTIME_PORT:-3001}:3001']
         healthcheck:
+            <<: *healthcheck
             test: ['CMD', 'wget', '-q', '--spider', 'http://127.0.0.1:3001/health']
-            interval: 10s
-            timeout: 3s
-            retries: 3
-            start_period: 10s
-            start_interval: 1s
-        depends_on:
-            db:
-                condition: service_healthy
-        read_only: true
-        tmpfs:
-            - /tmp:noexec,nosuid,size=16m
-        cap_drop:
-            - ALL
-        security_opt:
-            - no-new-privileges:true
-        networks:
-            - data
-            - edge
+        command: ['node', 'src/realtime.ts']
 
     frontend:
+        <<: *hardening
         build:
             context: .
             dockerfile: frontend/Dockerfile
+        image: colladoc-frontend
         healthcheck:
+            <<: *healthcheck
             test: ['CMD', 'wget', '-q', '--spider', 'http://127.0.0.1:8080/']
-            interval: 10s
-            timeout: 3s
-            retries: 3
-            start_period: 5s
-            start_interval: 1s
         restart: unless-stopped
-        ports:
-            - '${FRONTEND_PORT:-8080}:8080'
         depends_on:
             backend:
                 condition: service_healthy
             realtime:
                 condition: service_healthy
-        read_only: true
-        tmpfs:
-            - /tmp:noexec,nosuid,size=64m
-        cap_drop:
-            - ALL
-        security_opt:
-            - no-new-privileges:true
-        networks:
-            - edge
+        ports: ['${FRONTEND_PORT:-8080}:8080']
+        tmpfs: ['/tmp:noexec,nosuid,size=64m']
+        networks: ['edge']
 
 volumes:
     db-data:

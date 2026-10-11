@@ -1,41 +1,39 @@
 # Development overrides, loaded automatically by `docker compose` next to the base file.
 # Same images and hardening as production: only the source mounts, the watch rules and the cookie flag differ.
+x-source-mounts: &source-mounts
+    - ./backend/src:/app/backend/src:ro
+    - ./shared:/app/shared:ro
+
+x-watch-src: &watch-src
+    path: ./backend/src
+    action: restart
+    ignore: ['**/*.test.ts']
+
+x-watch-shared: &watch-shared
+    path: ./shared
+    action: restart
+    ignore: ['**/*.test.ts']
+
 services:
     backend:
         environment:
             # Session cookie also sent over plain http, so REST Client works against this container; production keeps the secure default
             COOKIE_SECURE: 'false'
-        volumes:
-            - ./backend/src:/app/backend/src:ro
-            - ./shared:/app/shared:ro
         develop:
             watch:
-                - path: ./backend/src
-                  action: restart
-                  ignore:
-                      - '**/*.test.ts'
-                - path: ./shared
-                  action: restart
-                  ignore:
-                      - '**/*.test.ts'
+                - *watch-src
+                - *watch-shared
                 - path: ./backend/package.json
                   action: rebuild
                 - path: ./backend/package-lock.json
                   action: rebuild
                 - path: ./backend/Dockerfile
                   action: rebuild
+        volumes: *source-mounts
 
     realtime:
-        volumes:
-            - ./backend/src:/app/backend/src:ro
-            - ./shared:/app/shared:ro
         develop:
             watch:
-                - path: ./backend/src
-                  action: restart
-                  ignore:
-                      - '**/*.test.ts'
-                - path: ./shared
-                  action: restart
-                  ignore:
-                      - '**/*.test.ts'
+                - *watch-src
+                - *watch-shared
+        volumes: *source-mounts
