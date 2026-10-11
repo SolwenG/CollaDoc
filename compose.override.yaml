@@ -14,7 +14,32 @@ x-watch-shared: &watch-shared
     action: restart
     ignore: ['**/*.test.ts']
 
+x-rebuild-package: &rebuild-package
+    path: ./backend/package.json
+    action: rebuild
+
+x-rebuild-lockfile: &rebuild-lockfile
+    path: ./backend/package-lock.json
+    action: rebuild
+
+x-rebuild-dockerfile: &rebuild-dockerfile
+    path: ./backend/Dockerfile
+    action: rebuild
+
 services:
+    migrate:
+        develop:
+            watch:
+                - *rebuild-package
+                - *rebuild-lockfile
+                - *rebuild-dockerfile
+                - path: ./backend/migrations
+                  action: rebuild
+                - path: ./backend/src/prisma
+                  action: rebuild
+                - path: ./backend/prisma.config.ts
+                  action: rebuild
+
     backend:
         environment:
             # Session cookie also sent over plain http, so REST Client works against this container; production keeps the secure default
@@ -23,12 +48,9 @@ services:
             watch:
                 - *watch-src
                 - *watch-shared
-                - path: ./backend/package.json
-                  action: rebuild
-                - path: ./backend/package-lock.json
-                  action: rebuild
-                - path: ./backend/Dockerfile
-                  action: rebuild
+                - *rebuild-package
+                - *rebuild-lockfile
+                - *rebuild-dockerfile
         volumes: *source-mounts
 
     realtime:
