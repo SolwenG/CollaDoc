@@ -1,5 +1,5 @@
 # Built from the repository root: the editor imports ../shared
-FROM node:24-alpine AS build
+FROM node:24.21-alpine3.24 AS build
 
 WORKDIR /app/frontend
 

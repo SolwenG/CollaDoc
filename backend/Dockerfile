@@ -1,5 +1,5 @@
 # Built from the repository root: the realtime server imports ../shared
-FROM node:24-alpine
+FROM node:24.21-alpine3.24
 
 WORKDIR /app/backend
 
