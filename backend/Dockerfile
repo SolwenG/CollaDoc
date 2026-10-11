@@ -1,4 +1,4 @@
-# Built from the repository root: the realtime server imports ../shared
+# Built from the repository root: the backend depends on ../shared
 FROM node:24.21-alpine3.24
 
 WORKDIR /app/backend
@@ -8,7 +8,8 @@ COPY backend/package.json backend/package-lock.json ./
 COPY shared/ /app/shared/
 RUN --mount=type=cache,target=/root/.npm npm ci --omit=dev
 
-COPY backend/ ./
+# Only what runs: tsconfig, Prisma CLI files and tooling stay out
+COPY backend/src ./src
 
 ENV NODE_ENV=production
 EXPOSE 3000 3001
