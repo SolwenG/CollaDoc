@@ -42,7 +42,6 @@ services:
             POSTGRES_USER: ${POSTGRES_USER:-colladoc}
             POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-colladoc}
             POSTGRES_DB: ${POSTGRES_DB:-colladoc}
-        ports: ['127.0.0.1:${DB_PORT:-5433}:5432']
         healthcheck:
             interval: 5s
             timeout: 5s
@@ -129,4 +128,6 @@ volumes:
 
 networks:
     edge:
+    # No route to the internet: db and migrate only talk to the app containers
     data:
+        internal: true

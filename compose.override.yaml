@@ -1,5 +1,5 @@
 # Development overrides, loaded automatically by `docker compose` next to the base file.
-# Same images and hardening as production: only the source mounts, the watch rules and the cookie flag differ.
+# Same images and hardening as production: only the source mounts, the watch rules, the cookie flag and host access to the database differ.
 x-source-mounts: &source-mounts
     - ./backend/src:/app/backend/src:ro
     - ./shared:/app/shared:ro
@@ -27,6 +27,11 @@ x-rebuild-dockerfile: &rebuild-dockerfile
     action: rebuild
 
 services:
+    db:
+        # Host access (SQL clients, Prisma migration authoring); an internal network cannot publish ports, hence db-host
+        ports: ['127.0.0.1:${DB_PORT:-5433}:5432']
+        networks: ['db-host']
+
     migrate:
         develop:
             watch:
@@ -59,3 +64,6 @@ services:
                 - *watch-src
                 - *watch-shared
         volumes: *source-mounts
+
+networks:
+    db-host:
