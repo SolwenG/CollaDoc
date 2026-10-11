@@ -10,6 +10,7 @@ import { authenticateSocket } from './realtime/socket-auth.ts'
 import type { CollabServer } from './realtime/socket.types.ts'
 import { userRoom } from './realtime/socket.types.ts'
 import { registerCallHandlers } from './sockets/call.ts'
+import { db } from './prisma/db.ts'
 
 const SNAPSHOT_INTERVAL_MS = 10_000
 
@@ -45,6 +46,7 @@ async function shutdown() {
     clearInterval(snapshotTimer)
     io.close()
     await snapshotAll()
+    await db.close()
     process.exit(0)
 }
 

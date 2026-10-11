@@ -21,7 +21,9 @@ services:
             context: .
             dockerfile: backend/Dockerfile
         image: colladoc-backend
+        init: true
         restart: unless-stopped
+        stop_grace_period: 10s
         environment:
             DATABASE_URL: postgresql://${POSTGRES_USER:-colladoc}:${POSTGRES_PASSWORD:-colladoc}@db:5432/${POSTGRES_DB:-colladoc}
             PORT: '3000'
@@ -41,8 +43,10 @@ services:
     # Second server: collaborative editing over socket.io (see docs/collaboration-ot.md)
     realtime:
         image: colladoc-backend
+        init: true
         command: ['node', 'src/realtime.ts']
         restart: unless-stopped
+        stop_grace_period: 10s
         environment:
             DATABASE_URL: postgresql://${POSTGRES_USER:-colladoc}:${POSTGRES_PASSWORD:-colladoc}@db:5432/${POSTGRES_DB:-colladoc}
             REALTIME_PORT: '3001'
