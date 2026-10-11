@@ -1,0 +1,41 @@
+# Development overrides, loaded automatically by `docker compose` next to the base file.
+# Same images and hardening as production: only the source mounts, the watch rules and the cookie flag differ.
+services:
+    backend:
+        environment:
+            # Session cookie also sent over plain http, so REST Client works against this container; production keeps the secure default
+            COOKIE_SECURE: 'false'
+        volumes:
+            - ./backend/src:/app/backend/src:ro
+            - ./shared:/app/shared:ro
+        develop:
+            watch:
+                - path: ./backend/src
+                  action: restart
+                  ignore:
+                      - '**/*.test.ts'
+                - path: ./shared
+                  action: restart
+                  ignore:
+                      - '**/*.test.ts'
+                - path: ./backend/package.json
+                  action: rebuild
+                - path: ./backend/package-lock.json
+                  action: rebuild
+                - path: ./backend/Dockerfile
+                  action: rebuild
+
+    realtime:
+        volumes:
+            - ./backend/src:/app/backend/src:ro
+            - ./shared:/app/shared:ro
+        develop:
+            watch:
+                - path: ./backend/src
+                  action: restart
+                  ignore:
+                      - '**/*.test.ts'
+                - path: ./shared
+                  action: restart
+                  ignore:
+                      - '**/*.test.ts'
