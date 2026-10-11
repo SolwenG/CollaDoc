@@ -17,6 +17,15 @@ services:
             retries: 10
         networks:
             - data
+        user: postgres
+        read_only: true
+        tmpfs:
+            - /var/run/postgresql:size=1m
+            - /tmp:noexec,nosuid,size=16m
+        cap_drop:
+            - ALL
+        security_opt:
+            - no-new-privileges:true
 
     backend:
         build:
