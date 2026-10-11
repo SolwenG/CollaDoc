@@ -7,10 +7,19 @@ export const SESSION_TTL_MS = 7 * 24 * 60 * 60 * 1000
 export const PENDING_MFA_SESSION_TTL_MS = 5 * 60 * 1000
 export const SESSION_REFRESH_THRESHOLD_MS = 1 * 60 * 1000
 
+/** Secure by default: only an explicit "false" (local http dev, REST Client) sends the cookie over plain http */
+function loadCookieSecure(): boolean {
+    const value = process.env['COOKIE_SECURE'] ?? 'true'
+    if (value !== 'true' && value !== 'false') {
+        throw new Error('COOKIE_SECURE must be "true" or "false"')
+    }
+    return value === 'true'
+}
+
 const SESSION_COOKIE_OPTIONS: CookieOptions = {
     httpOnly: true,
     sameSite: 'lax',
-    secure: process.env.NODE_ENV === 'production',
+    secure: loadCookieSecure(),
     path: '/',
 }
 
