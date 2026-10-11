@@ -1,7 +1,0 @@
-**/node_modules
-**/dist
-**/.quasar
-**/pnpm-lock.yaml
-**/.env
-.git
-backend
