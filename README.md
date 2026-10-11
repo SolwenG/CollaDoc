@@ -21,6 +21,7 @@ cp backend/.env.example backend/.env  # utilisé par Prisma et le backend lancé
 ```
 
 Dans les **deux** fichiers `.env`, renseigne la **même** :
+
 - `TOTP_ENCRYPTION_KEY`
 - `INTERNAL_SECRET`
 - `SHARE_LINK_SECRET`
@@ -30,6 +31,7 @@ Pour `SHARE_LINK_SECRET` et `TOTP_ENCRYPTION_KEY`, utilise :
 ```bash
 node -e "console.log(require('node:crypto').randomBytes(32).toString('base64'))"
 ```
+
 pour la générer.
 
 Pour `INTERNAL_SECRET`, fais :
