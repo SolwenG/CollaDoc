@@ -1,5 +1,5 @@
 # Development overrides, loaded automatically by `docker compose` next to the base file.
-# Same images and hardening as production: only the source mounts, the watch rules, the cookie flag and host access to the database differ.
+# Same images and hardening as production: only the source mounts, the watch rules, the cookie flag, the nginx config mount and host access to the database differ.
 x-source-mounts: &source-mounts
     - ./backend/src:/app/backend/src:ro
     - ./shared:/app/shared:ro
@@ -64,6 +64,16 @@ services:
                 - *watch-src
                 - *watch-shared
         volumes: *source-mounts
+
+    frontend:
+        volumes: ['./frontend/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro']
+        develop:
+            watch:
+                # Restart rather than reload: Compose Watch only runs a command after copying files into the container, which a read-only container refuses
+                - path: ./frontend/nginx/
+                  action: restart
+                - path: ./frontend/Dockerfile
+                  action: rebuild
 
 networks:
     db-host:
