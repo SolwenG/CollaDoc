@@ -4,9 +4,13 @@
     "description": "",
     "main": "index.js",
     "scripts": {
-        "dev": "concurrently \"npm run --prefix backend start\" \"npm run --prefix frontend dev\"",
+        "dev": "docker compose up -d --build --wait && concurrently --kill-others --names docker,vite --prefix-colors blue,green \"docker compose watch --no-up\" \"npm run --prefix frontend dev\"",
+        "dev:stop": "docker compose stop",
         "format": "prettier --write .",
-        "backend:typecheck": "npm run --prefix backend typecheck"
+        "typecheck": "npm run backend:typecheck && npm run frontend:typecheck",
+        "backend:typecheck": "npm run --prefix backend typecheck",
+        "frontend:typecheck": "npm run --prefix frontend typecheck",
+        "setup": "npm ci && npm ci --prefix backend && npm ci --prefix frontend"
     },
     "devDependencies": {
         "concurrently": "^9.2.1",
