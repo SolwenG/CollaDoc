@@ -11,8 +11,7 @@
         "prisma:contract": "prisma contract emit",
         "prisma:migrate": "prisma db migrate --advance-ref db",
         "prisma:verify": "prisma db verify",
-        "typecheck": "tsc --noEmit && tsc --noEmit -p migrations",
-        "format": "prettier --write ."
+        "typecheck": "tsc --noEmit && tsc --noEmit -p migrations"
     },
     "keywords": [],
     "author": "",
