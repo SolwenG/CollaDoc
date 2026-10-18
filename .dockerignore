@@ -12,7 +12,7 @@
 # Vitest
 **/*.test.ts
 
-# Docker — BuildKit reads the Dockerfile on its own; without this, COPY backend/ ./ copies it into the image
+# Docker — BuildKit reads the Dockerfile on its own; no build stage needs it
 **/Dockerfile
 
 # VS Code | macOS
