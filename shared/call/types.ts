@@ -24,9 +24,7 @@ export interface IncomingCall {
 export interface ClientToServerEvents {
     'call:invite': (
         payload: { documentId: number; targetUserId: number },
-        ack?: (
-            res: { ok: true; callId: string } | { ok: false; error: string }
-        ) => void
+        ack?: (res: { ok: true; callId: string } | { ok: false; error: string }) => void
     ) => void
     'call:accept': (payload: { callId: string }) => void
     'call:hangup': (payload: { callId: string }) => void

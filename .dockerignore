@@ -1,0 +1,49 @@
+################################ Common section ################################
+
+# Git
+**/.git*
+
+# NPM — host node_modules hold native binaries built for macOS (argon2), unusable on Linux/musl; the image runs its own npm ci
+**/node_modules
+
+# Secrets and their templates
+**/.env*
+
+# Vitest
+**/*.test.ts
+
+# Docker — BuildKit reads the Dockerfile on its own; no build stage needs it
+**/Dockerfile
+
+# VS Code | macOS
+.vscode
+**/.DS_Store
+
+# Prettier
+**/.prettier*
+
+# Claude Code — local config and Prisma-generated skills
+**/.claude
+
+##################################### Back #####################################
+
+# Vitest
+backend/vitest.config.ts
+
+# REST Client scenarios: they contain test credentials
+backend/requests
+
+# Docs
+backend/docs
+backend/*.md
+
+# Upload feature — User uploads from a local run (UPLOAD_DIR): runtime data, possibly personal
+backend/uploads
+
+#################################### Front ####################################
+
+# Quasar build output: a stale local build would mix with the new one
+frontend/dist
+
+# Quasar
+frontend/.quasar

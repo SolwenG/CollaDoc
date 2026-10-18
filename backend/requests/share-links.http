@@ -5,8 +5,8 @@
 #   that request was sent in this VS Code session.
 # - REST Client keeps cookies in one jar shared by every .http file: each "Login as …" request
 #   replaces the cookie, so the requests below it run as that user.
-# - Run against the LOCAL backend (cd backend && npm start): the Docker image sets
-#   NODE_ENV=production, so the cookie is Secure and REST Client never sends it over http.
+# - Run against the backend container (npm run dev): development sets COOKIE_SECURE=false,
+#   so REST Client gets the session cookie over http.
 #   Removing a member or changing their role also notifies the realtime server; when it is not
 #   running, the backend logs "Realtime notification … failed" and still answers 204.
 # - Test data piles up in the dev database; clean it up with any SQL client when needed

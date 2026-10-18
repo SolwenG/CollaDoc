@@ -10,6 +10,8 @@ import { authenticateSocket } from './realtime/socket-auth.ts'
 import type { CollabServer } from './realtime/socket.types.ts'
 import { userRoom } from './realtime/socket.types.ts'
 import { registerCallHandlers } from './sockets/call.ts'
+import { HealthRoutes } from './routes/health.routes.ts'
+import { db } from './prisma/db.ts'
 
 const SNAPSHOT_INTERVAL_MS = 10_000
 
@@ -18,6 +20,7 @@ const httpServer = createServer(app)
 const io: CollabServer = new Server(httpServer, { serveClient: false })
 
 app.use(express.json())
+app.use('/health', HealthRoutes)
 app.use('/internal', internalRoutes(io))
 app.use(errorHandler)
 
@@ -45,6 +48,7 @@ async function shutdown() {
     clearInterval(snapshotTimer)
     io.close()
     await snapshotAll()
+    await db.close()
     process.exit(0)
 }
 

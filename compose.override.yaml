@@ -1,0 +1,81 @@
+# Development overrides, loaded automatically by `docker compose` next to the base file.
+# Same images and hardening as production: only the source mounts, the watch rules, the cookie flag, the nginx config mount and host access to the database differ.
+x-source-mounts: &source-mounts
+  - ./backend/src:/app/backend/src:ro
+  - ./shared:/app/shared:ro
+
+x-watch-src: &watch-src
+  path: ./backend/src
+  action: restart
+  ignore: ['**/*.test.ts']
+
+x-watch-shared: &watch-shared
+  path: ./shared
+  action: restart
+  ignore: ['**/*.test.ts']
+
+x-rebuild-package: &rebuild-package
+  path: ./backend/package.json
+  action: rebuild
+
+x-rebuild-lockfile: &rebuild-lockfile
+  path: ./backend/package-lock.json
+  action: rebuild
+
+x-rebuild-dockerfile: &rebuild-dockerfile
+  path: ./backend/Dockerfile
+  action: rebuild
+
+services:
+  db:
+    # Host access (SQL clients, Prisma migration authoring); an internal network cannot publish ports, hence db-host
+    ports: ['127.0.0.1:${DB_PORT:-5433}:5432']
+    networks: ['db-host']
+
+  migrate:
+    develop:
+      watch:
+        - *rebuild-package
+        - *rebuild-lockfile
+        - *rebuild-dockerfile
+        # No rule on migrations/, src/prisma/ or prisma.config.ts: a half-written migration must not be applied; restart npm run dev once it is done
+
+  backend:
+    environment:
+      # Session cookie also sent over plain http, so REST Client works against this container; production keeps the secure default
+      COOKIE_SECURE: 'false'
+    develop:
+      watch:
+        - *watch-src
+        - *watch-shared
+        - *rebuild-package
+        - *rebuild-lockfile
+        - *rebuild-dockerfile
+    volumes: *source-mounts
+
+  realtime:
+    develop:
+      watch:
+        - *watch-src
+        - *watch-shared
+    volumes: *source-mounts
+
+  frontend:
+    volumes:
+      - ./frontend/nginx/upstreams.conf:/etc/nginx/conf.d/upstreams.conf:ro
+      - ./frontend/nginx/common.conf:/etc/nginx/snippets/common.conf:ro
+      # Same path as the production server so it replaces it instead of adding a second server on 8080
+      - ./frontend/nginx/dev.conf:/etc/nginx/conf.d/default.conf:ro
+    develop:
+      watch:
+        # Restart rather than reload: Compose Watch only runs a command after copying files into the container, which a read-only container refuses
+        - path: ./frontend/nginx/
+          action: restart
+        - path: ./frontend/Dockerfile
+          action: rebuild
+    # Pinned on purpose: Docker Desktop provides this name, plain Docker Engine on Linux does not
+    extra_hosts: ['host.docker.internal:host-gateway']
+    ports: !override ['127.0.0.1:${FRONTEND_PORT:-8080}:8080']
+
+networks:
+  db-host:

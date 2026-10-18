@@ -3,12 +3,15 @@ import { UserRoutes } from './user.routes.ts'
 import { AuthRoutes } from './auth.routes.ts'
 import { AdminRoutes } from './admin.routes.ts'
 import { ProfileRoutes } from './profile.routes.ts'
+import { HealthRoutes } from './health.routes.ts'
 import { SharingRoutes } from './sharing.routes.ts'
 import { ShareLinkRoutes } from './share-link.routes.ts'
 import { FolderRoutes } from './folder.routes.ts'
 import { DocumentRoutes } from './document.routes.ts'
 
 const router = Router()
+
+router.use('/health', HealthRoutes)
 
 router.use('/users', UserRoutes)
 router.use('/auth', AuthRoutes)

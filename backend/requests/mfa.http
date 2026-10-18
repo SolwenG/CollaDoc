@@ -4,8 +4,8 @@
 # - Send the requests in order, from the top: "{{register.response...}}" only resolves once
 #   the "register" request was sent in this VS Code session.
 # - REST Client keeps cookies in one jar shared by every .http file: this file logs in on its own.
-# - Run against the LOCAL backend (cd backend && npm start): the Docker image sets
-#   NODE_ENV=production, so the cookie is Secure and REST Client never sends it over http.
+# - Run against the backend container (npm run dev): development sets COOKIE_SECURE=false,
+#   so REST Client gets the session cookie over http.
 # - Test users pile up in the dev database; clean them up with any SQL client when needed
 #   (psql: docker compose exec db psql -U colladoc colladoc, or DBeaver and the like):
 #   DELETE FROM "User" WHERE "username" ~ '^mfa_[0-9]+$';

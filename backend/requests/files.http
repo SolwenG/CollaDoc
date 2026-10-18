@@ -2,7 +2,7 @@
 # Replayable on a database that is not purged: each run registers a fresh user ({{$timestamp}}),
 # and later requests read it back from the named responses.
 # - Send the requests in order, from the top.
-# - Run against the LOCAL backend (cd backend && npm start), see profile.http for why.
+# - Run against the backend container (npm run dev), see profile.http for the session cookie.
 # - Uploads use a PNG of the repository (frontend/public/icons) as the sample file.
 # - Clean up with any SQL client when needed (owners are not cascaded, so content goes first):
 #   DELETE FROM "Folder" WHERE "ownerId" IN (SELECT id FROM "User" WHERE "username" ~ '^files_[0-9]+$');

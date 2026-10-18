@@ -1,19 +1,20 @@
 # Built from the repository root: the editor imports ../shared
-FROM node:24-alpine AS build
+FROM node:24.21-alpine3.24 AS build
 
 WORKDIR /app/frontend
 
 COPY frontend/package.json frontend/package-lock.json ./
-
 # npm links the "shared" dependency to ../shared, which must exist before installing
 COPY shared/ /app/shared/
-RUN npm ci --ignore-scripts
+RUN --mount=type=cache,target=/root/.npm npm ci --ignore-scripts
 
 COPY frontend/ ./
 RUN npx quasar prepare && npx quasar build
 
-FROM nginx:alpine
+FROM nginxinc/nginx-unprivileged:1.31-alpine3.24
 
 COPY --from=build /app/frontend/dist/spa /usr/share/nginx/html
-COPY frontend/nginx.conf /etc/nginx/conf.d/default.conf
-EXPOSE 80
+COPY frontend/nginx/upstreams.conf frontend/nginx/default.conf /etc/nginx/conf.d/
+COPY frontend/nginx/common.conf /etc/nginx/snippets/
+
+EXPOSE 8080
