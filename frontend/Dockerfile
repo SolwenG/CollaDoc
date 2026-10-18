@@ -14,5 +14,7 @@ RUN npx quasar prepare && npx quasar build
 FROM nginxinc/nginx-unprivileged:1.31-alpine3.24
 
 COPY --from=build /app/frontend/dist/spa /usr/share/nginx/html
-COPY frontend/nginx/default.conf /etc/nginx/conf.d/default.conf
+COPY frontend/nginx/upstreams.conf frontend/nginx/default.conf /etc/nginx/conf.d/
+COPY frontend/nginx/common.conf /etc/nginx/snippets/
+
 EXPOSE 8080

@@ -66,7 +66,10 @@ services:
     volumes: *source-mounts
 
   frontend:
-    volumes: ['./frontend/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro']
+    volumes:
+      - ./frontend/nginx/upstreams.conf:/etc/nginx/conf.d/upstreams.conf:ro
+      - ./frontend/nginx/common.conf:/etc/nginx/snippets/common.conf:ro
+      - ./frontend/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
     develop:
       watch:
         # Restart rather than reload: Compose Watch only runs a command after copying files into the container, which a read-only container refuses
