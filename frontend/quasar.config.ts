@@ -102,20 +102,14 @@ export default defineConfig((ctx) => {
         // https://v2.quasar.dev/quasar-cli-vite/quasar-config-file#devserver
         devServer: {
             // https: true,
-            open: true, // opens browser window automatically
+            // Reached through the nginx container (http://localhost:8080), which routes /api and /socket.io like production
+            host: '127.0.0.1',
+            // Must match frontend/nginx/dev.conf; if busy, Quasar silently picks another port and nginx answers 502
+            port: 9000,
+            // The browser must open nginx's URL, not Vite's
+            open: false,
             // Allows serving ../shared
             fs: { allow: ['..'] },
-            proxy: {
-                '/api': {
-                    target: 'http://localhost:3000',
-                    changeOrigin: true,
-                    rewrite: (path) => path.replace(/^\/api/, ''),
-                },
-                '/socket.io': {
-                    target: 'http://localhost:3001',
-                    ws: true,
-                },
-            },
         },
 
         // https://v2.quasar.dev/quasar-cli-vite/quasar-config-file#framework
