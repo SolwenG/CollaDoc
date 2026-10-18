@@ -38,12 +38,7 @@ services:
         - *rebuild-package
         - *rebuild-lockfile
         - *rebuild-dockerfile
-        - path: ./backend/migrations
-          action: rebuild
-        - path: ./backend/src/prisma
-          action: rebuild
-        - path: ./backend/prisma.config.ts
-          action: rebuild
+        # No rule on migrations/, src/prisma/ or prisma.config.ts: a half-written migration must not be applied; restart npm run dev once it is done
 
   backend:
     environment:
