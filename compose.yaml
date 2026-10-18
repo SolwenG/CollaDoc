@@ -2,132 +2,132 @@
 name: colladoc
 
 x-hardening: &hardening
-    read_only: true
-    cap_drop: ['ALL']
-    security_opt: ['no-new-privileges:true']
+  read_only: true
+  cap_drop: ['ALL']
+  security_opt: ['no-new-privileges:true']
 
 x-healthcheck: &healthcheck
-    interval: 10s
-    timeout: 3s
-    retries: 3
-    start_period: 10s
-    start_interval: 1s
+  interval: 10s
+  timeout: 3s
+  retries: 3
+  start_period: 10s
+  start_interval: 1s
 
 x-backend-base: &backend-base
-    <<: *hardening
-    image: colladoc-backend
-    init: true
-    restart: unless-stopped
-    stop_grace_period: 10s
-    depends_on:
-        db:
-            condition: service_healthy
-        migrate:
-            condition: service_completed_successfully
-    tmpfs: ['/tmp:noexec,nosuid,size=16m']
-    networks: ['data', 'edge']
+  <<: *hardening
+  image: colladoc-backend
+  init: true
+  restart: unless-stopped
+  stop_grace_period: 10s
+  depends_on:
+    db:
+      condition: service_healthy
+    migrate:
+      condition: service_completed_successfully
+  tmpfs: ['/tmp:noexec,nosuid,size=16m']
+  networks: ['data', 'edge']
 
 x-database-url: &database-url postgresql://${POSTGRES_USER:-colladoc}:${POSTGRES_PASSWORD:-colladoc}@db:5432/${POSTGRES_DB:-colladoc}
 
 x-backend-env: &backend-env
-    DATABASE_URL: *database-url
-    INTERNAL_SECRET: ${INTERNAL_SECRET:?INTERNAL_SECRET must be set in .env}
+  DATABASE_URL: *database-url
+  INTERNAL_SECRET: ${INTERNAL_SECRET:?INTERNAL_SECRET must be set in .env}
 
 services:
-    db:
-        <<: *hardening
-        image: postgres:18-alpine3.24
-        restart: unless-stopped
-        environment:
-            POSTGRES_USER: ${POSTGRES_USER:-colladoc}
-            POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-colladoc}
-            POSTGRES_DB: ${POSTGRES_DB:-colladoc}
-        healthcheck:
-            interval: 5s
-            timeout: 5s
-            retries: 10
-            test: ['CMD-SHELL', 'pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}']
-        user: postgres
-        tmpfs: ['/var/run/postgresql:size=1m', '/tmp:noexec,nosuid,size=16m']
-        volumes: ['db-data:/var/lib/postgresql']
-        networks: ['data']
+  db:
+    <<: *hardening
+    image: postgres:18-alpine3.24
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-colladoc}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-colladoc}
+      POSTGRES_DB: ${POSTGRES_DB:-colladoc}
+    healthcheck:
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      test: ['CMD-SHELL', 'pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}']
+    user: postgres
+    tmpfs: ['/var/run/postgresql:size=1m', '/tmp:noexec,nosuid,size=16m']
+    volumes: ['db-data:/var/lib/postgresql']
+    networks: ['data']
 
-    migrate:
-        <<: *hardening
-        build:
-            context: .
-            dockerfile: backend/Dockerfile
-            target: migrate
-        image: colladoc-migrate
-        init: true
-        # Pinned on purpose: a one-shot job must never be restarted
-        restart: 'no'
-        environment:
-            DATABASE_URL: *database-url
-        tmpfs: ['/tmp:noexec,nosuid,size=16m']
-        networks: ['data']
-        depends_on:
-            db:
-                condition: service_healthy
+  migrate:
+    <<: *hardening
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+      target: migrate
+    image: colladoc-migrate
+    init: true
+    # Pinned on purpose: a one-shot job must never be restarted
+    restart: 'no'
+    environment:
+      DATABASE_URL: *database-url
+    tmpfs: ['/tmp:noexec,nosuid,size=16m']
+    networks: ['data']
+    depends_on:
+      db:
+        condition: service_healthy
 
-    backend:
-        <<: *backend-base
-        build:
-            context: .
-            dockerfile: backend/Dockerfile
-            target: runtime
-        environment:
-            <<: *backend-env
-            PORT: '3000'
-            REALTIME_INTERNAL_URL: http://realtime:3001
-            TOTP_ENCRYPTION_KEY: ${TOTP_ENCRYPTION_KEY:?TOTP_ENCRYPTION_KEY must be set in the root .env}
-            SHARE_LINK_SECRET: ${SHARE_LINK_SECRET:?SHARE_LINK_SECRET must be set in the root .env}
-            UPLOAD_DIR: /app/uploads
-        ports: ['127.0.0.1:${BACKEND_PORT:-3000}:3000']
-        volumes: ['uploads-data:/app/uploads']
-        healthcheck:
-            <<: *healthcheck
-            test: ['CMD', 'wget', '-q', '--spider', 'http://127.0.0.1:3000/health']
-        # Pinned on purpose (same as the image CMD): both services declare what they run side by side
-        command: ['node', 'src/app.ts']
+  backend:
+    <<: *backend-base
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+      target: runtime
+    environment:
+      <<: *backend-env
+      PORT: '3000'
+      REALTIME_INTERNAL_URL: http://realtime:3001
+      TOTP_ENCRYPTION_KEY: ${TOTP_ENCRYPTION_KEY:?TOTP_ENCRYPTION_KEY must be set in the root .env}
+      SHARE_LINK_SECRET: ${SHARE_LINK_SECRET:?SHARE_LINK_SECRET must be set in the root .env}
+      UPLOAD_DIR: /app/uploads
+    ports: ['127.0.0.1:${BACKEND_PORT:-3000}:3000']
+    volumes: ['uploads-data:/app/uploads']
+    healthcheck:
+      <<: *healthcheck
+      test: ['CMD', 'wget', '-q', '--spider', 'http://127.0.0.1:3000/health']
+    # Pinned on purpose (same as the image CMD): both services declare what they run side by side
+    command: ['node', 'src/app.ts']
 
-    # Second server: collaborative editing over socket.io
-    realtime:
-        <<: *backend-base
-        environment:
-            <<: *backend-env
-            REALTIME_PORT: '3001'
-        ports: ['127.0.0.1:${REALTIME_PORT:-3001}:3001']
-        healthcheck:
-            <<: *healthcheck
-            test: ['CMD', 'wget', '-q', '--spider', 'http://127.0.0.1:3001/health']
-        command: ['node', 'src/realtime.ts']
+  # Second server: collaborative editing over socket.io
+  realtime:
+    <<: *backend-base
+    environment:
+      <<: *backend-env
+      REALTIME_PORT: '3001'
+    ports: ['127.0.0.1:${REALTIME_PORT:-3001}:3001']
+    healthcheck:
+      <<: *healthcheck
+      test: ['CMD', 'wget', '-q', '--spider', 'http://127.0.0.1:3001/health']
+    command: ['node', 'src/realtime.ts']
 
-    frontend:
-        <<: *hardening
-        build:
-            context: .
-            dockerfile: frontend/Dockerfile
-        image: colladoc-frontend
-        healthcheck:
-            <<: *healthcheck
-            test: ['CMD', 'wget', '-q', '--spider', 'http://127.0.0.1:8080/']
-        restart: unless-stopped
-        depends_on:
-            backend:
-                condition: service_healthy
-            realtime:
-                condition: service_healthy
-        ports: ['${FRONTEND_PORT:-8080}:8080']
-        tmpfs: ['/tmp:noexec,nosuid,size=64m']
-        networks: ['edge']
+  frontend:
+    <<: *hardening
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    image: colladoc-frontend
+    healthcheck:
+      <<: *healthcheck
+      test: ['CMD', 'wget', '-q', '--spider', 'http://127.0.0.1:8080/']
+    restart: unless-stopped
+    depends_on:
+      backend:
+        condition: service_healthy
+      realtime:
+        condition: service_healthy
+    ports: ['${FRONTEND_PORT:-8080}:8080']
+    tmpfs: ['/tmp:noexec,nosuid,size=64m']
+    networks: ['edge']
 
 volumes:
-    db-data:
-    uploads-data:
+  db-data:
+  uploads-data:
 
 networks:
-    edge:
-    # No route to the internet: db and migrate only talk to the app containers
-    data:
-        internal: true
+  edge:
+  # No route to the internet: db and migrate only talk to the app containers
+  data:
+    internal: true
